@@ -134,7 +134,7 @@ function Navbar() {
           }`}
         >
           <a href="#inicio" className="flex items-center gap-2">
-            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-8 w-auto" />
+            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-14 sm:h-16 w-auto" />
           </a>
           <nav className="hidden lg:flex items-center gap-8">
             {links.map((l) => (
@@ -309,8 +309,6 @@ function Services() {
     { icon: Video, title: "Produção Audiovisual", desc: "Vídeos institucionais, comerciais, Reels e campanhas com direção criativa e edição cinematográfica." },
     { icon: Globe, title: "Sites Profissionais", desc: "Sites modernos, rápidos e desenvolvidos para converter visitantes em clientes." },
     { icon: Cpu, title: "Sistemas Personalizados", desc: "Desenvolvimento de sistemas sob medida para automatizar e escalar o seu negócio." },
-    { icon: Zap, title: "Automações com IA", desc: "Automação de processos e fluxos utilizando Inteligência Artificial e integrações." },
-    { icon: Palette, title: "Design", desc: "Identidade visual, apresentações e materiais digitais que traduzem a essência da marca." },
   ];
   return (
     <section id="servicos" className="relative py-28 sm:py-36">
