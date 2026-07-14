@@ -134,7 +134,7 @@ function Navbar() {
           }`}
         >
           <a href="#inicio" className="flex items-center gap-2">
-            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-8 w-auto" />
+            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-14 sm:h-16 w-auto" />
           </a>
           <nav className="hidden lg:flex items-center gap-8">
             {links.map((l) => (
