@@ -8,7 +8,7 @@ import {
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
 import heroMockup from "@/assets/hero-mockup.jpg";
-import aboutImg from "@/assets/about.jpg";
+import aboutImg from "@/assets/henrique-castro.jpg.asset.json";
 import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
