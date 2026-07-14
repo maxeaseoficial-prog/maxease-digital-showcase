@@ -191,14 +191,8 @@ function Hero() {
       </svg>
 
       <motion.div style={{ opacity }} className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 sm:px-6 pt-32 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-4xl">
           <motion.div style={{ y: y2 }}>
-            <Reveal>
-              <div className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs text-brand-light mb-6">
-                <Sparkles className="h-3.5 w-3.5" />
-                MAXEASE Digital · Estúdio criativo &amp; tecnologia
-              </div>
-            </Reveal>
             <Reveal delay={0.1}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] text-white">
                 Criamos experiências <span className="text-brand-gradient">digitais</span> que fazem empresas crescer.
@@ -228,12 +222,8 @@ function Hero() {
               </div>
             </Reveal>
           </motion.div>
-
-          {/* Right composition */}
-          <motion.div style={{ y: y1 }} className="relative h-[460px] lg:h-[560px]">
-            <HeroComposition />
-          </motion.div>
         </div>
+
       </motion.div>
     </section>
   );
