@@ -652,7 +652,7 @@ function About() {
               </p>
               <p className="mt-4 text-white/70 leading-relaxed">
                 Em pouco tempo, nos tornamos referência em criar experiências digitais que unem design premium, tecnologia de
-                ponta e narrativa visual de impacto — cada projeto é pensado para posicionar marcas e gerar crescimento
+                ponta e narrativa visual de impacto. Cada projeto é pensado para posicionar marcas e gerar crescimento
                 sustentável.
               </p>
               <div className="mt-8 grid grid-cols-2 gap-4">
