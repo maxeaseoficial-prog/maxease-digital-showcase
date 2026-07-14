@@ -627,9 +627,9 @@ function About() {
   return (
     <section id="sobre" className="relative py-28 sm:py-36">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-14 items-center">
           <Reveal>
-            <div className="relative rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-elegant">
+            <div className="relative rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-elegant max-w-sm mx-auto lg:mx-0 lg:col-span-2">
               <img src={aboutImg.url} alt="Henrique Castro, fundador da MAXEASE Digital" loading="lazy" className="w-full h-auto" />
               <div className="absolute inset-0 bg-gradient-to-tr from-brand-deep/40 via-transparent to-brand-blue/20" />
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-brand-deep via-brand-deep/70 to-transparent">
@@ -640,30 +640,26 @@ function About() {
             </div>
           </Reveal>
           <Reveal delay={0.15}>
-            <div>
+            <div className="lg:col-span-3">
               <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Sobre a MAXEASE</div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
                 Unimos <span className="text-brand-gradient">criatividade, tecnologia e estratégia</span> em cada entrega.
               </h2>
               <p className="mt-6 text-white/70 leading-relaxed">
-                A MAXEASE Digital nasceu em <span className="text-white font-medium">dezembro de 2024</span>, fundada por
-                <span className="text-white font-medium"> Henrique Castro</span>, com um propósito claro: ajudar empresas a
-                fortalecer sua marca no ambiente digital e transformar presença online em resultado real.
+                A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
               </p>
               <p className="mt-4 text-white/70 leading-relaxed">
-                Em pouco tempo, nos tornamos referência em criar experiências digitais que unem design premium, tecnologia de
-                ponta e narrativa visual de impacto. Cada projeto é pensado para posicionar marcas e gerar crescimento
-                sustentável.
+                Fundada por <span className="text-white font-medium">Henrique Castro</span>, a empresa une estratégia, design e tecnologia para desenvolver sites de alto padrão, sistemas personalizados e produções audiovisuais que fortalecem marcas e impulsionam negócios.
               </p>
-              <div className="mt-8 grid grid-cols-2 gap-4">
-                {["Design premium", "Código performático", "Estratégia de marca", "Suporte contínuo"].map((f) => (
-                  <div key={f} className="flex items-center gap-2 text-sm text-white/75">
-                    <div className="h-1.5 w-1.5 rounded-full bg-brand-light glow-blue-sm" /> {f}
-                  </div>
-                ))}
-              </div>
+              <p className="mt-4 text-white/70 leading-relaxed">
+                Mais do que entregar projetos bonitos, acreditamos que cada detalhe deve ter um objetivo: transmitir credibilidade, melhorar a experiência do usuário e contribuir para o crescimento das empresas que confiam no nosso trabalho.
+              </p>
+              <p className="mt-4 text-white/70 leading-relaxed">
+                Hoje, a MAXEASE Digital reúne criatividade, inovação e tecnologia para criar experiências digitais modernas, funcionais e memoráveis, sempre com foco em qualidade, performance e resultados reais.
+              </p>
             </div>
           </Reveal>
+
 
         </div>
       </div>
