@@ -691,7 +691,7 @@ function CTA() {
               </p>
               <div className="mt-9 flex flex-wrap justify-center gap-4">
                 <a
-                  href="https://wa.me/5500000000000"
+                  href="https://wa.me/5542988377640"
                   className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-semibold text-brand-deep hover:scale-[1.03] transition-transform shadow-[0_20px_50px_-15px_rgba(255,255,255,0.4)]"
                 >
                   Solicitar orçamento
