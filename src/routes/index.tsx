@@ -691,7 +691,7 @@ function CTA() {
               </p>
               <div className="mt-9 flex flex-wrap justify-center gap-4">
                 <a
-                  href="https://wa.me/5500000000000"
+                  href="https://wa.me/5542988377640"
                   className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-semibold text-brand-deep hover:scale-[1.03] transition-transform shadow-[0_20px_50px_-15px_rgba(255,255,255,0.4)]"
                 >
                   Solicitar orçamento
@@ -730,9 +730,9 @@ function Footer() {
           <div>
             <div className="text-sm font-semibold text-white mb-4">Contato</div>
             <ul className="space-y-3 text-sm text-white/60">
-              <li><a href="https://wa.me/5500000000000" className="flex items-center gap-2 hover:text-white transition-colors"><MessageCircle className="h-4 w-4" /> WhatsApp</a></li>
-              <li><a href="https://instagram.com" className="flex items-center gap-2 hover:text-white transition-colors"><Instagram className="h-4 w-4" /> Instagram</a></li>
-              <li><a href="mailto:contato@maxease.digital" className="flex items-center gap-2 hover:text-white transition-colors"><Mail className="h-4 w-4" /> contato@maxease.digital</a></li>
+              <li><a href="https://wa.me/5542988377640" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white transition-colors"><MessageCircle className="h-4 w-4" /> WhatsApp</a></li>
+              <li><a href="https://www.instagram.com/max.ease/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white transition-colors"><Instagram className="h-4 w-4" /> @max.ease</a></li>
+              <li><a href="mailto:maxeaseoficial@gmail.com" className="flex items-center gap-2 hover:text-white transition-colors"><Mail className="h-4 w-4" /> maxeaseoficial@gmail.com</a></li>
             </ul>
           </div>
         </div>
