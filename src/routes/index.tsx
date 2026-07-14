@@ -8,7 +8,7 @@ import {
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
 import heroMockup from "@/assets/hero-mockup.jpg";
-import aboutImg from "@/assets/about.jpg";
+import aboutImg from "@/assets/henrique-castro.jpg.asset.json";
 import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
@@ -551,7 +551,7 @@ function Clients() {
 
         <Reveal delay={0.15}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-10 mb-16 rounded-2xl glass">
-            <Counter to={800} label="Projetos entregues" />
+            <Counter to={1000} label="Conteúdos entregues" />
             <Counter to={30} label="Empresas atendidas" />
             <Counter to={2} label="Anos de experiência" />
           </div>
@@ -629,9 +629,14 @@ function About() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <Reveal>
-            <div className="relative rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-elegant">
-              <img src={aboutImg} alt="Equipe MAXEASE" loading="lazy" className="w-full h-auto" />
+            <div className="relative rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-elegant">
+              <img src={aboutImg.url} alt="Henrique Castro, fundador da MAXEASE Digital" loading="lazy" className="w-full h-auto" />
               <div className="absolute inset-0 bg-gradient-to-tr from-brand-deep/40 via-transparent to-brand-blue/20" />
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-brand-deep via-brand-deep/70 to-transparent">
+                <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-1">Fundador</div>
+                <div className="text-xl font-semibold text-white">Henrique Castro</div>
+                <div className="text-sm text-white/70">CEO & Fundador · MAXEASE Digital</div>
+              </div>
             </div>
           </Reveal>
           <Reveal delay={0.15}>
@@ -641,9 +646,14 @@ function About() {
                 Unimos <span className="text-brand-gradient">criatividade, tecnologia e estratégia</span> em cada entrega.
               </h2>
               <p className="mt-6 text-white/70 leading-relaxed">
-                A MAXEASE Digital é um estúdio criativo e tecnológico especializado em desenvolver soluções digitais completas.
-                Do primeiro esboço ao lançamento, combinamos design de alto padrão, código limpo e narrativa audiovisual para
-                construir experiências que geram impacto real nos negócios.
+                A MAXEASE Digital nasceu em <span className="text-white font-medium">dezembro de 2024</span>, fundada por
+                <span className="text-white font-medium"> Henrique Castro</span>, com um propósito claro: ajudar empresas a
+                fortalecer sua marca no ambiente digital e transformar presença online em resultado real.
+              </p>
+              <p className="mt-4 text-white/70 leading-relaxed">
+                Em pouco tempo, nos tornamos referência em criar experiências digitais que unem design premium, tecnologia de
+                ponta e narrativa visual de impacto — cada projeto é pensado para posicionar marcas e gerar crescimento
+                sustentável.
               </p>
               <div className="mt-8 grid grid-cols-2 gap-4">
                 {["Design premium", "Código performático", "Estratégia de marca", "Suporte contínuo"].map((f) => (
@@ -654,6 +664,7 @@ function About() {
               </div>
             </div>
           </Reveal>
+
         </div>
       </div>
     </section>
