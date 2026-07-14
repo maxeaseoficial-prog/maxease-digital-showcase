@@ -627,9 +627,9 @@ function About() {
   return (
     <section id="sobre" className="relative py-28 sm:py-36">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-14 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <Reveal>
-            <div className="relative rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-elegant max-w-sm mx-auto lg:mx-0 lg:col-span-2">
+            <div className="relative rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-elegant max-w-md mx-auto lg:mx-0">
               <img src={aboutImg.url} alt="Henrique Castro, fundador da MAXEASE Digital" loading="lazy" className="w-full h-auto" />
               <div className="absolute inset-0 bg-gradient-to-tr from-brand-deep/40 via-transparent to-brand-blue/20" />
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-brand-deep via-brand-deep/70 to-transparent">
@@ -640,7 +640,8 @@ function About() {
             </div>
           </Reveal>
           <Reveal delay={0.15}>
-            <div className="lg:col-span-3">
+            <div>
+
               <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Sobre a MAXEASE</div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
                 Unimos <span className="text-brand-gradient">criatividade, tecnologia e estratégia</span> em cada entrega.
