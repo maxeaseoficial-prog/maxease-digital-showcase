@@ -555,7 +555,24 @@ function Clients() {
         </Reveal>
       </div>
 
-      {/* área reservada para logos das empresas atendidas */}
+      {/* logos das empresas atendidas */}
+      <div className="relative overflow-hidden py-8 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+        <div className="flex gap-16 items-center animate-marquee w-max">
+          {[...clientLogos, ...clientLogos].map((c, i) => (
+            <div
+              key={i}
+              className="flex-shrink-0 h-20 w-40 flex items-center justify-center rounded-xl bg-white/5 backdrop-blur-sm p-4 transition-all hover:bg-white/10"
+            >
+              <img
+                src={c.src}
+                alt={c.name}
+                loading="lazy"
+                className="max-h-full max-w-full object-contain opacity-70 hover:opacity-100 transition-opacity"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
 
     </section>
   );
