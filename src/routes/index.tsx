@@ -733,10 +733,10 @@ export function Footer() {
           <div>
             <div className="text-sm font-semibold text-white mb-4">Links rápidos</div>
             <ul className="space-y-2 text-sm text-white/60">
-              <li><a href="#inicio" className="hover:text-white transition-colors">Início</a></li>
-              <li><a href="#audiovisual" className="hover:text-white transition-colors">Audiovisual</a></li>
-              <li><a href="#sites" className="hover:text-white transition-colors">Sites</a></li>
-              <li><a href="#sobre" className="hover:text-white transition-colors">Sobre</a></li>
+              <li><Link to="/" hash="inicio" className="hover:text-white transition-colors">Início</Link></li>
+              <li><Link to="/audiovisual" className="hover:text-white transition-colors">Audiovisual</Link></li>
+              <li><Link to="/sites" className="hover:text-white transition-colors">Sites</Link></li>
+              <li><Link to="/" hash="sobre" className="hover:text-white transition-colors">Sobre</Link></li>
             </ul>
           </div>
           <div>
@@ -766,8 +766,6 @@ function Index() {
       <main>
         <Hero />
         <Services />
-        <Audiovisual />
-        <Sites />
         <Clients />
         <Testimonials />
         <About />
