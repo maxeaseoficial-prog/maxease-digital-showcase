@@ -223,7 +223,7 @@ function Hero() {
           <motion.div style={{ y: y2 }}>
             <Reveal delay={0.1}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] text-white">
-                Criamos experiências <span className="text-brand-gradient">digitais</span> que fazem empresas crescer.
+                Criamos experiências <span className="text-brand-gradient">digitais</span> que fazem sua empresa crescer.
               </h1>
             </Reveal>
             <Reveal delay={0.25}>
