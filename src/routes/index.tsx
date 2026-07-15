@@ -153,8 +153,8 @@ export function Navbar() {
             scrolled ? "glass-strong shadow-elegant" : ""
           }`}
         >
-          <Link to="/" hash="inicio" className="flex items-center gap-2">
-            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-14 sm:h-16 w-auto" />
+          <Link to="/" hash="inicio" className="flex items-center gap-2 shrink-0">
+            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-11 sm:h-16 w-auto" />
           </Link>
           <nav className="hidden lg:flex items-center gap-8">
             {links.map((l) =>
@@ -174,11 +174,13 @@ export function Navbar() {
           <button
             type="button"
             onClick={openQuote}
-            className="group relative inline-flex items-center gap-2 rounded-full bg-brand-gradient px-5 py-2.5 text-sm font-medium text-white shadow-[0_10px_30px_-8px_rgba(30,64,255,0.6)] transition-transform hover:scale-[1.03]"
+            className="group relative inline-flex shrink-0 items-center gap-2 rounded-full bg-brand-gradient px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-white whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(30,64,255,0.6)] transition-transform hover:scale-[1.03]"
           >
-            Solicitar orçamento
+            <span className="hidden sm:inline">Solicitar orçamento</span>
+            <span className="sm:hidden">Orçamento</span>
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </button>
+
 
         </div>
       </div>
