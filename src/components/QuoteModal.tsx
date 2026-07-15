@@ -364,9 +364,9 @@ function StepService({ selected, onSelect }: { selected: ServiceKey | null; onSe
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-base">{s.emoji}</span>
                     <div className="font-semibold text-brand-deep text-sm">{s.title}</div>
                   </div>
+
                   <p className="mt-1 text-xs text-slate-500 leading-relaxed">{s.desc}</p>
                 </div>
                 {active && (
