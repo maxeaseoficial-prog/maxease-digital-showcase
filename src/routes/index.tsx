@@ -470,25 +470,25 @@ export function Sites() {
           </div>
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {projects.map((p, i) => (
-            <Reveal key={p.name} delay={i * 0.08}>
-              <a href="#" className="group relative block rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-elegant aspect-[4/3]">
-                <img src={p.img} alt={p.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/30 to-transparent" />
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-brand-blue/20 via-transparent to-brand-light/20" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 flex items-end justify-between">
-                  <div>
-                    <div className="text-[11px] uppercase tracking-widest text-brand-light">{p.category}</div>
-                    <div className="text-white text-xl sm:text-2xl font-semibold mt-1">{p.name}</div>
-                  </div>
-                  <div className="inline-flex items-center gap-2 rounded-full glass-strong px-4 py-2 text-xs font-medium text-white opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
-                    Ver Projeto <ArrowUpRight className="h-3.5 w-3.5" />
-                  </div>
-                </div>
-              </a>
+          {[
+            { id: "gXNVFlzfNd4", title: "Site desenvolvido pela MAXEASE — Projeto 1" },
+            { id: "IH9RYsiYAd4", title: "Site desenvolvido pela MAXEASE — Projeto 2" },
+          ].map((v, i) => (
+            <Reveal key={v.id} delay={i * 0.08}>
+              <div className="relative rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-elegant aspect-video bg-black">
+                <iframe
+                  className="absolute inset-0 h-full w-full"
+                  src={`https://www.youtube.com/embed/${v.id}`}
+                  title={v.title}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
             </Reveal>
           ))}
         </div>
+
       </div>
     </section>
   );
