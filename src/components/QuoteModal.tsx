@@ -126,24 +126,45 @@ const serviceLabels: Record<ServiceKey, string> = {
 /* ---------------- WhatsApp message builders ---------------- */
 function buildMessage(service: ServiceKey, data: FormData): string {
   const serviceEmoji: Record<ServiceKey, string> = {
-    audiovisual: "🎥",
-    sites: "🌐",
-    sistemas: "💻",
-    criativos: "📢",
+    audiovisual: "\u{1F3A5}",
+    sites: "\u{1F310}",
+    sistemas: "\u{1F4BB}",
+    criativos: "\u{1F4E2}",
   };
 
-  const header = `Olá Henrique! 👋\n\nGostaria de solicitar um orçamento.\n\n📌 *Serviço:*\n${serviceEmoji[service]} ${serviceLabels[service]}\n\n👤 *Nome:*\n${data.nome}\n\n🏢 *Empresa:*\n${data.empresa}\n\n📷 *Instagram:*\n${data.instagram}`;
+  const E = {
+    wave: "\u{1F44B}",
+    pin: "\u{1F4CC}",
+    person: "\u{1F464}",
+    building: "\u{1F3E2}",
+    camera: "\u{1F4F7}",
+    location: "\u{1F4CD}",
+    clapper: "\u{1F3AC}",
+    numbers: "\u{1F522}",
+    clock: "\u{23F1}\u{FE0F}",
+    calendar: "\u{1F4C5}",
+    memo: "\u{1F4DD}",
+    globe: "\u{1F310}",
+    link: "\u{1F517}",
+    art: "\u{1F3A8}",
+    computer: "\u{1F4BB}",
+    users: "\u{1F465}",
+    ruler: "\u{1F4D0}",
+  };
+
+  const header = `Olá Henrique! ${E.wave}\n\nGostaria de solicitar um orçamento.\n\n${E.pin} *Serviço:*\n${serviceEmoji[service]} ${serviceLabels[service]}\n\n${E.person} *Nome:*\n${data.nome}\n\n${E.building} *Empresa:*\n${data.empresa}\n\n${E.camera} *Instagram:*\n${data.instagram}`;
 
   let body = "";
   if (service === "audiovisual") {
-    body = `\n\n📍 *Cidade:*\n${data.cidade}\n\n🎬 *Tipo de vídeo:*\n${data.tipo}\n\n🔢 *Quantidade:*\n${data.quantidade}\n\n⏱️ *Tempo médio:*\n${data.tempo}\n\n📅 *Prazo:*\n${data.prazo}\n\n📝 *Descrição:*\n${data.descricao}`;
+    body = `\n\n${E.location} *Cidade:*\n${data.cidade}\n\n${E.clapper} *Tipo de vídeo:*\n${data.tipo}\n\n${E.numbers} *Quantidade:*\n${data.quantidade}\n\n${E.clock} *Tempo médio:*\n${data.tempo}\n\n${E.calendar} *Prazo:*\n${data.prazo}\n\n${E.memo} *Descrição:*\n${data.descricao}`;
   } else if (service === "sites") {
-    body = `\n\n🌐 *Tipo de site:*\n${data.tipo}\n\n🔗 *Já possui domínio?*\n${data.dominio}\n\n🎨 *Já possui identidade visual?*\n${data.identidade}\n\n📅 *Prazo:*\n${data.prazo}\n\n📝 *Descrição:*\n${data.descricao}`;
+    body = `\n\n${E.globe} *Tipo de site:*\n${data.tipo}\n\n${E.link} *Já possui domínio?*\n${data.dominio}\n\n${E.art} *Já possui identidade visual?*\n${data.identidade}\n\n${E.calendar} *Prazo:*\n${data.prazo}\n\n${E.memo} *Descrição:*\n${data.descricao}`;
   } else if (service === "sistemas") {
-    body = `\n\n💻 *Sistema desejado:*\n${data.sistema}\n\n👥 *Usuários:*\n${data.usuarios}\n\n📅 *Prazo:*\n${data.prazo}\n\n📝 *Descrição:*\n${data.descricao}`;
+    body = `\n\n${E.computer} *Sistema desejado:*\n${data.sistema}\n\n${E.users} *Usuários:*\n${data.usuarios}\n\n${E.calendar} *Prazo:*\n${data.prazo}\n\n${E.memo} *Descrição:*\n${data.descricao}`;
   } else if (service === "criativos") {
-    body = `\n\n🔢 *Quantidade:*\n${data.quantidade}\n\n📐 *Formato:*\n${data.formato}\n\n📅 *Prazo:*\n${data.prazo}\n\n📝 *Descrição:*\n${data.descricao}`;
+    body = `\n\n${E.numbers} *Quantidade:*\n${data.quantidade}\n\n${E.ruler} *Formato:*\n${data.formato}\n\n${E.calendar} *Prazo:*\n${data.prazo}\n\n${E.memo} *Descrição:*\n${data.descricao}`;
   }
+
 
 
 
