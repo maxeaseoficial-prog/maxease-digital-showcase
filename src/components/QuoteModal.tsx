@@ -125,18 +125,26 @@ const serviceLabels: Record<ServiceKey, string> = {
 
 /* ---------------- WhatsApp message builders ---------------- */
 function buildMessage(service: ServiceKey, data: FormData): string {
-  const header = `Olá Henrique!\n\nGostaria de solicitar um orçamento.\n\nServiço:\n${serviceLabels[service]}\n\nNome:\n${data.nome}\n\nEmpresa:\n${data.empresa}\n\nInstagram:\n${data.instagram}`;
+  const serviceEmoji: Record<ServiceKey, string> = {
+    audiovisual: "🎥",
+    sites: "🌐",
+    sistemas: "💻",
+    criativos: "📢",
+  };
+
+  const header = `Olá Henrique! 👋\n\nGostaria de solicitar um orçamento.\n\n📌 *Serviço:*\n${serviceEmoji[service]} ${serviceLabels[service]}\n\n👤 *Nome:*\n${data.nome}\n\n🏢 *Empresa:*\n${data.empresa}\n\n📷 *Instagram:*\n${data.instagram}`;
 
   let body = "";
   if (service === "audiovisual") {
-    body = `\n\nCidade:\n${data.cidade}\n\nTipo de vídeo:\n${data.tipo}\n\nQuantidade:\n${data.quantidade}\n\nTempo médio:\n${data.tempo}\n\nPrazo:\n${data.prazo}\n\nDescrição:\n${data.descricao}`;
+    body = `\n\n📍 *Cidade:*\n${data.cidade}\n\n🎬 *Tipo de vídeo:*\n${data.tipo}\n\n🔢 *Quantidade:*\n${data.quantidade}\n\n⏱️ *Tempo médio:*\n${data.tempo}\n\n📅 *Prazo:*\n${data.prazo}\n\n📝 *Descrição:*\n${data.descricao}`;
   } else if (service === "sites") {
-    body = `\n\nTipo de site:\n${data.tipo}\n\nJá possui domínio?\n${data.dominio}\n\nJá possui identidade visual?\n${data.identidade}\n\nPrazo:\n${data.prazo}\n\nDescrição:\n${data.descricao}`;
+    body = `\n\n🌐 *Tipo de site:*\n${data.tipo}\n\n🔗 *Já possui domínio?*\n${data.dominio}\n\n🎨 *Já possui identidade visual?*\n${data.identidade}\n\n📅 *Prazo:*\n${data.prazo}\n\n📝 *Descrição:*\n${data.descricao}`;
   } else if (service === "sistemas") {
-    body = `\n\nSistema desejado:\n${data.sistema}\n\nUsuários:\n${data.usuarios}\n\nPrazo:\n${data.prazo}\n\nDescrição:\n${data.descricao}`;
+    body = `\n\n💻 *Sistema desejado:*\n${data.sistema}\n\n👥 *Usuários:*\n${data.usuarios}\n\n📅 *Prazo:*\n${data.prazo}\n\n📝 *Descrição:*\n${data.descricao}`;
   } else if (service === "criativos") {
-    body = `\n\nQuantidade:\n${data.quantidade}\n\nFormato:\n${data.formato}\n\nPrazo:\n${data.prazo}\n\nDescrição:\n${data.descricao}`;
+    body = `\n\n🔢 *Quantidade:*\n${data.quantidade}\n\n📐 *Formato:*\n${data.formato}\n\n📅 *Prazo:*\n${data.prazo}\n\n📝 *Descrição:*\n${data.descricao}`;
   }
+
 
 
   return `${header}${body}\n\nAguardo seu retorno!`;
