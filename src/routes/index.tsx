@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
@@ -101,7 +101,11 @@ function CursorGlow() {
 }
 
 /* ---------------- Navbar ---------------- */
-function Navbar() {
+type NavLink =
+  | { label: string; kind: "hash"; hash: string }
+  | { label: string; kind: "route"; to: "/audiovisual" | "/sites" };
+
+export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -110,13 +114,19 @@ function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const links = [
-    { label: "Início", href: "#inicio" },
-    { label: "Produção Audiovisual", href: "#audiovisual" },
-    { label: "Sites", href: "#sites" },
-    { label: "Clientes", href: "#clientes" },
-    { label: "Sobre", href: "#sobre" },
+  const links: NavLink[] = [
+    { label: "Início", kind: "hash", hash: "inicio" },
+    { label: "Produção Audiovisual", kind: "route", to: "/audiovisual" },
+    { label: "Sites", kind: "route", to: "/sites" },
+    { label: "Clientes", kind: "hash", hash: "clientes" },
+    { label: "Sobre", kind: "hash", hash: "sobre" },
   ];
+
+  const linkClass =
+    "text-sm text-white/75 hover:text-white transition-colors relative group";
+  const underline = (
+    <span className="absolute -bottom-1 left-0 h-px w-0 bg-brand-gradient transition-all duration-300 group-hover:w-full" />
+  );
 
   return (
     <motion.header
@@ -133,33 +143,38 @@ function Navbar() {
             scrolled ? "glass-strong shadow-elegant" : ""
           }`}
         >
-          <a href="#inicio" className="flex items-center gap-2">
+          <Link to="/" hash="inicio" className="flex items-center gap-2">
             <img src={logoAsset.url} alt="MAXEASE Digital" className="h-14 sm:h-16 w-auto" />
-          </a>
+          </Link>
           <nav className="hidden lg:flex items-center gap-8">
-            {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                className="text-sm text-white/75 hover:text-white transition-colors relative group"
-              >
-                {l.label}
-                <span className="absolute -bottom-1 left-0 h-px w-0 bg-brand-gradient transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
+            {links.map((l) =>
+              l.kind === "route" ? (
+                <Link key={l.to} to={l.to} className={linkClass}>
+                  {l.label}
+                  {underline}
+                </Link>
+              ) : (
+                <Link key={l.hash} to="/" hash={l.hash} className={linkClass}>
+                  {l.label}
+                  {underline}
+                </Link>
+              )
+            )}
           </nav>
-          <a
-            href="#contato"
+          <Link
+            to="/"
+            hash="contato"
             className="group relative inline-flex items-center gap-2 rounded-full bg-brand-gradient px-5 py-2.5 text-sm font-medium text-white shadow-[0_10px_30px_-8px_rgba(30,64,255,0.6)] transition-transform hover:scale-[1.03]"
           >
             Solicitar orçamento
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </a>
+          </Link>
         </div>
       </div>
     </motion.header>
   );
 }
+
 
 /* ---------------- Hero ---------------- */
 function Hero() {
@@ -382,7 +397,7 @@ const videos: VideoItem[] = [
   { thumb: video4, title: "Social Reels", category: "Redes Sociais" },
 ];
 
-function Audiovisual() {
+export function Audiovisual() {
   const [open, setOpen] = useState<VideoItem | null>(null);
   return (
     <section id="audiovisual" className="relative py-28 sm:py-36 overflow-hidden">
@@ -467,7 +482,7 @@ const projects = [
   { img: project4, name: "Frenit Fitness", category: "Marca esportiva" },
 ];
 
-function Sites() {
+export function Sites() {
   return (
     <section id="sites" className="relative py-28 sm:py-36">
       <GradientOrb className="left-[-10%] top-1/3" size={500} />
@@ -704,7 +719,7 @@ function CTA() {
 }
 
 /* ---------------- Footer ---------------- */
-function Footer() {
+export function Footer() {
   return (
     <footer className="relative border-t border-white/5 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -718,10 +733,10 @@ function Footer() {
           <div>
             <div className="text-sm font-semibold text-white mb-4">Links rápidos</div>
             <ul className="space-y-2 text-sm text-white/60">
-              <li><a href="#inicio" className="hover:text-white transition-colors">Início</a></li>
-              <li><a href="#audiovisual" className="hover:text-white transition-colors">Audiovisual</a></li>
-              <li><a href="#sites" className="hover:text-white transition-colors">Sites</a></li>
-              <li><a href="#sobre" className="hover:text-white transition-colors">Sobre</a></li>
+              <li><Link to="/" hash="inicio" className="hover:text-white transition-colors">Início</Link></li>
+              <li><Link to="/audiovisual" className="hover:text-white transition-colors">Audiovisual</Link></li>
+              <li><Link to="/sites" className="hover:text-white transition-colors">Sites</Link></li>
+              <li><Link to="/" hash="sobre" className="hover:text-white transition-colors">Sobre</Link></li>
             </ul>
           </div>
           <div>
@@ -751,8 +766,6 @@ function Index() {
       <main>
         <Hero />
         <Services />
-        <Audiovisual />
-        <Sites />
         <Clients />
         <Testimonials />
         <About />
