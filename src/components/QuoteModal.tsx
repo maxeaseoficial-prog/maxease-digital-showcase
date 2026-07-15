@@ -123,6 +123,19 @@ const serviceLabels: Record<ServiceKey, string> = {
   criativos: "Criativos para Campanhas",
 };
 
+/* ---------------- Input hardening ---------------- */
+// Cap free-form user text and strip control chars before it ever leaves the browser.
+// Keeps accents/emoji intact but removes NUL/ANSI escapes and other non-printable
+// bytes that could be used to smuggle payloads into the outbound WhatsApp URL.
+const MAX_FIELD_LENGTH = 500;
+const MAX_TEXTAREA_LENGTH = 2000;
+
+function sanitizeInput(raw: string, max: number): string {
+  if (!raw) return "";
+  // eslint-disable-next-line no-control-regex
+  return raw.replace(/[\u0000-\u0008\u000B-\u001F\u007F-\u009F]/g, "").slice(0, max);
+}
+
 /* ---------------- WhatsApp message builders ---------------- */
 const emoji = (codePoint: number) => String.fromCodePoint(codePoint);
 
@@ -146,7 +159,8 @@ const E = {
 };
 
 function fieldLine(icon: string, label: string, value?: string) {
-  return `${icon} ${label}:\n\n${value?.trim() || "Não informado"}`;
+  const clean = value ? sanitizeInput(value, MAX_TEXTAREA_LENGTH).trim() : "";
+  return `${icon} ${label}:\n\n${clean || "Não informado"}`;
 }
 
 function buildMessage(service: ServiceKey, data: FormData): string {
@@ -505,8 +519,11 @@ function Field({
         <input
           type="text"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(sanitizeInput(e.target.value, MAX_FIELD_LENGTH))}
           placeholder={field.placeholder}
+          maxLength={MAX_FIELD_LENGTH}
+          autoComplete="off"
+          spellCheck={false}
           className={baseInput}
         />
       )}
@@ -514,9 +531,10 @@ function Field({
       {field.type === "textarea" && (
         <textarea
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(sanitizeInput(e.target.value, MAX_TEXTAREA_LENGTH))}
           placeholder={field.placeholder}
           rows={4}
+          maxLength={MAX_TEXTAREA_LENGTH}
           className={`${baseInput} resize-none`}
         />
       )}
