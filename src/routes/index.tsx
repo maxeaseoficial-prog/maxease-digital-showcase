@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
   Video, Globe, Cpu, Zap, Palette, ArrowRight, Megaphone,
-  Instagram, Mail, MessageCircle, Star, ArrowUpRight, Sparkles, Youtube,
+  Instagram, Mail, MessageCircle, Star, ArrowUpRight, Sparkles, Youtube, Menu, X,
 } from "lucide-react";
 import { useQuoteModal } from "@/components/QuoteModal";
 
@@ -115,7 +115,14 @@ type NavLink =
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { open: openQuote } = useQuoteModal();
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [mobileOpen]);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
@@ -171,17 +178,53 @@ export function Navbar() {
               )
             )}
           </nav>
-          <button
-            type="button"
-            onClick={openQuote}
-            className="group relative inline-flex shrink-0 items-center gap-2 rounded-full bg-brand-gradient px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-white whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(30,64,255,0.6)] transition-transform hover:scale-[1.03]"
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={openQuote}
+              className="group relative inline-flex shrink-0 items-center gap-2 rounded-full bg-brand-gradient px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-white whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(30,64,255,0.6)] transition-transform hover:scale-[1.03]"
+            >
+              <span className="hidden sm:inline">Solicitar orçamento</span>
+              <span className="sm:hidden">Orçamento</span>
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label={mobileOpen ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={mobileOpen}
+              className="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-full text-white/85 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+
+
+        </div>
+
+        {/* Mobile menu panel */}
+        <div className="lg:hidden overflow-hidden px-1">
+          <motion.div
+            initial={false}
+            animate={mobileOpen ? { height: "auto", opacity: 1, marginTop: 8 } : { height: 0, opacity: 0, marginTop: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden"
           >
-            <span className="hidden sm:inline">Solicitar orçamento</span>
-            <span className="sm:hidden">Orçamento</span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </button>
-
-
+            <nav className="glass-strong shadow-elegant rounded-2xl p-3 flex flex-col">
+              {links.map((l) => {
+                const cls = "px-4 py-3 rounded-xl text-sm text-white/85 hover:text-white hover:bg-white/10 transition-colors";
+                return l.kind === "route" ? (
+                  <Link key={l.to} to={l.to} className={cls} onClick={() => setMobileOpen(false)}>
+                    {l.label}
+                  </Link>
+                ) : (
+                  <Link key={l.hash} to="/" hash={l.hash} className={cls} onClick={() => setMobileOpen(false)}>
+                    {l.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </motion.div>
         </div>
       </div>
     </motion.header>
