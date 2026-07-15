@@ -303,12 +303,13 @@ function Hero() {
                   <span className="absolute inset-0 -translate-x-full bg-white/20 blur-xl transition-transform duration-700 group-hover:translate-x-full" />
                 </button>
 
-                <a
-                  href="#sites"
+                <button
+                  type="button"
+                  onClick={() => setProjectsOpen(true)}
                   className="inline-flex items-center gap-2 rounded-full glass px-7 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
                 >
                   Ver projetos
-                </a>
+                </button>
               </div>
             </Reveal>
           </motion.div>
