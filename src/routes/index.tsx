@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
   Video, Globe, Cpu, Zap, Palette, ArrowRight, Megaphone,
-  Instagram, Mail, MessageCircle, Star, ArrowUpRight, Sparkles,
+  Instagram, Mail, MessageCircle, Star, ArrowUpRight, Sparkles, Youtube,
 } from "lucide-react";
 import { useQuoteModal } from "@/components/QuoteModal";
 
