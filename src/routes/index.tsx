@@ -496,8 +496,16 @@ export function Sites() {
 
 /* ---------------- Clients + counters ---------------- */
 const clientLogos = [
-  "AURORA", "NIMBUS", "BELLAVISTA", "FRENIT", "ORBIS", "LUMEN",
-  "VERTEX", "NOVA", "ATLAS", "PRISMA", "HORIZON", "ECHELON",
+  { src: client1.url, name: "Stella Espaço dos Uniformes" },
+  { src: client2.url, name: "Estofados do Porto" },
+  { src: client3.url, name: "Hotel Aris" },
+  { src: client4.url, name: "Academia Borgo" },
+  { src: client5.url, name: "Venésse Estética" },
+  { src: client6.url, name: "União Restaurante" },
+  { src: client7.url, name: "BMS Life Insurance" },
+  { src: client8.url, name: "Alpha Academia" },
+  { src: client9.url, name: "For Action Academia" },
+  { src: client10.url, name: "Perdun Investimentos Imobiliários" },
 ];
 
 function Counter({ to, suffix = "", label }: { to: number; suffix?: string; label: string }) {
