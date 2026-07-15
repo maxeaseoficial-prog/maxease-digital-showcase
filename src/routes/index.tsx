@@ -115,12 +115,14 @@ type NavLink =
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const { open: openQuote } = useQuoteModal();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
 
   const links: NavLink[] = [
     { label: "Início", kind: "hash", hash: "inicio" },
