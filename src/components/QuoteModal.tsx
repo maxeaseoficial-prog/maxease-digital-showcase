@@ -35,14 +35,14 @@ const services: {
   key: ServiceKey;
   title: string;
   icon: typeof Video;
-  emoji: string;
   desc: string;
 }[] = [
-  { key: "audiovisual", title: "Produção Audiovisual", icon: Video, emoji: "🎥", desc: "Vídeos institucionais, comerciais e reels." },
-  { key: "sites", title: "Sites Profissionais", icon: Globe, emoji: "🌐", desc: "Landing pages, institucionais e catálogos." },
-  { key: "sistemas", title: "Sistemas Personalizados", icon: Cpu, emoji: "💻", desc: "Sistemas sob medida para o seu negócio." },
-  { key: "criativos", title: "Criativos para Campanhas", icon: Megaphone, emoji: "📢", desc: "Vídeos e criativos para tráfego pago." },
+  { key: "audiovisual", title: "Produção Audiovisual", icon: Video, desc: "Vídeos institucionais, comerciais e reels." },
+  { key: "sites", title: "Sites Profissionais", icon: Globe, desc: "Landing pages, institucionais e catálogos." },
+  { key: "sistemas", title: "Sistemas Personalizados", icon: Cpu, desc: "Sistemas sob medida para o seu negócio." },
+  { key: "criativos", title: "Criativos para Campanhas", icon: Megaphone, desc: "Vídeos e criativos para tráfego pago." },
 ];
+
 
 type FieldType = "text" | "textarea" | "select" | "radio";
 type FieldDef = {
