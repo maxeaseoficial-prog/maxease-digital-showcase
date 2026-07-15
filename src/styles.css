@@ -174,6 +174,10 @@
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -190,6 +194,9 @@
 }
 @utility animate-marquee {
   animation: marquee 40s linear infinite;
+}
+@utility animate-marquee-reverse {
+  animation: marquee-reverse 40s linear infinite;
 }
 
 /* Grid background pattern */
