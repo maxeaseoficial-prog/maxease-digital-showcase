@@ -587,55 +587,6 @@ function Clients() {
   );
 }
 
-/* ---------------- Testimonials ---------------- */
-const testimonials = [
-  { name: "Carolina Meireles", company: "CEO · Aurora Commerce", text: "A MAXEASE transformou completamente nossa presença digital. Nosso e-commerce triplicou em conversões após o novo site." },
-  { name: "Rafael Andrade", company: "CMO · Nimbus SaaS", text: "Uma agência que entende de estratégia, design e código. Entregam com padrão internacional." },
-  { name: "Juliana Prado", company: "Fundadora · Bellavista", text: "Os vídeos institucionais elevaram nossa marca a outro patamar. Trabalho impecável do início ao fim." },
-  { name: "Diego Salles", company: "Diretor · Frenit Fitness", text: "Automatizaram processos que consumiam horas do meu time. Ganhamos escala real com o sistema deles." },
-  { name: "Marina Costa", company: "Head de Marketing · Orbis", text: "Profissionais atentos aos detalhes. O resultado final superou todas as expectativas do board." },
-];
-
-function Testimonials() {
-  return (
-    <section className="relative py-28 sm:py-36 overflow-hidden">
-      <GradientOrb className="right-[-10%] top-0" size={500} />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 mb-14">
-        <Reveal>
-          <div className="max-w-2xl">
-            <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Depoimentos</div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-              O que dizem quem já <span className="text-brand-gradient">trabalhou</span> com a gente.
-            </h2>
-          </div>
-        </Reveal>
-      </div>
-      <div className="relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_5%,black_95%,transparent)]">
-        <div className="flex gap-6 animate-marquee w-max">
-          {[...testimonials, ...testimonials].map((t, i) => (
-            <div key={i} className="w-[360px] sm:w-[420px] shrink-0 glass rounded-2xl p-7">
-              <div className="flex gap-0.5 mb-4">
-                {Array.from({ length: 5 }).map((_, s) => (
-                  <Star key={s} className="h-4 w-4 fill-brand-light text-brand-light" />
-                ))}
-              </div>
-              <p className="text-white/80 leading-relaxed text-sm">"{t.text}"</p>
-              <div className="mt-6 flex items-center gap-3">
-                <div className="h-11 w-11 rounded-full bg-brand-gradient flex items-center justify-center text-white font-semibold">
-                  {t.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white">{t.name}</div>
-                  <div className="text-xs text-white/55">{t.company}</div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ---------------- About ---------------- */
 function About() {
@@ -770,7 +721,7 @@ function Index() {
         <Hero />
         <Services />
         <Clients />
-        <Testimonials />
+        
         <About />
         <CTA />
       </main>
