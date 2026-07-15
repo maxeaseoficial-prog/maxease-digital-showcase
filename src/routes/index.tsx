@@ -9,6 +9,16 @@ import {
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
 import heroMockup from "@/assets/hero-mockup.jpg";
 import aboutImg from "@/assets/henrique-castro.jpg.asset.json";
+import client1 from "@/assets/clients/client-1.png.asset.json";
+import client2 from "@/assets/clients/client-2.png.asset.json";
+import client3 from "@/assets/clients/client-3.png.asset.json";
+import client4 from "@/assets/clients/client-4.png.asset.json";
+import client5 from "@/assets/clients/client-5.png.asset.json";
+import client6 from "@/assets/clients/client-6.png.asset.json";
+import client7 from "@/assets/clients/client-7.png.asset.json";
+import client8 from "@/assets/clients/client-8.png.asset.json";
+import client9 from "@/assets/clients/client-9.png.asset.json";
+import client10 from "@/assets/clients/client-10.png.asset.json";
 import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
