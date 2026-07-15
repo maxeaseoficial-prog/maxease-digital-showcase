@@ -5,6 +5,8 @@ import {
   Video, Globe, Cpu, Zap, Palette, ArrowRight, Megaphone,
   Instagram, Mail, MessageCircle, Star, ArrowUpRight, Sparkles,
 } from "lucide-react";
+import { useQuoteModal } from "@/components/QuoteModal";
+
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
 import heroMockup from "@/assets/hero-mockup.jpg";
@@ -113,12 +115,14 @@ type NavLink =
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const { open: openQuote } = useQuoteModal();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
 
   const links: NavLink[] = [
     { label: "Início", kind: "hash", hash: "inicio" },
@@ -167,14 +171,15 @@ export function Navbar() {
               )
             )}
           </nav>
-          <Link
-            to="/"
-            hash="contato"
+          <button
+            type="button"
+            onClick={openQuote}
             className="group relative inline-flex items-center gap-2 rounded-full bg-brand-gradient px-5 py-2.5 text-sm font-medium text-white shadow-[0_10px_30px_-8px_rgba(30,64,255,0.6)] transition-transform hover:scale-[1.03]"
           >
             Solicitar orçamento
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+          </button>
+
         </div>
       </div>
     </motion.header>
@@ -189,6 +194,8 @@ function Hero() {
   const y1 = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const { open: openQuote } = useQuoteModal();
+
 
   return (
     <section id="inicio" ref={ref} className="relative min-h-screen w-full overflow-hidden bg-hero-gradient">
@@ -226,14 +233,16 @@ function Hero() {
             </Reveal>
             <Reveal delay={0.4}>
               <div className="mt-9 flex flex-wrap gap-4 justify-center">
-                <a
-                  href="#contato"
+                <button
+                  type="button"
+                  onClick={openQuote}
                   className="group relative inline-flex items-center gap-2 rounded-full bg-brand-gradient px-7 py-3.5 text-sm font-semibold text-white shadow-[0_20px_50px_-15px_rgba(30,64,255,0.8)] transition-transform hover:scale-[1.03] overflow-hidden"
                 >
                   <span className="relative z-10">Solicitar orçamento</span>
                   <ArrowRight className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   <span className="absolute inset-0 -translate-x-full bg-white/20 blur-xl transition-transform duration-700 group-hover:translate-x-full" />
-                </a>
+                </button>
+
                 <a
                   href="#sites"
                   className="inline-flex items-center gap-2 rounded-full glass px-7 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
@@ -676,6 +685,7 @@ function About() {
 
 /* ---------------- CTA ---------------- */
 function CTA() {
+  const { open: openQuote } = useQuoteModal();
   return (
     <section id="contato" className="relative py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -693,17 +703,19 @@ function CTA() {
                 Conte seu projeto. Retornamos com uma proposta sob medida em até 48 horas.
               </p>
               <div className="mt-9 flex flex-wrap justify-center gap-4">
-                <a
-                  href="https://wa.me/5542988377640"
+                <button
+                  type="button"
+                  onClick={openQuote}
                   className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-semibold text-brand-deep hover:scale-[1.03] transition-transform shadow-[0_20px_50px_-15px_rgba(255,255,255,0.4)]"
                 >
                   Solicitar orçamento
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </a>
+                </button>
               </div>
             </div>
           </div>
         </Reveal>
+
       </div>
     </section>
   );
