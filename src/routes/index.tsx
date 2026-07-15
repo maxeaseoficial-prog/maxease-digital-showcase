@@ -556,22 +556,24 @@ function Clients() {
       </div>
 
       {/* logos das empresas atendidas */}
-      <div className="relative overflow-hidden py-8 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
-        <div className="flex gap-16 items-center animate-marquee w-max">
-          {[...clientLogos, ...clientLogos].map((c, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 h-20 w-40 flex items-center justify-center rounded-xl bg-white/5 backdrop-blur-sm p-4 transition-all hover:bg-white/10"
-            >
-              <img
-                src={c.src}
-                alt={c.name}
-                loading="lazy"
-                className="max-h-full max-w-full object-contain opacity-70 hover:opacity-100 transition-opacity"
-              />
-            </div>
-          ))}
-        </div>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <Reveal delay={0.2}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 sm:gap-6">
+            {clientLogos.map((c, i) => (
+              <div
+                key={i}
+                className="aspect-square flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-sm p-5 ring-1 ring-white/10 transition-all hover:bg-white/10 hover:ring-brand-light/40"
+              >
+                <img
+                  src={c.src}
+                  alt={c.name}
+                  loading="lazy"
+                  className="max-h-full max-w-full object-contain opacity-80 hover:opacity-100 transition-opacity"
+                />
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </div>
 
     </section>
