@@ -537,16 +537,8 @@ function Clients() {
         </Reveal>
       </div>
 
-      {/* marquee */}
-      <div className="relative overflow-hidden py-8 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
-        <div className="flex gap-16 animate-marquee whitespace-nowrap">
-          {[...clientLogos, ...clientLogos].map((c, i) => (
-            <div key={i} className="text-2xl sm:text-3xl font-bold tracking-widest text-white/30 hover:text-white/70 transition-colors">
-              {c}
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* área reservada para logos das empresas atendidas */}
+
     </section>
   );
 }
