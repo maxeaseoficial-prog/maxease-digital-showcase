@@ -233,14 +233,16 @@ function Hero() {
             </Reveal>
             <Reveal delay={0.4}>
               <div className="mt-9 flex flex-wrap gap-4 justify-center">
-                <a
-                  href="#contato"
+                <button
+                  type="button"
+                  onClick={openQuote}
                   className="group relative inline-flex items-center gap-2 rounded-full bg-brand-gradient px-7 py-3.5 text-sm font-semibold text-white shadow-[0_20px_50px_-15px_rgba(30,64,255,0.8)] transition-transform hover:scale-[1.03] overflow-hidden"
                 >
                   <span className="relative z-10">Solicitar orçamento</span>
                   <ArrowRight className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   <span className="absolute inset-0 -translate-x-full bg-white/20 blur-xl transition-transform duration-700 group-hover:translate-x-full" />
-                </a>
+                </button>
+
                 <a
                   href="#sites"
                   className="inline-flex items-center gap-2 rounded-full glass px-7 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
