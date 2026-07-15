@@ -397,7 +397,7 @@ const videos: VideoItem[] = [
   { thumb: video4, title: "Social Reels", category: "Redes Sociais" },
 ];
 
-function Audiovisual() {
+export function Audiovisual() {
   const [open, setOpen] = useState<VideoItem | null>(null);
   return (
     <section id="audiovisual" className="relative py-28 sm:py-36 overflow-hidden">
@@ -482,7 +482,7 @@ const projects = [
   { img: project4, name: "Frenit Fitness", category: "Marca esportiva" },
 ];
 
-function Sites() {
+export function Sites() {
   return (
     <section id="sites" className="relative py-28 sm:py-36">
       <GradientOrb className="left-[-10%] top-1/3" size={500} />
@@ -719,7 +719,7 @@ function CTA() {
 }
 
 /* ---------------- Footer ---------------- */
-function Footer() {
+export function Footer() {
   return (
     <footer className="relative border-t border-white/5 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
