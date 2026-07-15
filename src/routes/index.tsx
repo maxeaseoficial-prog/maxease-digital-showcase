@@ -531,7 +531,7 @@ function Clients() {
         <Reveal delay={0.15}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-10 mb-16 rounded-2xl glass">
             <Counter to={1000} label="Conteúdos entregues" />
-            <Counter to={30} label="Empresas atendidas" />
+            <Counter to={10} label="Empresas atendidas" suffix="+" />
             <Counter to={2} label="Anos de experiência" />
           </div>
         </Reveal>
