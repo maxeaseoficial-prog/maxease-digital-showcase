@@ -462,7 +462,7 @@ export function Sites() {
       <GradientOrb className="left-[-10%] top-1/3" size={500} />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
         <Reveal>
-          <div className="max-w-2xl mb-14">
+          <div className="max-w-2xl mx-auto mb-14 text-center">
             <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Sites Desenvolvidos</div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
               Projetos que <span className="text-brand-gradient">performam</span> tão bem quanto parecem.
