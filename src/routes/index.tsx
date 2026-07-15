@@ -403,7 +403,7 @@ export function Audiovisual() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-blue/5 to-transparent" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
         <Reveal>
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
+          <div className="flex flex-col items-center text-center gap-6 mb-14">
             <div className="max-w-2xl">
               <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Produção Audiovisual</div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
