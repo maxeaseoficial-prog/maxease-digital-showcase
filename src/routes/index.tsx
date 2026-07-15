@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
-  Video, Globe, Cpu, Zap, Palette, ArrowRight, Play, X,
+  Video, Globe, Cpu, Zap, Palette, ArrowRight,
   Instagram, Mail, MessageCircle, Star, ArrowUpRight, Sparkles,
 } from "lucide-react";
 
@@ -13,10 +13,6 @@ import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
-import video1 from "@/assets/video-1.jpg";
-import video2 from "@/assets/video-2.jpg";
-import video3 from "@/assets/video-3.jpg";
-import video4 from "@/assets/video-4.jpg";
 
 export const Route = createFileRoute("/")({
   component: Index,
