@@ -195,6 +195,9 @@
 @utility animate-marquee {
   animation: marquee 40s linear infinite;
 }
+@utility animate-marquee-reverse {
+  animation: marquee-reverse 40s linear infinite;
+}
 
 /* Grid background pattern */
 @utility bg-grid {
