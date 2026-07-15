@@ -9,6 +9,16 @@ import {
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
 import heroMockup from "@/assets/hero-mockup.jpg";
 import aboutImg from "@/assets/henrique-castro.jpg.asset.json";
+import client1 from "@/assets/clients/client-1.png.asset.json";
+import client2 from "@/assets/clients/client-2.png.asset.json";
+import client3 from "@/assets/clients/client-3.png.asset.json";
+import client4 from "@/assets/clients/client-4.png.asset.json";
+import client5 from "@/assets/clients/client-5.png.asset.json";
+import client6 from "@/assets/clients/client-6.png.asset.json";
+import client7 from "@/assets/clients/client-7.png.asset.json";
+import client8 from "@/assets/clients/client-8.png.asset.json";
+import client9 from "@/assets/clients/client-9.png.asset.json";
+import client10 from "@/assets/clients/client-10.png.asset.json";
 import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
@@ -486,8 +496,16 @@ export function Sites() {
 
 /* ---------------- Clients + counters ---------------- */
 const clientLogos = [
-  "AURORA", "NIMBUS", "BELLAVISTA", "FRENIT", "ORBIS", "LUMEN",
-  "VERTEX", "NOVA", "ATLAS", "PRISMA", "HORIZON", "ECHELON",
+  { src: client1.url, name: "Stella Espaço dos Uniformes" },
+  { src: client2.url, name: "Estofados do Porto" },
+  { src: client3.url, name: "Hotel Aris" },
+  { src: client4.url, name: "Academia Borgo" },
+  { src: client5.url, name: "Venésse Estética" },
+  { src: client6.url, name: "União Restaurante" },
+  { src: client7.url, name: "BMS Life Insurance" },
+  { src: client8.url, name: "Alpha Academia" },
+  { src: client9.url, name: "For Action Academia" },
+  { src: client10.url, name: "Perdun Investimentos Imobiliários" },
 ];
 
 function Counter({ to, suffix = "", label }: { to: number; suffix?: string; label: string }) {
@@ -537,7 +555,24 @@ function Clients() {
         </Reveal>
       </div>
 
-      {/* área reservada para logos das empresas atendidas */}
+      {/* logos das empresas atendidas */}
+      <div className="relative overflow-hidden py-8 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+        <div className="flex gap-16 items-center animate-marquee w-max">
+          {[...clientLogos, ...clientLogos].map((c, i) => (
+            <div
+              key={i}
+              className="flex-shrink-0 h-20 w-40 flex items-center justify-center rounded-xl bg-white/5 backdrop-blur-sm p-4 transition-all hover:bg-white/10"
+            >
+              <img
+                src={c.src}
+                alt={c.name}
+                loading="lazy"
+                className="max-h-full max-w-full object-contain opacity-70 hover:opacity-100 transition-opacity"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
 
     </section>
   );
