@@ -124,51 +124,75 @@ const serviceLabels: Record<ServiceKey, string> = {
 };
 
 /* ---------------- WhatsApp message builders ---------------- */
+const emoji = (codePoint: number) => String.fromCodePoint(codePoint);
+
+const E = {
+  pin: emoji(0x1F4CC),
+  person: emoji(0x1F464),
+  building: emoji(0x1F3E2),
+  camera: emoji(0x1F4F7),
+  location: emoji(0x1F4CD),
+  videoCamera: emoji(0x1F3A5),
+  clapper: emoji(0x1F3AC),
+  stopwatch: `${emoji(0x23F1)}\uFE0F`,
+  calendar: emoji(0x1F4C5),
+  memo: emoji(0x1F4DD),
+  globe: emoji(0x1F310),
+  link: emoji(0x1F517),
+  palette: emoji(0x1F3A8),
+  computer: emoji(0x1F4BB),
+  users: emoji(0x1F465),
+  ruler: emoji(0x1F4D0),
+};
+
+function fieldLine(icon: string, label: string, value?: string) {
+  return `${icon} ${label}:\n\n${value?.trim() || "Não informado"}`;
+}
+
 function buildMessage(service: ServiceKey, data: FormData): string {
-  const serviceEmoji: Record<ServiceKey, string> = {
-    audiovisual: "\u{1F3A5}",
-    sites: "\u{1F310}",
-    sistemas: "\u{1F4BB}",
-    criativos: "\u{1F4E2}",
-  };
+  const lines = [
+    "Olá Henrique!",
+    "Gostaria de solicitar um orçamento.",
+    fieldLine(E.pin, "Serviço", serviceLabels[service]),
+    fieldLine(E.person, "Nome", data.nome),
+    fieldLine(E.building, "Empresa", data.empresa),
+    fieldLine(E.camera, "Instagram", data.instagram),
+  ];
 
-  const E = {
-    wave: "\u{1F44B}",
-    pin: "\u{1F4CC}",
-    person: "\u{1F464}",
-    building: "\u{1F3E2}",
-    camera: "\u{1F4F7}",
-    location: "\u{1F4CD}",
-    clapper: "\u{1F3AC}",
-    numbers: "\u{1F522}",
-    clock: "\u{23F1}\u{FE0F}",
-    calendar: "\u{1F4C5}",
-    memo: "\u{1F4DD}",
-    globe: "\u{1F310}",
-    link: "\u{1F517}",
-    art: "\u{1F3A8}",
-    computer: "\u{1F4BB}",
-    users: "\u{1F465}",
-    ruler: "\u{1F4D0}",
-  };
-
-  const header = `Olá Henrique! ${E.wave}\n\nGostaria de solicitar um orçamento.\n\n${E.pin} *Serviço:*\n${serviceEmoji[service]} ${serviceLabels[service]}\n\n${E.person} *Nome:*\n${data.nome}\n\n${E.building} *Empresa:*\n${data.empresa}\n\n${E.camera} *Instagram:*\n${data.instagram}`;
-
-  let body = "";
   if (service === "audiovisual") {
-    body = `\n\n${E.location} *Cidade:*\n${data.cidade}\n\n${E.clapper} *Tipo de vídeo:*\n${data.tipo}\n\n${E.numbers} *Quantidade:*\n${data.quantidade}\n\n${E.clock} *Tempo médio:*\n${data.tempo}\n\n${E.calendar} *Prazo:*\n${data.prazo}\n\n${E.memo} *Descrição:*\n${data.descricao}`;
+    lines.push(
+      fieldLine(E.location, "Cidade", data.cidade),
+      fieldLine(E.videoCamera, "Tipo de vídeo", data.tipo),
+      fieldLine(E.clapper, "Quantidade", data.quantidade),
+      fieldLine(E.stopwatch, "Tempo médio", data.tempo),
+      fieldLine(E.calendar, "Prazo", data.prazo),
+      fieldLine(E.memo, "Descrição", data.descricao),
+    );
   } else if (service === "sites") {
-    body = `\n\n${E.globe} *Tipo de site:*\n${data.tipo}\n\n${E.link} *Já possui domínio?*\n${data.dominio}\n\n${E.art} *Já possui identidade visual?*\n${data.identidade}\n\n${E.calendar} *Prazo:*\n${data.prazo}\n\n${E.memo} *Descrição:*\n${data.descricao}`;
+    lines.push(
+      fieldLine(E.globe, "Tipo de site", data.tipo),
+      fieldLine(E.link, "Já possui domínio?", data.dominio),
+      fieldLine(E.palette, "Já possui identidade visual?", data.identidade),
+      fieldLine(E.calendar, "Prazo", data.prazo),
+      fieldLine(E.memo, "Descrição", data.descricao),
+    );
   } else if (service === "sistemas") {
-    body = `\n\n${E.computer} *Sistema desejado:*\n${data.sistema}\n\n${E.users} *Usuários:*\n${data.usuarios}\n\n${E.calendar} *Prazo:*\n${data.prazo}\n\n${E.memo} *Descrição:*\n${data.descricao}`;
+    lines.push(
+      fieldLine(E.computer, "Sistema desejado", data.sistema),
+      fieldLine(E.users, "Usuários", data.usuarios),
+      fieldLine(E.calendar, "Prazo", data.prazo),
+      fieldLine(E.memo, "Descrição", data.descricao),
+    );
   } else if (service === "criativos") {
-    body = `\n\n${E.numbers} *Quantidade:*\n${data.quantidade}\n\n${E.ruler} *Formato:*\n${data.formato}\n\n${E.calendar} *Prazo:*\n${data.prazo}\n\n${E.memo} *Descrição:*\n${data.descricao}`;
+    lines.push(
+      fieldLine(E.clapper, "Quantidade", data.quantidade),
+      fieldLine(E.ruler, "Formato", data.formato),
+      fieldLine(E.calendar, "Prazo", data.prazo),
+      fieldLine(E.memo, "Descrição", data.descricao),
+    );
   }
 
-
-
-
-  return `${header}${body}\n\nAguardo seu retorno!`;
+  return `${lines.join("\n\n")}\n\nAguardo seu retorno!`;
 }
 
 /* ---------------- Provider ---------------- */
@@ -237,7 +261,7 @@ function QuoteModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
   const handleSend = () => {
     if (!service) return;
     const msg = buildMessage(service, data);
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+    const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`;
     window.open(url, "_blank", "noopener,noreferrer");
     handleClose();
   };
