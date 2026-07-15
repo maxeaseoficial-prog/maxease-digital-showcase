@@ -409,7 +409,7 @@ export function Audiovisual() {
                 Histórias visuais que <span className="text-brand-gradient">emocionam</span> e convertem.
               </h2>
             </div>
-            <p className="text-white/60 max-w-sm">Do conceito ao corte final, produzimos peças com estética cinematográfica.</p>
+            
           </div>
         </Reveal>
 
