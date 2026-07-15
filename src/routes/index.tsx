@@ -394,6 +394,7 @@ const shorts: ShortItem[] = [
   { id: "6JbGj6CleGk", title: "Short 05", category: "YouTube Shorts" },
   { id: "JOD-D7bYBW4", title: "Short 06", category: "YouTube Shorts" },
   { id: "k1oztLse6Dc", title: "Short 07", category: "YouTube Shorts" },
+  { id: "OQTEr7nsqbw", title: "Short 08", category: "YouTube Shorts" },
 ];
 
 export function Audiovisual() {
