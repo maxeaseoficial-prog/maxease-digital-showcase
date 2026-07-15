@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useInView, useMotionValue, useSpring } from "framer-motion";
 import {
   Video, Globe, Cpu, Zap, Palette, ArrowRight, Megaphone,
   Instagram, Mail, MessageCircle, Star, ArrowUpRight, Sparkles, Youtube, Menu, X,
@@ -240,6 +240,21 @@ function Hero() {
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   const { open: openQuote } = useQuoteModal();
+  const [projectsOpen, setProjectsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!projectsOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setProjectsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [projectsOpen]);
 
 
   return (
@@ -288,12 +303,13 @@ function Hero() {
                   <span className="absolute inset-0 -translate-x-full bg-white/20 blur-xl transition-transform duration-700 group-hover:translate-x-full" />
                 </button>
 
-                <a
-                  href="#sites"
+                <button
+                  type="button"
+                  onClick={() => setProjectsOpen(true)}
                   className="inline-flex items-center gap-2 rounded-full glass px-7 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
                 >
                   Ver projetos
-                </a>
+                </button>
               </div>
             </Reveal>
           </motion.div>
@@ -301,6 +317,79 @@ function Hero() {
 
 
       </motion.div>
+
+      <AnimatePresence>
+        {projectsOpen && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="projects-choice-title"
+          >
+            <button
+              type="button"
+              aria-label="Fechar"
+              className="absolute inset-0 bg-brand-deep/80 backdrop-blur-md"
+              onClick={() => setProjectsOpen(false)}
+            />
+            <motion.div
+              initial={{ scale: 0.92, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 10, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 24 }}
+              className="relative w-full max-w-lg glass-strong rounded-3xl p-6 sm:p-8 border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
+            >
+              <button
+                type="button"
+                onClick={() => setProjectsOpen(false)}
+                aria-label="Fechar"
+                className="absolute top-4 right-4 inline-flex h-9 w-9 items-center justify-center rounded-full glass hover:bg-white/10 transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              <h3 id="projects-choice-title" className="text-xl sm:text-2xl font-semibold text-white">
+                Qual portfólio você quer ver?
+              </h3>
+              <p className="mt-2 text-sm text-white/70">
+                Escolha a área para conhecer nossos projetos.
+              </p>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                <Link
+                  to="/sites"
+                  onClick={() => setProjectsOpen(false)}
+                  className="group relative flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.07] transition-colors"
+                >
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient">
+                    <Globe className="h-5 w-5 text-white" />
+                  </span>
+                  <span className="text-base font-semibold text-white">Sites</span>
+                  <span className="text-xs text-white/60">Projetos desenvolvidos</span>
+                  <ArrowUpRight className="absolute top-4 right-4 h-4 w-4 text-white/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+
+                <Link
+                  to="/audiovisual"
+                  onClick={() => setProjectsOpen(false)}
+                  className="group relative flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.07] transition-colors"
+                >
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient">
+                    <Video className="h-5 w-5 text-white" />
+                  </span>
+                  <span className="text-base font-semibold text-white">Produção Audiovisual</span>
+                  <span className="text-xs text-white/60">Vídeos e campanhas</span>
+                  <ArrowUpRight className="absolute top-4 right-4 h-4 w-4 text-white/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
