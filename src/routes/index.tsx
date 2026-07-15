@@ -202,7 +202,7 @@ function Hero() {
       </svg>
 
       <motion.div style={{ opacity }} className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 sm:px-6 pt-32 pb-16">
-        <div className="max-w-4xl">
+        <div className="max-w-4xl mx-auto text-center">
           <motion.div style={{ y: y2 }}>
             <Reveal delay={0.1}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] text-white">
@@ -210,12 +210,12 @@ function Hero() {
               </h1>
             </Reveal>
             <Reveal delay={0.25}>
-              <p className="mt-6 max-w-xl text-base sm:text-lg text-white/70 leading-relaxed">
+              <p className="mt-6 max-w-xl mx-auto text-base sm:text-lg text-white/70 leading-relaxed">
                 Sites profissionais, sistemas personalizados e produções audiovisuais desenvolvidas para posicionar marcas e gerar resultados.
               </p>
             </Reveal>
             <Reveal delay={0.4}>
-              <div className="mt-9 flex flex-wrap gap-4">
+              <div className="mt-9 flex flex-wrap gap-4 justify-center">
                 <a
                   href="#contato"
                   className="group relative inline-flex items-center gap-2 rounded-full bg-brand-gradient px-7 py-3.5 text-sm font-semibold text-white shadow-[0_20px_50px_-15px_rgba(30,64,255,0.8)] transition-transform hover:scale-[1.03] overflow-hidden"
@@ -234,6 +234,7 @@ function Hero() {
             </Reveal>
           </motion.div>
         </div>
+
 
       </motion.div>
     </section>
