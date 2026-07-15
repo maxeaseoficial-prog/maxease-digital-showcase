@@ -695,11 +695,11 @@ export function Footer() {
           </div>
           <div>
             <div className="text-sm font-semibold text-white mb-4">Contato</div>
-            <ul className="space-y-3 text-sm text-white/60">
-              <li><a href="https://wa.me/5542988377640" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white transition-colors"><MessageCircle className="h-4 w-4" /> WhatsApp</a></li>
-              <li><a href="https://www.instagram.com/max.ease/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white transition-colors"><Instagram className="h-4 w-4" /> @max.ease</a></li>
-              <li><a href="mailto:maxeaseoficial@gmail.com" className="flex items-center gap-2 hover:text-white transition-colors"><Mail className="h-4 w-4" /> maxeaseoficial@gmail.com</a></li>
-            </ul>
+            <div className="flex items-center gap-4">
+              <a href="https://www.instagram.com/max.ease/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/60 hover:text-white transition-colors"><Instagram className="h-7 w-7" /></a>
+              <a href="https://wa.me/5542988377640" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white/60 hover:text-white transition-colors"><MessageCircle className="h-7 w-7" /></a>
+              <a href="mailto:maxeaseoficial@gmail.com" aria-label="Email" className="text-white/60 hover:text-white transition-colors"><Mail className="h-7 w-7" /></a>
+            </div>
           </div>
         </div>
         <div className="mt-14 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between gap-3 text-xs text-white/40">
