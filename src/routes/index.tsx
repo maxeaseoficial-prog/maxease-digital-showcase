@@ -407,7 +407,7 @@ export function Audiovisual() {
             <div className="max-w-2xl">
               <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Produção Audiovisual</div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                Histórias visuais que <span className="text-brand-gradient">emocionam</span> e convertem.
+                Projetos que <span className="text-brand-gradient">transformaram</span> marcas
               </h2>
             </div>
             
