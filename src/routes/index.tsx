@@ -5,6 +5,8 @@ import {
   Video, Globe, Cpu, Zap, Palette, ArrowRight, Megaphone,
   Instagram, Mail, MessageCircle, Star, ArrowUpRight, Sparkles,
 } from "lucide-react";
+import { useQuoteModal } from "@/components/QuoteModal";
+
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
 import heroMockup from "@/assets/hero-mockup.jpg";
