@@ -240,6 +240,21 @@ function Hero() {
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   const { open: openQuote } = useQuoteModal();
+  const [projectsOpen, setProjectsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!projectsOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setProjectsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [projectsOpen]);
 
 
   return (
