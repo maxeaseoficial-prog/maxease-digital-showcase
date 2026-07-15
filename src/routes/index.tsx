@@ -389,16 +389,15 @@ function ServiceCard({ icon: Icon, title, desc }: { icon: typeof Video; title: s
 }
 
 /* ---------------- Audiovisual grid ---------------- */
-type VideoItem = { thumb: string; title: string; category: string };
-const videos: VideoItem[] = [
-  { thumb: video1, title: "Cinematic Brand Film", category: "Institucional" },
-  { thumb: video2, title: "Corporate Interview", category: "Corporativo" },
-  { thumb: video3, title: "Product Campaign", category: "Comercial" },
-  { thumb: video4, title: "Social Reels", category: "Redes Sociais" },
+type ShortItem = { id: string; title: string; category: string };
+const shorts: ShortItem[] = [
+  { id: "0c42C7rYKoY", title: "Short 01", category: "YouTube Shorts" },
+  { id: "YFRgK7pabS4", title: "Short 02", category: "YouTube Shorts" },
+  { id: "TWkDV1Oeos4", title: "Short 03", category: "YouTube Shorts" },
+  { id: "kqanqFyoBeI", title: "Short 04", category: "YouTube Shorts" },
 ];
 
 export function Audiovisual() {
-  const [open, setOpen] = useState<VideoItem | null>(null);
   return (
     <section id="audiovisual" className="relative py-28 sm:py-36 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-blue/5 to-transparent" />
@@ -416,63 +415,26 @@ export function Audiovisual() {
         </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {videos.map((v, i) => (
-            <Reveal key={v.title} delay={i * 0.08}>
-              <button
-                onClick={() => setOpen(v)}
-                className="group relative block w-full aspect-[4/5] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-elegant text-left"
-              >
-                <img src={v.thumb} alt={v.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/40 to-transparent" />
-                <div className="absolute inset-0 bg-brand-deep/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_-8px_rgba(30,64,255,0.8)]">
-                    <Play className="h-4 w-4 fill-white" /> Assistir
-                  </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <div className="text-[11px] uppercase tracking-widest text-brand-light">{v.category}</div>
-                  <div className="text-white font-semibold mt-1">{v.title}</div>
-                </div>
-              </button>
+          {shorts.map((v, i) => (
+            <Reveal key={v.id} delay={i * 0.08}>
+              <div className="group relative w-full aspect-[9/16] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-elegant bg-black">
+                <iframe
+                  src={`https://www.youtube.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1`}
+                  title={v.title}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full"
+                />
+              </div>
             </Reveal>
           ))}
         </div>
       </div>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-brand-deep/90 backdrop-blur-md flex items-center justify-center p-4"
-            onClick={() => setOpen(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", damping: 22, stiffness: 200 }}
-              className="relative w-full max-w-4xl aspect-video rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-elegant"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img src={open.thumb} alt={open.title} className="absolute inset-0 h-full w-full object-cover" />
-              <div className="absolute inset-0 bg-brand-deep/40 flex items-center justify-center">
-                <div className="text-center text-white">
-                  <Play className="h-16 w-16 mx-auto mb-4 fill-white" />
-                  <div className="text-xl font-semibold">{open.title}</div>
-                  <div className="text-sm text-white/70 mt-1">{open.category}</div>
-                </div>
-              </div>
-              <button
-                onClick={() => setOpen(null)}
-                className="absolute top-4 right-4 h-10 w-10 rounded-full glass-strong text-white flex items-center justify-center hover:bg-white/20"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
+
 
 /* ---------------- Sites showcase ---------------- */
 const projects = [
