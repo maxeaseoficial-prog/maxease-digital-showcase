@@ -42,6 +42,7 @@ const SECURITY_HEADERS: Record<string, string> = {
     "connect-src 'self' https: wss:",
     "media-src 'self' https: data: blob:",
     "worker-src 'self' blob:",
+    "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
     "manifest-src 'self'",
     "upgrade-insecure-requests",
   ].join("; "),
