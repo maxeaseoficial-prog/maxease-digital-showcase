@@ -1,14 +1,20 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Instagram, Facebook, Music2 } from "lucide-react";
 import { PortalPageHeader, StatusBadge } from "@/components/portal/PortalShell";
-import { mockCalendar, STATUS_STYLES, type CalendarContent } from "@/lib/portal/mockData";
+import { mockCalendar, STATUS_STYLES, STATUS_DOT, type CalendarContent, type Platform } from "@/lib/portal/mockData";
 
 export const Route = createFileRoute("/cliente/calendario")({
   head: () => ({ meta: [{ title: "Calendário — Portal do Cliente" }, { name: "robots", content: "noindex" }] }),
   component: CalendarioPage,
 });
+
+const PLATFORM_ICON: Record<Platform, typeof Instagram> = {
+  Instagram: Instagram,
+  Facebook: Facebook,
+  TikTok: Music2,
+};
 
 const WEEKDAYS = ["D", "S", "T", "Q", "Q", "S", "S"];
 const MONTHS = [
@@ -100,24 +106,28 @@ function CalendarioPage() {
                   <>
                     <div className="text-[10px] sm:text-xs text-white/50 mb-1">{day}</div>
                     <div className="space-y-1">
-                      {items.slice(0, 2).map((it) => (
-                        <button
-                          key={it.id}
-                          type="button"
-                          onClick={() => setSelected(it)}
-                          className={`w-full text-left text-[9px] sm:text-[10px] px-1.5 py-1 rounded-md border truncate ${
-                            STATUS_STYLES[it.status]
-                          } hover:brightness-125`}
-                        >
-                          {it.title}
-                        </button>
-                      ))}
+                      {items.slice(0, 2).map((it) => {
+                        const PIcon = PLATFORM_ICON[it.platforms[0]];
+                        return (
+                          <button
+                            key={it.id}
+                            type="button"
+                            onClick={() => setSelected(it)}
+                            className="w-full text-left flex items-center gap-1.5 text-[10px] sm:text-[11px] px-1.5 py-1 rounded-md bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors"
+                          >
+                            <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${STATUS_DOT[it.status]}`} />
+                            <span className="truncate text-slate-700 font-medium flex-1">{it.title}</span>
+                            <PIcon className="h-3 w-3 text-slate-400 shrink-0" strokeWidth={2} />
+                          </button>
+                        );
+                      })}
                       {items.length > 2 && (
-                        <div className="text-[9px] sm:text-[10px] text-white/50 px-1">
+                        <div className="text-[9px] sm:text-[10px] text-slate-400 px-1">
                           +{items.length - 2} mais
                         </div>
                       )}
                     </div>
+
                   </>
                 )}
               </div>

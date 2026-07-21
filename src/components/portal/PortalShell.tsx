@@ -49,10 +49,10 @@ export function PortalShell({ children }: { children: ReactNode }) {
   const unread = mockNotices.filter((n) => !n.read).length;
 
   return (
-    <div className="min-h-screen bg-hero-gradient text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       <div className="flex min-h-screen">
-        {/* Sidebar desktop */}
-        <aside className="hidden lg:flex w-72 shrink-0 flex-col border-r border-white/10 bg-[rgba(6,8,26,0.7)] backdrop-blur-xl">
+        {/* Sidebar desktop (navigation kept dark on purpose) */}
+        <aside className="hidden lg:flex w-72 shrink-0 flex-col border-r border-white/10 bg-[rgba(6,8,26,0.95)] text-white">
           <div className="px-6 py-6 border-b border-white/10">
             <Link to="/cliente/dashboard" className="flex items-center gap-2">
               <img src={logoAsset.url} alt="MAXEASE" className="h-10 w-auto" />
@@ -66,16 +66,16 @@ export function PortalShell({ children }: { children: ReactNode }) {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all ${
+                  className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all ${
                     active
                       ? "bg-brand-gradient text-white shadow-[0_10px_30px_-12px_rgba(30,64,255,0.7)]"
                       : "text-white/70 hover:text-white hover:bg-white/5"
                   }`}
                 >
-                  <Icon className="h-4 w-4 shrink-0" />
+                  <Icon className="h-4 w-4 shrink-0" strokeWidth={2} />
                   <span className="flex-1">{item.label}</span>
                   {item.to === "/cliente/avisos" && unread > 0 ? (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20">{unread}</span>
+                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-white/20">{unread}</span>
                   ) : null}
                 </Link>
               );
@@ -88,22 +88,22 @@ export function PortalShell({ children }: { children: ReactNode }) {
                 logout();
                 navigate({ to: "/login" });
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
             >
-              <LogOut className="h-4 w-4" /> Sair
+              <LogOut className="h-4 w-4" strokeWidth={2} /> Sair
             </button>
           </div>
         </aside>
 
         {/* Main */}
         <div className="flex-1 min-w-0 flex flex-col">
-          <header className="sticky top-0 z-30 border-b border-white/10 bg-[rgba(6,8,26,0.75)] backdrop-blur-xl">
-            <div className="flex items-center justify-between gap-4 px-4 sm:px-6 py-4">
+          <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/85 backdrop-blur-xl">
+            <div className="flex items-center justify-between gap-4 px-4 sm:px-6 py-3.5">
               <div className="flex items-center gap-3 min-w-0">
                 <button
                   type="button"
                   onClick={() => setMobileOpen(true)}
-                  className="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-full text-white/80 hover:text-white hover:bg-white/10"
+                  className="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   aria-label="Abrir menu"
                 >
                   <Menu className="h-5 w-5" />
@@ -112,37 +112,38 @@ export function PortalShell({ children }: { children: ReactNode }) {
                   <img src={logoAsset.url} alt="MAXEASE" className="h-8 w-auto" />
                 </Link>
                 <div className="hidden sm:block min-w-0">
-                  <div className="text-sm text-white/60 truncate">{mockClient.company}</div>
-                  <div className="text-base font-semibold truncate">{session.name}</div>
+                  <div className="text-xs text-slate-500 truncate">{mockClient.company}</div>
+                  <div className="text-sm font-semibold text-slate-900 truncate">{session.name}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Link
                   to="/cliente/avisos"
-                  className="relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white/85"
+                  className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200"
                   aria-label="Avisos"
                 >
-                  <Bell className="h-4 w-4" />
+                  <Bell className="h-4 w-4" strokeWidth={2} />
                   {unread > 0 && (
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-brand-gradient text-[10px] font-bold flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-brand-gradient text-[10px] font-bold text-white flex items-center justify-center">
                       {unread}
                     </span>
                   )}
                 </Link>
-                <div className="hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-brand-gradient text-sm font-bold shrink-0">
+                <div className="hidden md:flex h-9 w-9 items-center justify-center rounded-lg bg-brand-gradient text-sm font-semibold text-white shrink-0">
                   {session.name.charAt(0)}
                 </div>
               </div>
             </div>
           </header>
 
-          <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6 lg:py-10">
-            <div className="portal-surface bg-white text-slate-900 rounded-3xl border border-slate-200 shadow-[0_10px_40px_-20px_rgba(15,23,42,0.35)] p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-9rem)]">
+          <main className="portal-surface flex-1 px-4 sm:px-6 lg:px-10 py-8 lg:py-10 bg-slate-50">
+            <div className="max-w-7xl mx-auto">
               {children}
             </div>
           </main>
         </div>
       </div>
+
 
       {/* Mobile drawer */}
       <AnimatePresence>
@@ -216,18 +217,19 @@ export function PortalShell({ children }: { children: ReactNode }) {
 export function PortalPageHeader({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="mb-8">
-      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{title}</h1>
-      {subtitle && <p className="mt-2 text-sm text-white/60">{subtitle}</p>}
+      <h1 className="text-2xl sm:text-[28px] font-bold tracking-tight text-slate-900">{title}</h1>
+      {subtitle && <p className="mt-1.5 text-sm text-slate-500">{subtitle}</p>}
     </div>
   );
 }
 
 export function StatusBadge({ status, className = "" }: { status: string; className?: string }) {
+  const cls = className || "bg-slate-50 text-slate-600 border-slate-200";
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${cls}`}
     >
-      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {status}
     </span>
   );
