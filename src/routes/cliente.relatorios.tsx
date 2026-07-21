@@ -121,10 +121,10 @@ function PdfViewer({ report, onClose }: { report: Report; onClose: () => void })
           <button
             type="button"
             onClick={onClose}
-            className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-white/10"
+            className="h-10 w-10 rounded-md flex items-center justify-center bg-red-500 hover:bg-red-600 text-white transition-colors shadow-md"
             aria-label="Fechar"
           >
-            <X className="h-4 w-4" />
+            <X className="h-6 w-6" strokeWidth={3} />
           </button>
         </div>
       </div>
