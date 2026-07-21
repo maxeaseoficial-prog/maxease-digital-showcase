@@ -229,6 +229,13 @@ export function Navbar() {
                   </Link>
                 );
               })}
+              <Link
+                to="/login"
+                className="mt-1 px-4 py-3 rounded-xl text-sm text-white/85 hover:text-white hover:bg-white/10 transition-colors border-t border-white/10"
+                onClick={() => setMobileOpen(false)}
+              >
+                Área do Cliente
+              </Link>
             </nav>
           </motion.div>
         </div>
