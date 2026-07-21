@@ -10,12 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitesRouteImport } from './routes/sites'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ClienteRouteImport } from './routes/cliente'
 import { Route as AudiovisualRouteImport } from './routes/audiovisual'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SitesRoute = SitesRouteImport.update({
   id: '/sites',
   path: '/sites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClienteRoute = ClienteRouteImport.update({
+  id: '/cliente',
+  path: '/cliente',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AudiovisualRoute = AudiovisualRouteImport.update({
@@ -32,30 +44,38 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/audiovisual': typeof AudiovisualRoute
+  '/cliente': typeof ClienteRoute
+  '/login': typeof LoginRoute
   '/sites': typeof SitesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/audiovisual': typeof AudiovisualRoute
+  '/cliente': typeof ClienteRoute
+  '/login': typeof LoginRoute
   '/sites': typeof SitesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/audiovisual': typeof AudiovisualRoute
+  '/cliente': typeof ClienteRoute
+  '/login': typeof LoginRoute
   '/sites': typeof SitesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/audiovisual' | '/sites'
+  fullPaths: '/' | '/audiovisual' | '/cliente' | '/login' | '/sites'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/audiovisual' | '/sites'
-  id: '__root__' | '/' | '/audiovisual' | '/sites'
+  to: '/' | '/audiovisual' | '/cliente' | '/login' | '/sites'
+  id: '__root__' | '/' | '/audiovisual' | '/cliente' | '/login' | '/sites'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AudiovisualRoute: typeof AudiovisualRoute
+  ClienteRoute: typeof ClienteRoute
+  LoginRoute: typeof LoginRoute
   SitesRoute: typeof SitesRoute
 }
 
@@ -66,6 +86,20 @@ declare module '@tanstack/react-router' {
       path: '/sites'
       fullPath: '/sites'
       preLoaderRoute: typeof SitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cliente': {
+      id: '/cliente'
+      path: '/cliente'
+      fullPath: '/cliente'
+      preLoaderRoute: typeof ClienteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/audiovisual': {
@@ -88,6 +122,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AudiovisualRoute: AudiovisualRoute,
+  ClienteRoute: ClienteRoute,
+  LoginRoute: LoginRoute,
   SitesRoute: SitesRoute,
 }
 export const routeTree = rootRouteImport
