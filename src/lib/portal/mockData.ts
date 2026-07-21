@@ -22,6 +22,12 @@ export interface CalendarContent {
   status: ContentStatus;
 }
 
+export interface ScriptFile {
+  name: string;
+  size: string;
+  url: string;
+}
+
 export interface Recording {
   id: string;
   date: string;
@@ -33,6 +39,9 @@ export interface Recording {
   objective: string;
   scriptSummary: string;
   notes: string;
+  scripts?: ScriptFile[];
+  team?: string[];
+  equipment?: string[];
 }
 
 export interface Report {
