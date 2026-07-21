@@ -300,12 +300,24 @@ export const mockNotices: Notice[] = [
   },
 ];
 
+// Corporate, soft badge palette (Notion / Linear style)
 export const STATUS_STYLES: Record<ContentStatus, string> = {
-  "Planejado": "bg-white/10 text-white/80 border-white/15",
-  "Em Produção": "bg-amber-500/15 text-amber-300 border-amber-400/30",
-  "Aguardando Aprovação": "bg-yellow-500/15 text-yellow-300 border-yellow-400/30",
-  "Aprovado": "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
-  "Agendado": "bg-sky-500/15 text-sky-300 border-sky-400/30",
-  "Publicado": "bg-violet-500/15 text-violet-300 border-violet-400/30",
-  "Solicitou Alteração": "bg-orange-500/15 text-orange-300 border-orange-400/30",
+  "Planejado": "bg-slate-50 text-slate-600 border-slate-200",
+  "Em Produção": "bg-amber-50 text-amber-700 border-amber-200",
+  "Aguardando Aprovação": "bg-orange-50 text-orange-700 border-orange-200",
+  "Aprovado": "bg-emerald-50 text-emerald-700 border-emerald-200",
+  "Agendado": "bg-sky-50 text-sky-700 border-sky-200",
+  "Publicado": "bg-violet-50 text-violet-700 border-violet-200",
+  "Solicitou Alteração": "bg-rose-50 text-rose-700 border-rose-200",
+};
+
+// Solid dot colors for indicators (calendar chips, timelines, etc.)
+export const STATUS_DOT: Record<ContentStatus, string> = {
+  "Planejado": "bg-slate-400",
+  "Em Produção": "bg-amber-500",
+  "Aguardando Aprovação": "bg-orange-500",
+  "Aprovado": "bg-emerald-500",
+  "Agendado": "bg-sky-500",
+  "Publicado": "bg-violet-500",
+  "Solicitou Alteração": "bg-rose-500",
 };
