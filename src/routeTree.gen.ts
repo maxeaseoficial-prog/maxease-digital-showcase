@@ -10,12 +10,31 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitesRouteImport } from './routes/sites'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ClienteRouteImport } from './routes/cliente'
 import { Route as AudiovisualRouteImport } from './routes/audiovisual'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClienteIndexRouteImport } from './routes/cliente.index'
+import { Route as ClienteRelatoriosRouteImport } from './routes/cliente.relatorios'
+import { Route as ClienteGravacoesRouteImport } from './routes/cliente.gravacoes'
+import { Route as ClienteDashboardRouteImport } from './routes/cliente.dashboard'
+import { Route as ClienteCalendarioRouteImport } from './routes/cliente.calendario'
+import { Route as ClienteAvisosRouteImport } from './routes/cliente.avisos'
+import { Route as ClienteAprovacoesRouteImport } from './routes/cliente.aprovacoes'
 
 const SitesRoute = SitesRouteImport.update({
   id: '/sites',
   path: '/sites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClienteRoute = ClienteRouteImport.update({
+  id: '/cliente',
+  path: '/cliente',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AudiovisualRoute = AudiovisualRouteImport.update({
@@ -28,34 +47,133 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClienteIndexRoute = ClienteIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ClienteRoute,
+} as any)
+const ClienteRelatoriosRoute = ClienteRelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => ClienteRoute,
+} as any)
+const ClienteGravacoesRoute = ClienteGravacoesRouteImport.update({
+  id: '/gravacoes',
+  path: '/gravacoes',
+  getParentRoute: () => ClienteRoute,
+} as any)
+const ClienteDashboardRoute = ClienteDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => ClienteRoute,
+} as any)
+const ClienteCalendarioRoute = ClienteCalendarioRouteImport.update({
+  id: '/calendario',
+  path: '/calendario',
+  getParentRoute: () => ClienteRoute,
+} as any)
+const ClienteAvisosRoute = ClienteAvisosRouteImport.update({
+  id: '/avisos',
+  path: '/avisos',
+  getParentRoute: () => ClienteRoute,
+} as any)
+const ClienteAprovacoesRoute = ClienteAprovacoesRouteImport.update({
+  id: '/aprovacoes',
+  path: '/aprovacoes',
+  getParentRoute: () => ClienteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/audiovisual': typeof AudiovisualRoute
+  '/cliente': typeof ClienteRouteWithChildren
+  '/login': typeof LoginRoute
   '/sites': typeof SitesRoute
+  '/cliente/aprovacoes': typeof ClienteAprovacoesRoute
+  '/cliente/avisos': typeof ClienteAvisosRoute
+  '/cliente/calendario': typeof ClienteCalendarioRoute
+  '/cliente/dashboard': typeof ClienteDashboardRoute
+  '/cliente/gravacoes': typeof ClienteGravacoesRoute
+  '/cliente/relatorios': typeof ClienteRelatoriosRoute
+  '/cliente/': typeof ClienteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/audiovisual': typeof AudiovisualRoute
+  '/login': typeof LoginRoute
   '/sites': typeof SitesRoute
+  '/cliente/aprovacoes': typeof ClienteAprovacoesRoute
+  '/cliente/avisos': typeof ClienteAvisosRoute
+  '/cliente/calendario': typeof ClienteCalendarioRoute
+  '/cliente/dashboard': typeof ClienteDashboardRoute
+  '/cliente/gravacoes': typeof ClienteGravacoesRoute
+  '/cliente/relatorios': typeof ClienteRelatoriosRoute
+  '/cliente': typeof ClienteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/audiovisual': typeof AudiovisualRoute
+  '/cliente': typeof ClienteRouteWithChildren
+  '/login': typeof LoginRoute
   '/sites': typeof SitesRoute
+  '/cliente/aprovacoes': typeof ClienteAprovacoesRoute
+  '/cliente/avisos': typeof ClienteAvisosRoute
+  '/cliente/calendario': typeof ClienteCalendarioRoute
+  '/cliente/dashboard': typeof ClienteDashboardRoute
+  '/cliente/gravacoes': typeof ClienteGravacoesRoute
+  '/cliente/relatorios': typeof ClienteRelatoriosRoute
+  '/cliente/': typeof ClienteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/audiovisual' | '/sites'
+  fullPaths:
+    | '/'
+    | '/audiovisual'
+    | '/cliente'
+    | '/login'
+    | '/sites'
+    | '/cliente/aprovacoes'
+    | '/cliente/avisos'
+    | '/cliente/calendario'
+    | '/cliente/dashboard'
+    | '/cliente/gravacoes'
+    | '/cliente/relatorios'
+    | '/cliente/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/audiovisual' | '/sites'
-  id: '__root__' | '/' | '/audiovisual' | '/sites'
+  to:
+    | '/'
+    | '/audiovisual'
+    | '/login'
+    | '/sites'
+    | '/cliente/aprovacoes'
+    | '/cliente/avisos'
+    | '/cliente/calendario'
+    | '/cliente/dashboard'
+    | '/cliente/gravacoes'
+    | '/cliente/relatorios'
+    | '/cliente'
+  id:
+    | '__root__'
+    | '/'
+    | '/audiovisual'
+    | '/cliente'
+    | '/login'
+    | '/sites'
+    | '/cliente/aprovacoes'
+    | '/cliente/avisos'
+    | '/cliente/calendario'
+    | '/cliente/dashboard'
+    | '/cliente/gravacoes'
+    | '/cliente/relatorios'
+    | '/cliente/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AudiovisualRoute: typeof AudiovisualRoute
+  ClienteRoute: typeof ClienteRouteWithChildren
+  LoginRoute: typeof LoginRoute
   SitesRoute: typeof SitesRoute
 }
 
@@ -66,6 +184,20 @@ declare module '@tanstack/react-router' {
       path: '/sites'
       fullPath: '/sites'
       preLoaderRoute: typeof SitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cliente': {
+      id: '/cliente'
+      path: '/cliente'
+      fullPath: '/cliente'
+      preLoaderRoute: typeof ClienteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/audiovisual': {
@@ -82,12 +214,86 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cliente/': {
+      id: '/cliente/'
+      path: '/'
+      fullPath: '/cliente/'
+      preLoaderRoute: typeof ClienteIndexRouteImport
+      parentRoute: typeof ClienteRoute
+    }
+    '/cliente/relatorios': {
+      id: '/cliente/relatorios'
+      path: '/relatorios'
+      fullPath: '/cliente/relatorios'
+      preLoaderRoute: typeof ClienteRelatoriosRouteImport
+      parentRoute: typeof ClienteRoute
+    }
+    '/cliente/gravacoes': {
+      id: '/cliente/gravacoes'
+      path: '/gravacoes'
+      fullPath: '/cliente/gravacoes'
+      preLoaderRoute: typeof ClienteGravacoesRouteImport
+      parentRoute: typeof ClienteRoute
+    }
+    '/cliente/dashboard': {
+      id: '/cliente/dashboard'
+      path: '/dashboard'
+      fullPath: '/cliente/dashboard'
+      preLoaderRoute: typeof ClienteDashboardRouteImport
+      parentRoute: typeof ClienteRoute
+    }
+    '/cliente/calendario': {
+      id: '/cliente/calendario'
+      path: '/calendario'
+      fullPath: '/cliente/calendario'
+      preLoaderRoute: typeof ClienteCalendarioRouteImport
+      parentRoute: typeof ClienteRoute
+    }
+    '/cliente/avisos': {
+      id: '/cliente/avisos'
+      path: '/avisos'
+      fullPath: '/cliente/avisos'
+      preLoaderRoute: typeof ClienteAvisosRouteImport
+      parentRoute: typeof ClienteRoute
+    }
+    '/cliente/aprovacoes': {
+      id: '/cliente/aprovacoes'
+      path: '/aprovacoes'
+      fullPath: '/cliente/aprovacoes'
+      preLoaderRoute: typeof ClienteAprovacoesRouteImport
+      parentRoute: typeof ClienteRoute
+    }
   }
 }
+
+interface ClienteRouteChildren {
+  ClienteAprovacoesRoute: typeof ClienteAprovacoesRoute
+  ClienteAvisosRoute: typeof ClienteAvisosRoute
+  ClienteCalendarioRoute: typeof ClienteCalendarioRoute
+  ClienteDashboardRoute: typeof ClienteDashboardRoute
+  ClienteGravacoesRoute: typeof ClienteGravacoesRoute
+  ClienteRelatoriosRoute: typeof ClienteRelatoriosRoute
+  ClienteIndexRoute: typeof ClienteIndexRoute
+}
+
+const ClienteRouteChildren: ClienteRouteChildren = {
+  ClienteAprovacoesRoute: ClienteAprovacoesRoute,
+  ClienteAvisosRoute: ClienteAvisosRoute,
+  ClienteCalendarioRoute: ClienteCalendarioRoute,
+  ClienteDashboardRoute: ClienteDashboardRoute,
+  ClienteGravacoesRoute: ClienteGravacoesRoute,
+  ClienteRelatoriosRoute: ClienteRelatoriosRoute,
+  ClienteIndexRoute: ClienteIndexRoute,
+}
+
+const ClienteRouteWithChildren =
+  ClienteRoute._addFileChildren(ClienteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AudiovisualRoute: AudiovisualRoute,
+  ClienteRoute: ClienteRouteWithChildren,
+  LoginRoute: LoginRoute,
   SitesRoute: SitesRoute,
 }
 export const routeTree = rootRouteImport
