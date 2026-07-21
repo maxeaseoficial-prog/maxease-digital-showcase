@@ -1,14 +1,20 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Instagram, Facebook, Music2 } from "lucide-react";
 import { PortalPageHeader, StatusBadge } from "@/components/portal/PortalShell";
-import { mockCalendar, STATUS_STYLES, type CalendarContent } from "@/lib/portal/mockData";
+import { mockCalendar, STATUS_STYLES, STATUS_DOT, type CalendarContent, type Platform } from "@/lib/portal/mockData";
 
 export const Route = createFileRoute("/cliente/calendario")({
   head: () => ({ meta: [{ title: "Calendário — Portal do Cliente" }, { name: "robots", content: "noindex" }] }),
   component: CalendarioPage,
 });
+
+const PLATFORM_ICON: Record<Platform, typeof Instagram> = {
+  Instagram: Instagram,
+  Facebook: Facebook,
+  TikTok: Music2,
+};
 
 const WEEKDAYS = ["D", "S", "T", "Q", "Q", "S", "S"];
 const MONTHS = [
