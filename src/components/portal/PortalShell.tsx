@@ -136,7 +136,11 @@ export function PortalShell({ children }: { children: ReactNode }) {
             </div>
           </header>
 
-          <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6 lg:py-10">{children}</main>
+          <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6 lg:py-10">
+            <div className="portal-surface bg-white text-slate-900 rounded-3xl border border-slate-200 shadow-[0_10px_40px_-20px_rgba(15,23,42,0.35)] p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-9rem)]">
+              {children}
+            </div>
+          </main>
         </div>
       </div>
 
