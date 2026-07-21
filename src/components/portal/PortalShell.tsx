@@ -217,18 +217,19 @@ export function PortalShell({ children }: { children: ReactNode }) {
 export function PortalPageHeader({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="mb-8">
-      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{title}</h1>
-      {subtitle && <p className="mt-2 text-sm text-white/60">{subtitle}</p>}
+      <h1 className="text-2xl sm:text-[28px] font-bold tracking-tight text-slate-900">{title}</h1>
+      {subtitle && <p className="mt-1.5 text-sm text-slate-500">{subtitle}</p>}
     </div>
   );
 }
 
 export function StatusBadge({ status, className = "" }: { status: string; className?: string }) {
+  const cls = className || "bg-slate-50 text-slate-600 border-slate-200";
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${cls}`}
     >
-      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {status}
     </span>
   );
