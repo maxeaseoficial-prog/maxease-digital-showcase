@@ -10,9 +10,9 @@ export const Route = createFileRoute("/cliente/gravacoes")({
 });
 
 const STATUS: Record<string, string> = {
-  "Confirmada": "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
-  "A Confirmar": "bg-yellow-500/15 text-yellow-300 border-yellow-400/30",
-  "Reagendada": "bg-orange-500/15 text-orange-300 border-orange-400/30",
+  "Confirmada": "bg-emerald-100 text-emerald-800 border-emerald-300",
+  "A Confirmar": "bg-amber-100 text-amber-800 border-amber-300",
+  "Reagendada": "bg-orange-100 text-orange-800 border-orange-300",
 };
 
 function GravacoesPage() {
