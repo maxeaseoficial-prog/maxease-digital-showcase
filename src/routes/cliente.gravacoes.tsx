@@ -34,9 +34,8 @@ function GravacoesPage() {
           >
             <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
               <div className="flex items-center gap-4">
-                <div className="h-14 w-14 rounded-2xl bg-brand-gradient flex flex-col items-center justify-center shrink-0 shadow-[0_10px_25px_-10px_rgba(30,64,255,0.7)]">
-                  <span className="text-[10px] text-white/80 leading-none">{r.date.split("/")[1]}/{r.date.split("/")[2]}</span>
-                  <span className="text-xl font-bold leading-tight">{r.date.split("/")[0]}</span>
+                <div className="h-14 w-14 rounded-2xl bg-brand-gradient flex items-center justify-center shrink-0 shadow-[0_10px_25px_-10px_rgba(30,64,255,0.7)]">
+                  <span className="text-xl font-bold text-white leading-none">{r.date.split("/")[0]}</span>
                 </div>
                 <div>
                   <h2 className="text-lg font-bold">Gravação {r.date}</h2>
