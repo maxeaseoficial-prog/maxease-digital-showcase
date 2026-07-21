@@ -22,6 +22,12 @@ export interface CalendarContent {
   status: ContentStatus;
 }
 
+export interface ScriptFile {
+  name: string;
+  size: string;
+  url: string;
+}
+
 export interface Recording {
   id: string;
   date: string;
@@ -33,6 +39,9 @@ export interface Recording {
   objective: string;
   scriptSummary: string;
   notes: string;
+  scripts?: ScriptFile[];
+  team?: string[];
+  equipment?: string[];
 }
 
 export interface Report {
@@ -173,6 +182,13 @@ export const mockRecordings: Recording[] = [
     objective: "Gerar conteúdo para a segunda quinzena de julho e primeira de agosto.",
     scriptSummary: "3 blocos de gravação com transições dinâmicas e closes de execução.",
     notes: "Levar figurino oficial da academia. Iluminação preparada às 08:30.",
+    scripts: [
+      { name: "Roteiro Treino de Costas.pdf", size: "1.2 MB", url: "#" },
+      { name: "Roteiro Alongamento.pdf", size: "820 KB", url: "#" },
+      { name: "Roteiro Depoimento Marina.pdf", size: "1.5 MB", url: "#" },
+    ],
+    team: ["Diretor: Henrique Castro", "Cinegrafista: Lucas M.", "Assistente: Bruna R."],
+    equipment: ["Sony FX3", "Lente 24-70mm", "Kit de iluminação Aputure", "Gimbal DJI RS3"],
   },
   {
     id: "r2",
@@ -185,6 +201,12 @@ export const mockRecordings: Recording[] = [
     objective: "Reforçar conteúdo institucional e experiência de alunos.",
     scriptSummary: "Aula demonstrativa + entrevistas rápidas com 2 alunos.",
     notes: "Confirmar disponibilidade dos alunos convidados até 30/07.",
+    scripts: [
+      { name: "Roteiro Aula ao Ar Livre.pdf", size: "980 KB", url: "#" },
+      { name: "Perguntas Entrevistas.pdf", size: "410 KB", url: "#" },
+    ],
+    team: ["Diretor: Henrique Castro", "Cinegrafista: Lucas M."],
+    equipment: ["Sony FX3", "Lente 35mm", "Estabilizador"],
   },
 ];
 
