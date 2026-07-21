@@ -207,41 +207,82 @@
   background-size: 60px 60px;
 }
 
-/* Portal client area: light surface overrides */
+/* Portal client area: light SaaS surface */
 .portal-surface {
   color: #0f172a;
 }
+
+/* Text hierarchy */
 .portal-surface .text-white,
 .portal-surface .text-white\/85,
 .portal-surface .text-white\/80 { color: #0f172a; }
-.portal-surface .text-white\/70,
-.portal-surface .text-white\/60 { color: #475569; }
-.portal-surface .text-white\/50,
-.portal-surface .text-white\/40 { color: #64748b; }
+.portal-surface .text-white\/70 { color: #334155; }
+.portal-surface .text-white\/60 { color: #64748b; }
+.portal-surface .text-white\/50 { color: #94a3b8; }
+.portal-surface .text-white\/40 { color: #94a3b8; }
+.portal-surface .text-brand-light { color: #1e40ff; }
 
+/* Inner tiles (subtle gray surfaces inside cards) */
 .portal-surface .bg-white\/\[0\.02\],
 .portal-surface .bg-white\/\[0\.03\],
 .portal-surface .bg-white\/\[0\.05\],
 .portal-surface .bg-white\/5 { background-color: #f8fafc; }
-.portal-surface .bg-white\/10,
-.portal-surface .bg-white\/20 { background-color: #eef2f7; }
+.portal-surface .bg-white\/10 { background-color: #f1f5f9; }
+.portal-surface .bg-white\/20 { background-color: #e2e8f0; }
 .portal-surface .hover\:bg-white\/5:hover,
-.portal-surface .hover\:bg-white\/10:hover { background-color: #e2e8f0; }
-.portal-surface .hover\:bg-white\/\[0\.05\]:hover { background-color: #eef2f7; }
+.portal-surface .hover\:bg-white\/10:hover { background-color: #f1f5f9; }
+.portal-surface .hover\:bg-white\/\[0\.05\]:hover { background-color: #f8fafc; }
 
-.portal-surface .border-white\/5,
-.portal-surface .border-white\/10,
-.portal-surface .border-white\/25 { border-color: #e5e7eb; }
-.portal-surface .hover\:border-white\/25:hover { border-color: #cbd5e1; }
+/* Borders */
+.portal-surface .border-white\/5 { border-color: #f1f5f9; }
+.portal-surface .border-white\/10 { border-color: #e5e7eb; }
+.portal-surface .border-white\/15 { border-color: #d1d5db; }
+.portal-surface .border-white\/25 { border-color: #cbd5e1; }
+.portal-surface .hover\:border-white\/25:hover { border-color: #94a3b8; }
+.portal-surface .divide-white\/5 > * + * { border-color: #f1f5f9; }
 
-.portal-surface .divide-white\/5 > * + * { border-color: #e5e7eb; }
-
-.portal-surface .glass,
+/* Cards: white with elegant border + very soft shadow */
+.portal-surface .glass {
+  background-color: #ffffff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-color: #e5e7eb;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.03);
+}
 .portal-surface .glass-strong {
   background-color: #ffffff;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border-color: #e5e7eb;
+  box-shadow: 0 20px 40px -20px rgba(15, 23, 42, 0.2), 0 8px 20px -12px rgba(15, 23, 42, 0.12);
+  color: #0f172a;
 }
 
+/* Neutralize decorative gradient tints inside portal (dashboard cards) */
 .portal-surface .bg-hero-gradient { background: #ffffff; }
+.portal-surface [class^="from-"],
+.portal-surface [class*=" from-"] {
+  --tw-gradient-from: transparent !important;
+  --tw-gradient-to: transparent !important;
+  --tw-gradient-stops: transparent, transparent !important;
+}
+
+/* Inputs / textareas */
+.portal-surface textarea,
+.portal-surface input[type="text"],
+.portal-surface input[type="email"] {
+  background-color: #f8fafc;
+  border-color: #e5e7eb;
+  color: #0f172a;
+}
+.portal-surface textarea::placeholder,
+.portal-surface input::placeholder { color: #94a3b8; }
+.portal-surface textarea:focus,
+.portal-surface input:focus { border-color: #1e40ff; outline: none; }
+
+/* Brand primary button stays vivid */
+.portal-surface .bg-brand-gradient { color: #ffffff; }
+
+/* Softer modal backdrop */
+.portal-surface .bg-black\/70 { background-color: rgba(15, 23, 42, 0.55); }
+
