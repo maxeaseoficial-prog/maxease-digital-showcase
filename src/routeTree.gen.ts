@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ClienteRouteImport } from './routes/cliente'
 import { Route as AudiovisualRouteImport } from './routes/audiovisual'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClienteIndexRouteImport } from './routes/cliente.index'
 import { Route as ClienteRelatoriosRouteImport } from './routes/cliente.relatorios'
 import { Route as ClienteGravacoesRouteImport } from './routes/cliente.gravacoes'
 import { Route as ClienteDashboardRouteImport } from './routes/cliente.dashboard'
@@ -45,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ClienteIndexRoute = ClienteIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ClienteRoute,
 } as any)
 const ClienteRelatoriosRoute = ClienteRelatoriosRouteImport.update({
   id: '/relatorios',
@@ -89,11 +95,11 @@ export interface FileRoutesByFullPath {
   '/cliente/dashboard': typeof ClienteDashboardRoute
   '/cliente/gravacoes': typeof ClienteGravacoesRoute
   '/cliente/relatorios': typeof ClienteRelatoriosRoute
+  '/cliente/': typeof ClienteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/audiovisual': typeof AudiovisualRoute
-  '/cliente': typeof ClienteRouteWithChildren
   '/login': typeof LoginRoute
   '/sites': typeof SitesRoute
   '/cliente/aprovacoes': typeof ClienteAprovacoesRoute
@@ -102,6 +108,7 @@ export interface FileRoutesByTo {
   '/cliente/dashboard': typeof ClienteDashboardRoute
   '/cliente/gravacoes': typeof ClienteGravacoesRoute
   '/cliente/relatorios': typeof ClienteRelatoriosRoute
+  '/cliente': typeof ClienteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +123,7 @@ export interface FileRoutesById {
   '/cliente/dashboard': typeof ClienteDashboardRoute
   '/cliente/gravacoes': typeof ClienteGravacoesRoute
   '/cliente/relatorios': typeof ClienteRelatoriosRoute
+  '/cliente/': typeof ClienteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,11 +139,11 @@ export interface FileRouteTypes {
     | '/cliente/dashboard'
     | '/cliente/gravacoes'
     | '/cliente/relatorios'
+    | '/cliente/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/audiovisual'
-    | '/cliente'
     | '/login'
     | '/sites'
     | '/cliente/aprovacoes'
@@ -144,6 +152,7 @@ export interface FileRouteTypes {
     | '/cliente/dashboard'
     | '/cliente/gravacoes'
     | '/cliente/relatorios'
+    | '/cliente'
   id:
     | '__root__'
     | '/'
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/cliente/dashboard'
     | '/cliente/gravacoes'
     | '/cliente/relatorios'
+    | '/cliente/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -203,6 +213,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/cliente/': {
+      id: '/cliente/'
+      path: '/'
+      fullPath: '/cliente/'
+      preLoaderRoute: typeof ClienteIndexRouteImport
+      parentRoute: typeof ClienteRoute
     }
     '/cliente/relatorios': {
       id: '/cliente/relatorios'
@@ -256,6 +273,7 @@ interface ClienteRouteChildren {
   ClienteDashboardRoute: typeof ClienteDashboardRoute
   ClienteGravacoesRoute: typeof ClienteGravacoesRoute
   ClienteRelatoriosRoute: typeof ClienteRelatoriosRoute
+  ClienteIndexRoute: typeof ClienteIndexRoute
 }
 
 const ClienteRouteChildren: ClienteRouteChildren = {
@@ -265,6 +283,7 @@ const ClienteRouteChildren: ClienteRouteChildren = {
   ClienteDashboardRoute: ClienteDashboardRoute,
   ClienteGravacoesRoute: ClienteGravacoesRoute,
   ClienteRelatoriosRoute: ClienteRelatoriosRoute,
+  ClienteIndexRoute: ClienteIndexRoute,
 }
 
 const ClienteRouteWithChildren =
