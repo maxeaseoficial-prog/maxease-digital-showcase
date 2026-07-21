@@ -222,6 +222,11 @@
 .portal-surface .text-white\/40 { color: #94a3b8; }
 .portal-surface .text-brand-light { color: #1e40ff; }
 
+/* Keep icons/text white when sitting on the brand gradient badges */
+.portal-surface .bg-brand-gradient .text-white,
+.portal-surface .bg-brand-gradient .text-white\/80,
+.portal-surface .bg-brand-gradient .text-white\/85 { color: #ffffff; }
+
 /* Inner tiles (subtle gray surfaces inside cards) */
 .portal-surface .bg-white\/\[0\.02\],
 .portal-surface .bg-white\/\[0\.03\],
