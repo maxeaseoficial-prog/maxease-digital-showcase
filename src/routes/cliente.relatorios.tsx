@@ -106,8 +106,8 @@ function PdfViewer({ report, onClose }: { report: Report; onClose: () => void })
             <ArrowLeft className="h-4 w-4" /> Voltar
           </button>
           <div className="hidden sm:flex items-center gap-2 min-w-0">
-            <FileText className="h-4 w-4 text-slate-300 shrink-0" />
-            <span className="text-sm truncate">{filename}</span>
+            <FileText className="h-4 w-4 text-white shrink-0" />
+            <span className="text-sm truncate text-white">{filename}</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
