@@ -263,7 +263,7 @@ function CalendarManager({ items, onAdd, onDelete }: { items: CalItem[]; onAdd: 
               </div>
               <div className="flex-1 space-y-1 overflow-hidden">
                 {evts.slice(0, 3).map((e) => {
-                  const color = e.tagColor ?? "#1428FF";
+                  const color = statusChipColor(e.status) ?? e.tagColor ?? "#1428FF";
                   return (
                     <div
                       key={e.id}
