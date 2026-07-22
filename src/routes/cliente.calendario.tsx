@@ -3,7 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X, Instagram, Facebook, Music2 } from "lucide-react";
 import { PortalPageHeader, StatusBadge } from "@/components/portal/PortalShell";
-import { mockCalendar, STATUS_STYLES, STATUS_DOT, statusChipColor, type CalendarContent, type Platform } from "@/lib/portal/mockData";
+import { STATUS_STYLES, STATUS_DOT, statusChipColor, type CalendarContent, type Platform } from "@/lib/portal/mockData";
+import { usePortalData } from "@/lib/portal/data";
 
 export const Route = createFileRoute("/cliente/calendario")({
   head: () => ({ meta: [{ title: "Calendário — Portal do Cliente" }, { name: "robots", content: "noindex" }] }),
@@ -18,34 +19,26 @@ const PLATFORM_ICON: Record<Platform, typeof Instagram> = {
 
 const WEEKDAYS = ["D", "S", "T", "Q", "Q", "S", "S"];
 const MONTHS = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro",
+  "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+  "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro",
 ];
 
 function CalendarioPage() {
-  const [cursor, setCursor] = useState(new Date(2026, 6, 1)); // Julho 2026
+  const { calendar, loading, error } = usePortalData();
+  const today = new Date();
+  const [cursor, setCursor] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
   const [selected, setSelected] = useState<CalendarContent | null>(null);
 
   const grid = useMemo(() => buildMonthGrid(cursor), [cursor]);
   const byDate = useMemo(() => {
     const map = new Map<string, CalendarContent[]>();
-    for (const c of mockCalendar) {
+    for (const c of calendar) {
       const arr = map.get(c.date) ?? [];
       arr.push(c);
       map.set(c.date, arr);
     }
     return map;
-  }, []);
+  }, [calendar]);
 
   return (
     <div>
@@ -53,6 +46,15 @@ function CalendarioPage() {
         title="Calendário de Conteúdo"
         subtitle="Acompanhe todos os conteúdos previstos, em produção e publicados."
       />
+
+      {error && (
+        <div className="mb-4 rounded-xl border border-red-400/40 bg-red-500/10 text-red-200 text-sm p-3">
+          Falha ao carregar o calendário: {error}
+        </div>
+      )}
+      {loading && calendar.length === 0 && (
+        <div className="mb-4 text-sm text-white/60">Carregando calendário...</div>
+      )}
 
       <div className="rounded-2xl border border-white/10 glass p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
@@ -79,7 +81,7 @@ function CalendarioPage() {
           </div>
           <button
             type="button"
-            onClick={() => setCursor(new Date(2026, 6, 1))}
+            onClick={() => { const t = new Date(); setCursor(new Date(t.getFullYear(), t.getMonth(), 1)); }}
             className="text-xs px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-white/70"
           >
             Hoje
