@@ -108,16 +108,20 @@ function CalendarioPage() {
                     <div className="space-y-1">
                       {items.slice(0, 2).map((it) => {
                         const PIcon = PLATFORM_ICON[it.platforms[0]];
+                        const color = it.tagColor;
                         return (
                           <button
                             key={it.id}
                             type="button"
                             onClick={() => setSelected(it)}
-                            className="w-full text-left flex items-center gap-1.5 text-[10px] sm:text-[11px] px-1.5 py-1 rounded-md bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors"
+                            className="w-full text-left flex items-center gap-1.5 text-[10px] sm:text-[11px] px-1.5 py-1 rounded-md border transition-colors hover:brightness-110"
+                            style={color
+                              ? { backgroundColor: `${color}1A`, borderColor: `${color}55`, color }
+                              : { backgroundColor: "#fff", borderColor: "#e2e8f0", color: "#334155" }}
                           >
                             <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${STATUS_DOT[it.status]}`} />
-                            <span className="truncate text-slate-700 font-medium flex-1">{it.title}</span>
-                            <PIcon className="h-3 w-3 text-slate-400 shrink-0" strokeWidth={2} />
+                            <span className="truncate font-medium flex-1">{it.kind === "Gravação" ? "🎬 " : ""}{it.title}</span>
+                            <PIcon className="h-3 w-3 shrink-0 opacity-70" strokeWidth={2} />
                           </button>
                         );
                       })}
