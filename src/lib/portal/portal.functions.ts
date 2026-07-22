@@ -38,10 +38,15 @@ export const clientDecideApproval = createServerFn({ method: "POST" })
     const stamp = fmtStamp();
     const history = Array.isArray(row.approval_history) ? row.approval_history : [];
     const entry = { at: stamp, action: data.action, message: data.message };
+    const isApproved = data.action === "approved";
+    const nowIso = new Date().toISOString();
+    const purgeIso = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
     const patch = {
-      status: data.action === "approved" ? "Aprovado" : "Alteração solicitada",
+      status: isApproved ? "Aprovado" : "Alteração solicitada",
       approval_history: [...history, entry] as unknown as never,
-      approved_at: data.action === "approved" ? new Date().toISOString() : (row.approved_at ?? null),
+      approved_at: isApproved ? nowIso : (row.approved_at ?? null),
+      // Schedule automatic media purge 24h after approval. Change-requests keep files.
+      files_purge_at: isApproved ? purgeIso : null,
     };
     const { error: uErr } = await supabaseAdmin
       .from("calendar_items")

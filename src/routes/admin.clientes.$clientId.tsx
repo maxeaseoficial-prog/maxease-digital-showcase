@@ -1,11 +1,13 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, X, Upload, Folder, FolderPlus, Link2, Copy, Video, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, X, Upload, Folder, FolderPlus, Link2, Copy, Video, Image as ImageIcon, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
 import { statusChipColor, type ContentStatus, type Platform, type CalendarKind } from "@/lib/portal/mockData";
+import { uploadMedia, removeUploaded, type UploadHandle } from "@/lib/admin/upload";
+import { validateFile, type MediaKind } from "@/lib/admin/media";
 
 const STATUSES: ContentStatus[] = ["Planejado", "Em Produção", "Aguardando Aprovação", "Aprovado", "Agendado", "Publicado", "Solicitou Alteração"];
 const POST_STATUSES: ContentStatus[] = ["Planejado", "Pendente de aprovação", "Alteração solicitada", "Aprovado", "Publicado"];
@@ -94,6 +96,7 @@ function ClientDetail() {
 
       {tab === "calendario" && (
         <CalendarManager
+          clientId={client.id}
           items={client.calendar}
           onAdd={(item) => { addCalendarItem(client.id, item); toast.success("Conteúdo adicionado."); }}
           onDelete={(id) => { deleteCalendarItem(client.id, id); toast.success("Conteúdo removido."); }}
@@ -102,6 +105,7 @@ function ClientDetail() {
 
       {tab === "relatorios" && (
         <ReportsManager
+          clientId={client.id}
           items={client.reports}
           onAdd={(r) => { addReport(client.id, r); toast.success("Relatório publicado."); }}
           onDelete={(id) => { deleteReport(client.id, id); toast.success("Relatório removido."); }}
@@ -184,7 +188,7 @@ function toISODate(y: number, m: number, d: number) {
   return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
-function CalendarManager({ items, onAdd, onDelete }: { items: CalItem[]; onAdd: (i: Omit<CalItem, "id">) => void; onDelete: (id: string) => void }) {
+function CalendarManager({ clientId, items, onAdd, onDelete }: { clientId: string; items: CalItem[]; onAdd: (i: Omit<CalItem, "id">) => void; onDelete: (id: string) => void }) {
   const today = new Date();
   const [cursor, setCursor] = useState({ y: today.getFullYear(), m: today.getMonth() });
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -284,6 +288,7 @@ function CalendarManager({ items, onAdd, onDelete }: { items: CalItem[]; onAdd: 
       <AnimatePresence>
         {selectedDate && (
           <DayModal
+            clientId={clientId}
             date={selectedDate}
             events={eventsByDate.get(selectedDate) ?? []}
             onClose={() => setSelectedDate(null)}
@@ -296,7 +301,18 @@ function CalendarManager({ items, onAdd, onDelete }: { items: CalItem[]; onAdd: 
   );
 }
 
-function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; events: CalItem[]; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onDelete: (id: string) => void }) {
+interface UploadSlot {
+  file: File;
+  previewUrl?: string;                    // blob URL for local preview (cover only)
+  progress: number;                       // 0..100
+  status: "uploading" | "done" | "error";
+  errorMessage?: string;
+  bucket?: "videos" | "thumbnails" | "pdfs";
+  path?: string;                          // storage path once upload completes
+  handle: UploadHandle;
+}
+
+function DayModal({ clientId, date, events, onClose, onAdd, onDelete }: { clientId: string; date: string; events: CalItem[]; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onDelete: (id: string) => void }) {
   const [showForm, setShowForm] = useState(events.length === 0);
   const [kind, setKind] = useState<CalendarKind>("Postagem");
   const [title, setTitle] = useState("");
@@ -306,53 +322,107 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
   const [status, setStatus] = useState<ContentStatus>("Planejado");
   const [platforms, setPlatforms] = useState<Platform[]>(["Instagram"]);
   const [tagColor, setTagColor] = useState<string>(TAG_COLORS[0]);
-  const [scriptFile, setScriptFile] = useState<{ name: string; dataUrl: string } | undefined>(undefined);
-  const [videoFile, setVideoFile] = useState<{ name: string; dataUrl: string; type?: string } | undefined>(undefined);
-  const [coverFile, setCoverFile] = useState<{ name: string; dataUrl: string } | undefined>(undefined);
+  const [videoUpload, setVideoUpload] = useState<UploadSlot | undefined>();
+  const [coverUpload, setCoverUpload] = useState<UploadSlot | undefined>();
+  const [scriptUpload, setScriptUpload] = useState<UploadSlot | undefined>();
   const [lastLink, setLastLink] = useState<string | null>(null);
+  const uploadsRef = useRef<UploadSlot[]>([]);
+
+  // Track live uploads so a modal close can cancel + clean up
+  uploadsRef.current = [videoUpload, coverUpload, scriptUpload].filter(Boolean) as UploadSlot[];
+
+  useEffect(() => {
+    return () => {
+      for (const u of uploadsRef.current) {
+        if (u.status === "uploading") u.handle.cancel();
+        if (u.previewUrl) URL.revokeObjectURL(u.previewUrl);
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [y, m, d] = date.split("-").map(Number);
   const label = `${String(d).padStart(2, "0")} de ${MONTHS_PT[m - 1]} de ${y}`;
 
-  function readAsDataUrl(file: File, cb: (dataUrl: string) => void) {
-    const reader = new FileReader();
-    reader.onload = () => cb(String(reader.result));
-    reader.readAsDataURL(file);
+  function startUpload(
+    mediaKind: MediaKind,
+    file: File,
+    setSlot: (u: UploadSlot | undefined) => void,
+    withPreview = false,
+  ) {
+    const validationError = validateFile(mediaKind, file);
+    if (validationError) { toast.error(validationError); return; }
+    const previewUrl = withPreview ? URL.createObjectURL(file) : undefined;
+    const handle = uploadMedia({
+      kind: mediaKind,
+      clientId,
+      file,
+      onProgress: (percent) => {
+        setSlot({
+          file, previewUrl, progress: percent, status: "uploading", handle,
+        });
+      },
+    });
+    setSlot({ file, previewUrl, progress: 0, status: "uploading", handle });
+    handle.promise.then(({ bucket, path }) => {
+      setSlot({ file, previewUrl, progress: 100, status: "done", handle, bucket, path });
+    }).catch((err: Error) => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setSlot({ file, progress: 0, status: "error", errorMessage: err.message, handle });
+    });
+  }
+
+  function clearSlot(slot: UploadSlot | undefined, setSlot: (u: UploadSlot | undefined) => void) {
+    if (!slot) return;
+    if (slot.status === "uploading") slot.handle.cancel();
+    if (slot.previewUrl) URL.revokeObjectURL(slot.previewUrl);
+    if (slot.status === "done" && slot.bucket && slot.path) {
+      void removeUploaded(slot.bucket, slot.path);
+    }
+    setSlot(undefined);
   }
 
   function onScriptFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    if (file.type !== "application/pdf") { toast.error("Envie um PDF."); return; }
-    if (file.size > 10 * 1024 * 1024) { toast.error("PDF muito grande (máx 10MB)."); return; }
-    readAsDataUrl(file, (dataUrl) => setScriptFile({ name: file.name, dataUrl }));
+    startUpload("pdf", file, setScriptUpload);
   }
-
   function onVideoFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    if (!file.type.startsWith("video/")) { toast.error("Envie um arquivo de vídeo."); return; }
-    if (file.size > 80 * 1024 * 1024) { toast.error("Vídeo muito grande (máx 80MB)."); return; }
-    readAsDataUrl(file, (dataUrl) => setVideoFile({ name: file.name, dataUrl, type: file.type }));
+    startUpload("video", file, setVideoUpload);
   }
-
   function onCoverFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    if (!file.type.startsWith("image/")) { toast.error("Envie uma imagem."); return; }
-    if (file.size > 8 * 1024 * 1024) { toast.error("Imagem muito grande (máx 8MB)."); return; }
-    readAsDataUrl(file, (dataUrl) => setCoverFile({ name: file.name, dataUrl }));
+    startUpload("cover", file, setCoverUpload, true);
   }
 
   function resetForm() {
-    setTitle(""); setCaption(""); setScript(""); setScriptFile(undefined);
-    setVideoFile(undefined); setCoverFile(undefined);
+    setTitle(""); setCaption(""); setScript("");
+    setScriptUpload(undefined); setVideoUpload(undefined); setCoverUpload(undefined);
+  }
+
+  function anyUploading(): boolean {
+    return [videoUpload, coverUpload, scriptUpload].some((u) => u?.status === "uploading");
+  }
+
+  function toStoredFile(slot: UploadSlot | undefined, includeType = false): { name: string; dataUrl: string; type?: string } | undefined {
+    if (!slot || slot.status !== "done" || !slot.path) return undefined;
+    return includeType
+      ? { name: slot.file.name, dataUrl: slot.path, type: slot.file.type }
+      : { name: slot.file.name, dataUrl: slot.path };
   }
 
   function submitGravacao(e: FormEvent) {
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
-    onAdd({ title, caption, script, time, status, platforms, kind, tagColor, scriptFile });
+    if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
+    if (scriptUpload && scriptUpload.status !== "done") { toast.error("O upload do PDF falhou. Reenvie ou remova."); return; }
+    onAdd({
+      title, caption, script, time, status, platforms, kind, tagColor,
+      scriptFile: toStoredFile(scriptUpload),
+    });
     toast.success("Gravação criada.");
     resetForm();
     setShowForm(false);
@@ -361,8 +431,10 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
   function submitPostagem(e: FormEvent) {
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
-    if (!videoFile) { toast.error("Envie o vídeo."); return; }
-    if (!coverFile) { toast.error("Envie a capa do vídeo."); return; }
+    if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
+    if (!videoUpload || videoUpload.status !== "done") { toast.error("Envie o vídeo (upload deve concluir)."); return; }
+    if (!coverUpload || coverUpload.status !== "done") { toast.error("Envie a capa (upload deve concluir)."); return; }
+    if (scriptUpload && scriptUpload.status !== "done") { toast.error("O PDF do roteiro não concluiu o upload."); return; }
     const token = generateToken();
     const now = new Date();
     const stamp = `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}/${now.getFullYear()} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
@@ -371,7 +443,9 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
       title, caption, script: "", time,
       status: "Pendente de aprovação",
       platforms, kind: "Postagem", tagColor,
-      scriptFile, videoFile, coverFile,
+      scriptFile: toStoredFile(scriptUpload),
+      videoFile: toStoredFile(videoUpload, true),
+      coverFile: toStoredFile(coverUpload),
       approvalToken: token, approvalHistory: history,
     });
     const link = `${window.location.origin}/aprovacao/${token}`;
@@ -503,59 +577,47 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
 
               {kind === "Postagem" ? (
                 <>
-                  <div>
-                    <span className="text-xs font-medium text-slate-600">Vídeo (preferencialmente 9:16)</span>
-                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-                      <Video className="h-4 w-4" />
-                      <span className="truncate">{videoFile?.name ?? "Selecionar vídeo"}</span>
-                      <input type="file" accept="video/*" onChange={onVideoFile} className="hidden" />
-                    </label>
-                    {videoFile && (
-                      <button type="button" onClick={() => setVideoFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover vídeo</button>
-                    )}
-                  </div>
-
-                  <div>
-                    <span className="text-xs font-medium text-slate-600">Capa do vídeo</span>
-                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-                      <ImageIcon className="h-4 w-4" />
-                      <span className="truncate">{coverFile?.name ?? "Selecionar imagem de capa"}</span>
-                      <input type="file" accept="image/*" onChange={onCoverFile} className="hidden" />
-                    </label>
-                    {coverFile && (
-                      <div className="mt-2 flex items-center gap-2">
-                        <img src={coverFile.dataUrl} alt="Capa" className="h-14 w-14 object-cover rounded-md border border-slate-200" />
-                        <button type="button" onClick={() => setCoverFile(undefined)} className="text-xs text-red-600 hover:underline">Remover capa</button>
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <span className="text-xs font-medium text-slate-600">Roteiro em PDF (opcional)</span>
-                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-                      <Upload className="h-4 w-4" />
-                      <span className="truncate">{scriptFile?.name ?? "Selecionar PDF do roteiro"}</span>
-                      <input type="file" accept="application/pdf" onChange={onScriptFile} className="hidden" />
-                    </label>
-                    {scriptFile && (
-                      <button type="button" onClick={() => setScriptFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover PDF</button>
-                    )}
-                  </div>
+                  <UploadSlotField
+                    label="Vídeo (preferencialmente 9:16, até 1 GB)"
+                    icon={<Video className="h-4 w-4" />}
+                    placeholder="Selecionar vídeo"
+                    accept="video/*"
+                    slot={videoUpload}
+                    onFile={onVideoFile}
+                    onRemove={() => clearSlot(videoUpload, setVideoUpload)}
+                  />
+                  <UploadSlotField
+                    label="Capa do vídeo"
+                    icon={<ImageIcon className="h-4 w-4" />}
+                    placeholder="Selecionar imagem de capa"
+                    accept="image/*"
+                    slot={coverUpload}
+                    onFile={onCoverFile}
+                    onRemove={() => clearSlot(coverUpload, setCoverUpload)}
+                    preview
+                  />
+                  <UploadSlotField
+                    label="Roteiro em PDF (opcional)"
+                    icon={<Upload className="h-4 w-4" />}
+                    placeholder="Selecionar PDF do roteiro"
+                    accept="application/pdf"
+                    slot={scriptUpload}
+                    onFile={onScriptFile}
+                    onRemove={() => clearSlot(scriptUpload, setScriptUpload)}
+                  />
                 </>
               ) : (
                 <>
                   <TextField label="Roteiro (texto)" value={script} onChange={setScript} multiline />
-                  <div>
-                    <span className="text-xs font-medium text-slate-600">Roteiro em PDF</span>
-                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-                      <Upload className="h-4 w-4" />
-                      <span className="truncate">{scriptFile?.name ?? "Selecionar PDF do roteiro"}</span>
-                      <input type="file" accept="application/pdf" onChange={onScriptFile} className="hidden" />
-                    </label>
-                    {scriptFile && (
-                      <button type="button" onClick={() => setScriptFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover PDF</button>
-                    )}
-                  </div>
+                  <UploadSlotField
+                    label="Roteiro em PDF"
+                    icon={<Upload className="h-4 w-4" />}
+                    placeholder="Selecionar PDF do roteiro"
+                    accept="application/pdf"
+                    slot={scriptUpload}
+                    onFile={onScriptFile}
+                    onRemove={() => clearSlot(scriptUpload, setScriptUpload)}
+                  />
                 </>
               )}
 
@@ -591,7 +653,7 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
 
 type ReportItem = { id: string; name: string; period: string; date: string; summary: string; highlights: { label: string; value: string }[]; folder?: string; fileName?: string; fileDataUrl?: string };
 
-function ReportsManager({ items, onAdd, onDelete }: { items: ReportItem[]; onAdd: (r: Omit<ReportItem, "id">) => void; onDelete: (id: string) => void }) {
+function ReportsManager({ clientId, items, onAdd, onDelete }: { clientId: string; items: ReportItem[]; onAdd: (r: Omit<ReportItem, "id">) => void; onDelete: (id: string) => void }) {
   const existingFolders = useMemo(() => {
     const set = new Set<string>();
     for (const r of items) if (r.folder) set.add(r.folder);
@@ -602,17 +664,37 @@ function ReportsManager({ items, onAdd, onDelete }: { items: ReportItem[]; onAdd
   const [folderMode, setFolderMode] = useState<"existing" | "new">(existingFolders.length ? "existing" : "new");
   const [folderSelect, setFolderSelect] = useState(existingFolders[0] ?? "");
   const [folderNew, setFolderNew] = useState("");
-  const [fileName, setFileName] = useState("");
-  const [fileDataUrl, setFileDataUrl] = useState("");
+  const [pdfUpload, setPdfUpload] = useState<UploadSlot | undefined>();
+
+  useEffect(() => {
+    return () => {
+      if (pdfUpload?.status === "uploading") pdfUpload.handle.cancel();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    if (file.type !== "application/pdf") { toast.error("Envie um arquivo PDF."); return; }
-    if (file.size > 10 * 1024 * 1024) { toast.error("PDF muito grande (máx 10MB)."); return; }
-    const reader = new FileReader();
-    reader.onload = () => { setFileDataUrl(String(reader.result)); setFileName(file.name); };
-    reader.readAsDataURL(file);
+    const err = validateFile("pdf", file);
+    if (err) { toast.error(err); return; }
+    const handle = uploadMedia({
+      kind: "pdf", clientId, file,
+      onProgress: (percent) => setPdfUpload({ file, progress: percent, status: "uploading", handle }),
+    });
+    setPdfUpload({ file, progress: 0, status: "uploading", handle });
+    handle.promise
+      .then(({ bucket, path }) => setPdfUpload({ file, progress: 100, status: "done", bucket, path, handle }))
+      .catch((error: Error) => setPdfUpload({ file, progress: 0, status: "error", errorMessage: error.message, handle }));
+  }
+
+  function removePdf() {
+    if (!pdfUpload) return;
+    if (pdfUpload.status === "uploading") pdfUpload.handle.cancel();
+    if (pdfUpload.status === "done" && pdfUpload.bucket && pdfUpload.path) {
+      void removeUploaded(pdfUpload.bucket, pdfUpload.path);
+    }
+    setPdfUpload(undefined);
   }
 
   function submit(e: FormEvent) {
@@ -620,7 +702,10 @@ function ReportsManager({ items, onAdd, onDelete }: { items: ReportItem[]; onAdd
     const folder = (folderMode === "new" ? folderNew : folderSelect).trim();
     if (!title.trim()) { toast.error("Informe o título."); return; }
     if (!folder) { toast.error("Selecione ou crie uma pasta."); return; }
-    if (!fileDataUrl) { toast.error("Envie o arquivo PDF."); return; }
+    if (!pdfUpload || pdfUpload.status !== "done" || !pdfUpload.path) {
+      toast.error("Envie o arquivo PDF (aguarde o upload concluir).");
+      return;
+    }
     const now = new Date();
     const dateLabel = `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}/${now.getFullYear()}`;
     onAdd({
@@ -630,10 +715,10 @@ function ReportsManager({ items, onAdd, onDelete }: { items: ReportItem[]; onAdd
       summary: "",
       highlights: [],
       folder,
-      fileName,
-      fileDataUrl,
+      fileName: pdfUpload.file.name,
+      fileDataUrl: pdfUpload.path,
     });
-    setTitle(""); setFileName(""); setFileDataUrl("");
+    setTitle(""); setPdfUpload(undefined);
     setFolderNew("");
     if (folderMode === "new") { setFolderMode("existing"); setFolderSelect(folder); }
   }
@@ -717,17 +802,15 @@ function ReportsManager({ items, onAdd, onDelete }: { items: ReportItem[]; onAdd
           )}
         </div>
 
-        <div>
-          <span className="text-xs font-medium text-slate-600">Arquivo PDF</span>
-          <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-3 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-            <Upload className="h-4 w-4" />
-            <span className="truncate">{fileName || "Selecionar PDF"}</span>
-            <input type="file" accept="application/pdf" onChange={onFile} className="hidden" />
-          </label>
-          {fileDataUrl && (
-            <button type="button" onClick={() => { setFileDataUrl(""); setFileName(""); }} className="mt-1.5 text-xs text-red-600 hover:underline">Remover arquivo</button>
-          )}
-        </div>
+        <UploadSlotField
+          label="Arquivo PDF"
+          icon={<Upload className="h-4 w-4" />}
+          placeholder="Selecionar PDF"
+          accept="application/pdf"
+          slot={pdfUpload}
+          onFile={onFile}
+          onRemove={removePdf}
+        />
 
         <button type="submit" className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-brand-gradient px-4 py-2 text-sm text-white font-medium">
           <Plus className="h-4 w-4" /> Publicar relatório
@@ -802,5 +885,64 @@ function TextField({ label, value, onChange, placeholder, type = "text", multili
           className="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 outline-none focus:border-brand-light focus:ring-2 focus:ring-brand-light/20" />
       )}
     </label>
+  );
+}
+
+function UploadSlotField({
+  label, icon, placeholder, accept, slot, onFile, onRemove, preview,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  placeholder: string;
+  accept: string;
+  slot: UploadSlot | undefined;
+  onFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onRemove: () => void;
+  preview?: boolean;
+}) {
+  const status = slot?.status;
+  const percent = Math.min(100, Math.round(slot?.progress ?? 0));
+  const displayName = slot?.file.name ?? placeholder;
+
+  return (
+    <div>
+      <span className="text-xs font-medium text-slate-600">{label}</span>
+      <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
+        {icon}
+        <span className="truncate flex-1">{displayName}</span>
+        <input type="file" accept={accept} onChange={onFile} className="hidden" />
+      </label>
+
+      {slot && status === "uploading" && (
+        <div className="mt-2 space-y-1">
+          <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-full bg-brand-gradient transition-[width] duration-200" style={{ width: `${percent}%` }} />
+          </div>
+          <div className="flex items-center justify-between text-[11px] text-slate-500">
+            <span>Enviando… {percent}%</span>
+            <button type="button" onClick={onRemove} className="inline-flex items-center gap-1 text-red-600 hover:underline">
+              <XCircle className="h-3 w-3" /> Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {slot && status === "done" && (
+        <div className="mt-2 flex items-center gap-2">
+          {preview && slot.previewUrl && (
+            <img src={slot.previewUrl} alt="Preview" className="h-14 w-14 object-cover rounded-md border border-slate-200" />
+          )}
+          <span className="text-[11px] text-emerald-600">Upload concluído</span>
+          <button type="button" onClick={onRemove} className="text-xs text-red-600 hover:underline">Remover</button>
+        </div>
+      )}
+
+      {slot && status === "error" && (
+        <div className="mt-2 text-xs text-red-600">
+          Falha no upload: {slot.errorMessage ?? "erro desconhecido"}
+          <button type="button" onClick={onRemove} className="ml-2 underline">Remover</button>
+        </div>
+      )}
+    </div>
   );
 }

@@ -29,6 +29,7 @@ import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminClientesIndexRouteImport } from './routes/admin.clientes.index'
 import { Route as AdminClientesClientIdRouteImport } from './routes/admin.clientes.$clientId'
+import { Route as ApiPublicHooksPurgeMediaRouteImport } from './routes/api/public/hooks/purge-media'
 
 const SitesRoute = SitesRouteImport.update({
   id: '/sites',
@@ -130,6 +131,12 @@ const AdminClientesClientIdRoute = AdminClientesClientIdRouteImport.update({
   path: '/clientes/$clientId',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicHooksPurgeMediaRoute =
+  ApiPublicHooksPurgeMediaRouteImport.update({
+    id: '/api/public/hooks/purge-media',
+    path: '/api/public/hooks/purge-media',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/cliente/': typeof ClienteIndexRoute
   '/admin/clientes/$clientId': typeof AdminClientesClientIdRoute
   '/admin/clientes/': typeof AdminClientesIndexRoute
+  '/api/public/hooks/purge-media': typeof ApiPublicHooksPurgeMediaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -172,6 +180,7 @@ export interface FileRoutesByTo {
   '/cliente': typeof ClienteIndexRoute
   '/admin/clientes/$clientId': typeof AdminClientesClientIdRoute
   '/admin/clientes': typeof AdminClientesIndexRoute
+  '/api/public/hooks/purge-media': typeof ApiPublicHooksPurgeMediaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -195,6 +204,7 @@ export interface FileRoutesById {
   '/cliente/': typeof ClienteIndexRoute
   '/admin/clientes/$clientId': typeof AdminClientesClientIdRoute
   '/admin/clientes/': typeof AdminClientesIndexRoute
+  '/api/public/hooks/purge-media': typeof ApiPublicHooksPurgeMediaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/cliente/'
     | '/admin/clientes/$clientId'
     | '/admin/clientes/'
+    | '/api/public/hooks/purge-media'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/cliente'
     | '/admin/clientes/$clientId'
     | '/admin/clientes'
+    | '/api/public/hooks/purge-media'
   id:
     | '__root__'
     | '/'
@@ -261,6 +273,7 @@ export interface FileRouteTypes {
     | '/cliente/'
     | '/admin/clientes/$clientId'
     | '/admin/clientes/'
+    | '/api/public/hooks/purge-media'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -271,6 +284,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SitesRoute: typeof SitesRoute
   AprovacaoTokenRoute: typeof AprovacaoTokenRoute
+  ApiPublicHooksPurgeMediaRoute: typeof ApiPublicHooksPurgeMediaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -415,6 +429,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminClientesClientIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/hooks/purge-media': {
+      id: '/api/public/hooks/purge-media'
+      path: '/api/public/hooks/purge-media'
+      fullPath: '/api/public/hooks/purge-media'
+      preLoaderRoute: typeof ApiPublicHooksPurgeMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -469,6 +490,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SitesRoute: SitesRoute,
   AprovacaoTokenRoute: AprovacaoTokenRoute,
+  ApiPublicHooksPurgeMediaRoute: ApiPublicHooksPurgeMediaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
