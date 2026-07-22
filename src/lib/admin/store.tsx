@@ -318,33 +318,34 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
     const channel = supabase
       .channel("admin-store")
       .on("postgres_changes", { event: "*", schema: "public", table: "calendar_items" }, (payload) => {
-        setData((d) => applyCalendarChange(d, payload));
+        setData((d) => applyCalendarChange(d, payload as unknown as Payload<CalRow>));
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "notices" }, (payload) => {
-        setData((d) => applyNoticeChange(d, payload));
+        setData((d) => applyNoticeChange(d, payload as unknown as Payload<NoticeRow>));
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "reports" }, (payload) => {
-        setData((d) => applyReportChange(d, payload, foldersRef.current));
+        setData((d) => applyReportChange(d, payload as unknown as Payload<ReportRow>, foldersRef.current));
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "report_folders" }, (payload) => {
-        const rec = (payload.new ?? payload.old) as FolderRow | undefined;
-        if (!rec) return;
+        const rec = ((payload.new ?? payload.old) as FolderRow | undefined);
+        if (!rec || !("id" in rec)) return;
         if (payload.eventType === "DELETE") {
           foldersRef.current = foldersRef.current.filter((f) => f.id !== rec.id);
         } else {
           const next = foldersRef.current.filter((f) => f.id !== rec.id);
-          next.push(payload.new as FolderRow);
+          next.push(payload.new as unknown as FolderRow);
           foldersRef.current = next;
         }
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "clients" }, (payload) => {
-        setData((d) => applyClientChange(d, payload));
+        setData((d) => applyClientChange(d, payload as unknown as Payload<ClientRow>));
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "site_config" }, (payload) => {
         const row = payload.new as { data: Partial<SiteConfig> } | undefined;
         if (row?.data) setData((d) => ({ ...d, site: mergeSite(DEFAULT_SITE, row.data) }));
       })
       .subscribe();
+
     return () => {
       supabase.removeChannel(channel);
     };
