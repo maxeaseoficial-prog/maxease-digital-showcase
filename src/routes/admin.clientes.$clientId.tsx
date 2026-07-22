@@ -653,7 +653,7 @@ function DayModal({ clientId, date, events, onClose, onAdd, onDelete }: { client
 
 type ReportItem = { id: string; name: string; period: string; date: string; summary: string; highlights: { label: string; value: string }[]; folder?: string; fileName?: string; fileDataUrl?: string };
 
-function ReportsManager({ items, onAdd, onDelete }: { items: ReportItem[]; onAdd: (r: Omit<ReportItem, "id">) => void; onDelete: (id: string) => void }) {
+function ReportsManager({ clientId, items, onAdd, onDelete }: { clientId: string; items: ReportItem[]; onAdd: (r: Omit<ReportItem, "id">) => void; onDelete: (id: string) => void }) {
   const existingFolders = useMemo(() => {
     const set = new Set<string>();
     for (const r of items) if (r.folder) set.add(r.folder);
@@ -664,17 +664,37 @@ function ReportsManager({ items, onAdd, onDelete }: { items: ReportItem[]; onAdd
   const [folderMode, setFolderMode] = useState<"existing" | "new">(existingFolders.length ? "existing" : "new");
   const [folderSelect, setFolderSelect] = useState(existingFolders[0] ?? "");
   const [folderNew, setFolderNew] = useState("");
-  const [fileName, setFileName] = useState("");
-  const [fileDataUrl, setFileDataUrl] = useState("");
+  const [pdfUpload, setPdfUpload] = useState<UploadSlot | undefined>();
+
+  useEffect(() => {
+    return () => {
+      if (pdfUpload?.status === "uploading") pdfUpload.handle.cancel();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    if (file.type !== "application/pdf") { toast.error("Envie um arquivo PDF."); return; }
-    if (file.size > 10 * 1024 * 1024) { toast.error("PDF muito grande (máx 10MB)."); return; }
-    const reader = new FileReader();
-    reader.onload = () => { setFileDataUrl(String(reader.result)); setFileName(file.name); };
-    reader.readAsDataURL(file);
+    const err = validateFile("pdf", file);
+    if (err) { toast.error(err); return; }
+    const handle = uploadMedia({
+      kind: "pdf", clientId, file,
+      onProgress: (percent) => setPdfUpload({ file, progress: percent, status: "uploading", handle }),
+    });
+    setPdfUpload({ file, progress: 0, status: "uploading", handle });
+    handle.promise
+      .then(({ bucket, path }) => setPdfUpload({ file, progress: 100, status: "done", bucket, path, handle }))
+      .catch((error: Error) => setPdfUpload({ file, progress: 0, status: "error", errorMessage: error.message, handle }));
+  }
+
+  function removePdf() {
+    if (!pdfUpload) return;
+    if (pdfUpload.status === "uploading") pdfUpload.handle.cancel();
+    if (pdfUpload.status === "done" && pdfUpload.bucket && pdfUpload.path) {
+      void removeUploaded(pdfUpload.bucket, pdfUpload.path);
+    }
+    setPdfUpload(undefined);
   }
 
   function submit(e: FormEvent) {
@@ -682,7 +702,10 @@ function ReportsManager({ items, onAdd, onDelete }: { items: ReportItem[]; onAdd
     const folder = (folderMode === "new" ? folderNew : folderSelect).trim();
     if (!title.trim()) { toast.error("Informe o título."); return; }
     if (!folder) { toast.error("Selecione ou crie uma pasta."); return; }
-    if (!fileDataUrl) { toast.error("Envie o arquivo PDF."); return; }
+    if (!pdfUpload || pdfUpload.status !== "done" || !pdfUpload.path) {
+      toast.error("Envie o arquivo PDF (aguarde o upload concluir).");
+      return;
+    }
     const now = new Date();
     const dateLabel = `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}/${now.getFullYear()}`;
     onAdd({
@@ -692,10 +715,10 @@ function ReportsManager({ items, onAdd, onDelete }: { items: ReportItem[]; onAdd
       summary: "",
       highlights: [],
       folder,
-      fileName,
-      fileDataUrl,
+      fileName: pdfUpload.file.name,
+      fileDataUrl: pdfUpload.path,
     });
-    setTitle(""); setFileName(""); setFileDataUrl("");
+    setTitle(""); setPdfUpload(undefined);
     setFolderNew("");
     if (folderMode === "new") { setFolderMode("existing"); setFolderSelect(folder); }
   }
