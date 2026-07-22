@@ -4,6 +4,8 @@ export type ContentStatus =
   | "Planejado"
   | "Em Produção"
   | "Aguardando Aprovação"
+  | "Pendente de aprovação"
+  | "Alteração solicitada"
   | "Aprovado"
   | "Agendado"
   | "Publicado"
@@ -12,6 +14,12 @@ export type ContentStatus =
 export type Platform = "Instagram" | "Facebook" | "TikTok";
 
 export type CalendarKind = "Postagem" | "Gravação";
+
+export interface ApprovalHistoryEntry {
+  at: string;
+  action: "created" | "approved" | "changes_requested";
+  message?: string;
+}
 
 export interface CalendarContent {
   id: string;
@@ -25,6 +33,11 @@ export interface CalendarContent {
   kind?: CalendarKind;
   tagColor?: string; // hex color e.g. #1428FF
   scriptFile?: { name: string; dataUrl: string };
+  videoFile?: { name: string; dataUrl: string; type?: string };
+  coverFile?: { name: string; dataUrl: string };
+  approvalToken?: string;
+  approvalHistory?: ApprovalHistoryEntry[];
+  approvedAt?: string;
 }
 
 export interface ScriptFile {
@@ -335,6 +348,8 @@ export const STATUS_STYLES: Record<ContentStatus, string> = {
   "Planejado": "bg-slate-50 text-slate-600 border-slate-200",
   "Em Produção": "bg-amber-50 text-amber-700 border-amber-200",
   "Aguardando Aprovação": "bg-orange-50 text-orange-700 border-orange-200",
+  "Pendente de aprovação": "bg-amber-50 text-amber-800 border-amber-300",
+  "Alteração solicitada": "bg-red-50 text-red-700 border-red-200",
   "Aprovado": "bg-emerald-50 text-emerald-700 border-emerald-200",
   "Agendado": "bg-sky-50 text-sky-700 border-sky-200",
   "Publicado": "bg-violet-50 text-violet-700 border-violet-200",
@@ -346,8 +361,26 @@ export const STATUS_DOT: Record<ContentStatus, string> = {
   "Planejado": "bg-slate-400",
   "Em Produção": "bg-amber-500",
   "Aguardando Aprovação": "bg-orange-500",
+  "Pendente de aprovação": "bg-amber-500",
+  "Alteração solicitada": "bg-red-500",
   "Aprovado": "bg-emerald-500",
   "Agendado": "bg-sky-500",
   "Publicado": "bg-violet-500",
   "Solicitou Alteração": "bg-rose-500",
 };
+
+// Status-driven color override for calendar chips.
+// Returns a hex color when the status has a mandated color; null when the
+// user-selected tag color should be used.
+export function statusChipColor(status: ContentStatus): string | null {
+  switch (status) {
+    case "Pendente de aprovação":
+      return "#F59E0B";
+    case "Alteração solicitada":
+      return "#EF4444";
+    case "Aprovado":
+      return "#22C55E";
+    default:
+      return null;
+  }
+}

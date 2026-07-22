@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { CalendarContent, Notice, Report } from "@/lib/portal/mockData";
 
-const STORAGE_KEY = "maxease.admin.data.v1";
+export const STORAGE_KEY = "maxease.admin.data.v1";
 
 export interface SiteConfig {
   contact: {
@@ -88,6 +88,55 @@ export function findClientByEmail(email: string): AdminClient | null {
   return data.clients.find((c) => c.email.toLowerCase() === normalized) ?? null;
 }
 
+export function findCalendarItemByToken(token: string): { client: AdminClient; item: CalendarContent } | null {
+  if (typeof window === "undefined") return null;
+  const data = readStorage();
+  for (const client of data.clients) {
+    const item = client.calendar.find((c) => c.approvalToken === token);
+    if (item) return { client, item };
+  }
+  return null;
+}
+
+export function submitApprovalDecision(
+  token: string,
+  action: "approved" | "changes_requested",
+  message?: string,
+): { ok: boolean; item?: CalendarContent } {
+  if (typeof window === "undefined") return { ok: false };
+  const data = readStorage();
+  let updated: CalendarContent | undefined;
+  const now = new Date();
+  const stamp = `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}/${now.getFullYear()} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  const next: AdminData = {
+    ...data,
+    clients: data.clients.map((c) => ({
+      ...c,
+      calendar: c.calendar.map((it) => {
+        if (it.approvalToken !== token) return it;
+        const history = [...(it.approvalHistory ?? []), { at: stamp, action, message }];
+        const patched: CalendarContent = {
+          ...it,
+          status: action === "approved" ? "Aprovado" : "Alteração solicitada",
+          approvalHistory: history,
+          approvedAt: action === "approved" ? stamp : it.approvedAt,
+        };
+        updated = patched;
+        return patched;
+      }),
+    })),
+  };
+  if (!updated) return { ok: false };
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    // Notify same-tab subscribers (storage event only fires cross-tab).
+    window.dispatchEvent(new CustomEvent("maxease:admin-data-updated"));
+  } catch {
+    return { ok: false };
+  }
+  return { ok: true, item: updated };
+}
+
 interface AdminStoreContextValue {
   data: AdminData;
   hydrated: boolean;
@@ -113,6 +162,17 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setData(readStorage());
     setHydrated(true);
+    if (typeof window === "undefined") return;
+    const sync = () => setData(readStorage());
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY) sync();
+    };
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("maxease:admin-data-updated", sync);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("maxease:admin-data-updated", sync);
+    };
   }, []);
 
   const persist = useCallback((next: AdminData) => {

@@ -1,16 +1,22 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, X, Upload, Folder, FolderPlus } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, X, Upload, Folder, FolderPlus, Link2, Copy, Video, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
-import type { ContentStatus, Platform, CalendarKind } from "@/lib/portal/mockData";
+import { statusChipColor, type ContentStatus, type Platform, type CalendarKind } from "@/lib/portal/mockData";
 
 const STATUSES: ContentStatus[] = ["Planejado", "Em Produção", "Aguardando Aprovação", "Aprovado", "Agendado", "Publicado", "Solicitou Alteração"];
+const POST_STATUSES: ContentStatus[] = ["Planejado", "Pendente de aprovação", "Alteração solicitada", "Aprovado", "Publicado"];
 const PLATFORMS: Platform[] = ["Instagram", "Facebook", "TikTok"];
 const KINDS: CalendarKind[] = ["Postagem", "Gravação"];
 const TAG_COLORS = ["#1428FF", "#4F7CFF", "#22C55E", "#F59E0B", "#EF4444", "#A855F7", "#0EA5E9", "#64748B"];
+
+function generateToken() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID().replace(/-/g, "");
+  return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`;
+}
 
 export const Route = createFileRoute("/admin/clientes/$clientId")({
   head: () => ({ meta: [{ title: "Gerenciar cliente — Admin" }, { name: "robots", content: "noindex" }] }),
@@ -168,7 +174,8 @@ function ProfileEditor({ initial, onSave }: { initial: { name: string; company: 
   );
 }
 
-type CalItem = { id: string; title: string; caption: string; script: string; date: string; time: string; status: ContentStatus; platforms: Platform[]; kind?: CalendarKind; tagColor?: string; scriptFile?: { name: string; dataUrl: string } };
+import type { CalendarContent, ApprovalHistoryEntry } from "@/lib/portal/mockData";
+type CalItem = CalendarContent;
 
 const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 const MONTHS_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -256,7 +263,7 @@ function CalendarManager({ items, onAdd, onDelete }: { items: CalItem[]; onAdd: 
               </div>
               <div className="flex-1 space-y-1 overflow-hidden">
                 {evts.slice(0, 3).map((e) => {
-                  const color = e.tagColor ?? "#1428FF";
+                  const color = statusChipColor(e.status) ?? e.tagColor ?? "#1428FF";
                   return (
                     <div
                       key={e.id}
@@ -300,28 +307,81 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
   const [platforms, setPlatforms] = useState<Platform[]>(["Instagram"]);
   const [tagColor, setTagColor] = useState<string>(TAG_COLORS[0]);
   const [scriptFile, setScriptFile] = useState<{ name: string; dataUrl: string } | undefined>(undefined);
+  const [videoFile, setVideoFile] = useState<{ name: string; dataUrl: string; type?: string } | undefined>(undefined);
+  const [coverFile, setCoverFile] = useState<{ name: string; dataUrl: string } | undefined>(undefined);
+  const [lastLink, setLastLink] = useState<string | null>(null);
 
   const [y, m, d] = date.split("-").map(Number);
   const label = `${String(d).padStart(2, "0")} de ${MONTHS_PT[m - 1]} de ${y}`;
+
+  function readAsDataUrl(file: File, cb: (dataUrl: string) => void) {
+    const reader = new FileReader();
+    reader.onload = () => cb(String(reader.result));
+    reader.readAsDataURL(file);
+  }
 
   function onScriptFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.type !== "application/pdf") { toast.error("Envie um PDF."); return; }
     if (file.size > 10 * 1024 * 1024) { toast.error("PDF muito grande (máx 10MB)."); return; }
-    const reader = new FileReader();
-    reader.onload = () => setScriptFile({ name: file.name, dataUrl: String(reader.result) });
-    reader.readAsDataURL(file);
+    readAsDataUrl(file, (dataUrl) => setScriptFile({ name: file.name, dataUrl }));
   }
 
-  function submit(e: FormEvent) {
+  function onVideoFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("video/")) { toast.error("Envie um arquivo de vídeo."); return; }
+    if (file.size > 80 * 1024 * 1024) { toast.error("Vídeo muito grande (máx 80MB)."); return; }
+    readAsDataUrl(file, (dataUrl) => setVideoFile({ name: file.name, dataUrl, type: file.type }));
+  }
+
+  function onCoverFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { toast.error("Envie uma imagem."); return; }
+    if (file.size > 8 * 1024 * 1024) { toast.error("Imagem muito grande (máx 8MB)."); return; }
+    readAsDataUrl(file, (dataUrl) => setCoverFile({ name: file.name, dataUrl }));
+  }
+
+  function resetForm() {
+    setTitle(""); setCaption(""); setScript(""); setScriptFile(undefined);
+    setVideoFile(undefined); setCoverFile(undefined);
+  }
+
+  function submitGravacao(e: FormEvent) {
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
     onAdd({ title, caption, script, time, status, platforms, kind, tagColor, scriptFile });
-    toast.success("Evento criado.");
-    setTitle(""); setCaption(""); setScript(""); setScriptFile(undefined);
+    toast.success("Gravação criada.");
+    resetForm();
     setShowForm(false);
   }
+
+  function submitPostagem(e: FormEvent) {
+    e.preventDefault();
+    if (!title) { toast.error("Informe o título."); return; }
+    if (!videoFile) { toast.error("Envie o vídeo."); return; }
+    if (!coverFile) { toast.error("Envie a capa do vídeo."); return; }
+    const token = generateToken();
+    const now = new Date();
+    const stamp = `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}/${now.getFullYear()} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    const history: ApprovalHistoryEntry[] = [{ at: stamp, action: "created", message: "Link de aprovação gerado." }];
+    onAdd({
+      title, caption, script: "", time,
+      status: "Pendente de aprovação",
+      platforms, kind: "Postagem", tagColor,
+      scriptFile, videoFile, coverFile,
+      approvalToken: token, approvalHistory: history,
+    });
+    const link = `${window.location.origin}/aprovacao/${token}`;
+    setLastLink(link);
+    try { navigator.clipboard?.writeText(link); } catch { /* ignore */ }
+    toast.success("Conteúdo salvo. Link de aprovação copiado.");
+    resetForm();
+  }
+
+  const useStatuses = kind === "Postagem" ? POST_STATUSES : STATUSES;
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
@@ -354,8 +414,20 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
                           {(ev.kind ?? "Postagem")} · {ev.platforms.join(", ")} · {ev.status}
                         </div>
                         {ev.caption && <div className="text-xs text-slate-600 mt-1 line-clamp-2">{ev.caption}</div>}
+                        {ev.approvalToken && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const link = `${window.location.origin}/aprovacao/${ev.approvalToken}`;
+                              try { navigator.clipboard?.writeText(link); toast.success("Link copiado."); } catch { toast.error("Não foi possível copiar."); }
+                            }}
+                            className="mt-1 inline-flex items-center gap-1 text-xs text-brand-light hover:underline"
+                          >
+                            <Link2 className="h-3 w-3" /> Copiar link de aprovação
+                          </button>
+                        )}
                         {ev.scriptFile && (
-                          <a href={ev.scriptFile.dataUrl} download={ev.scriptFile.name} className="mt-1 inline-flex items-center gap-1 text-xs text-brand-light hover:underline">
+                          <a href={ev.scriptFile.dataUrl} download={ev.scriptFile.name} className="mt-1 ml-3 inline-flex items-center gap-1 text-xs text-brand-light hover:underline">
                             <FileText className="h-3 w-3" /> {ev.scriptFile.name}
                           </a>
                         )}
@@ -370,6 +442,18 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
             </div>
           )}
 
+          {lastLink && (
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
+              <div className="text-xs font-semibold text-emerald-800 mb-1">Link de aprovação gerado</div>
+              <div className="flex items-center gap-2">
+                <input readOnly value={lastLink} className="flex-1 min-w-0 rounded-md border border-emerald-200 bg-white px-2 py-1.5 text-xs text-slate-700" />
+                <button type="button" onClick={() => { try { navigator.clipboard?.writeText(lastLink); toast.success("Copiado."); } catch { /* ignore */ } }} className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-emerald-700">
+                  <Copy className="h-3 w-3" /> Copiar
+                </button>
+              </div>
+            </div>
+          )}
+
           {!showForm && (
             <button type="button" onClick={() => setShowForm(true)} className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 text-slate-600 hover:border-brand-light hover:text-brand-light px-4 py-3 text-sm font-medium">
               <Plus className="h-4 w-4" /> Adicionar novo evento
@@ -377,25 +461,25 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
           )}
 
           {showForm && (
-            <form onSubmit={submit} className="space-y-3 border-t border-slate-100 pt-4">
+            <form onSubmit={kind === "Postagem" ? submitPostagem : submitGravacao} className="space-y-3 border-t border-slate-100 pt-4">
               <div>
                 <span className="text-xs font-medium text-slate-600">Tipo</span>
                 <div className="mt-1.5 inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50">
                   {KINDS.map((k) => (
-                    <button key={k} type="button" onClick={() => setKind(k)}
+                    <button key={k} type="button" onClick={() => { setKind(k); setStatus(k === "Postagem" ? "Planejado" : "Planejado"); }}
                       className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${kind === k ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}>
                       {k === "Postagem" ? "Conteúdo a postar" : "Dia de gravação"}
                     </button>
                   ))}
                 </div>
               </div>
-              <TextField label="Título" value={title} onChange={setTitle} />
+              <TextField label="Título do conteúdo" value={title} onChange={setTitle} />
               <div className="grid grid-cols-2 gap-3">
-                <TextField label="Hora" value={time} onChange={setTime} type="time" />
+                <TextField label="Horário" value={time} onChange={setTime} type="time" />
                 <label className="block">
                   <span className="text-xs font-medium text-slate-600">Status</span>
                   <select value={status} onChange={(e) => setStatus(e.target.value as ContentStatus)} className="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900">
-                    {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                    {useStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </label>
               </div>
@@ -416,19 +500,64 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
               </div>
 
               <TextField label="Legenda" value={caption} onChange={setCaption} multiline />
-              <TextField label="Roteiro (texto)" value={script} onChange={setScript} multiline />
 
-              <div>
-                <span className="text-xs font-medium text-slate-600">Roteiro em PDF</span>
-                <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-                  <Upload className="h-4 w-4" />
-                  <span className="truncate">{scriptFile?.name ?? "Selecionar PDF do roteiro"}</span>
-                  <input type="file" accept="application/pdf" onChange={onScriptFile} className="hidden" />
-                </label>
-                {scriptFile && (
-                  <button type="button" onClick={() => setScriptFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover PDF</button>
-                )}
-              </div>
+              {kind === "Postagem" ? (
+                <>
+                  <div>
+                    <span className="text-xs font-medium text-slate-600">Vídeo (preferencialmente 9:16)</span>
+                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
+                      <Video className="h-4 w-4" />
+                      <span className="truncate">{videoFile?.name ?? "Selecionar vídeo"}</span>
+                      <input type="file" accept="video/*" onChange={onVideoFile} className="hidden" />
+                    </label>
+                    {videoFile && (
+                      <button type="button" onClick={() => setVideoFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover vídeo</button>
+                    )}
+                  </div>
+
+                  <div>
+                    <span className="text-xs font-medium text-slate-600">Capa do vídeo</span>
+                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
+                      <ImageIcon className="h-4 w-4" />
+                      <span className="truncate">{coverFile?.name ?? "Selecionar imagem de capa"}</span>
+                      <input type="file" accept="image/*" onChange={onCoverFile} className="hidden" />
+                    </label>
+                    {coverFile && (
+                      <div className="mt-2 flex items-center gap-2">
+                        <img src={coverFile.dataUrl} alt="Capa" className="h-14 w-14 object-cover rounded-md border border-slate-200" />
+                        <button type="button" onClick={() => setCoverFile(undefined)} className="text-xs text-red-600 hover:underline">Remover capa</button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <span className="text-xs font-medium text-slate-600">Roteiro em PDF (opcional)</span>
+                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
+                      <Upload className="h-4 w-4" />
+                      <span className="truncate">{scriptFile?.name ?? "Selecionar PDF do roteiro"}</span>
+                      <input type="file" accept="application/pdf" onChange={onScriptFile} className="hidden" />
+                    </label>
+                    {scriptFile && (
+                      <button type="button" onClick={() => setScriptFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover PDF</button>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <TextField label="Roteiro (texto)" value={script} onChange={setScript} multiline />
+                  <div>
+                    <span className="text-xs font-medium text-slate-600">Roteiro em PDF</span>
+                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
+                      <Upload className="h-4 w-4" />
+                      <span className="truncate">{scriptFile?.name ?? "Selecionar PDF do roteiro"}</span>
+                      <input type="file" accept="application/pdf" onChange={onScriptFile} className="hidden" />
+                    </label>
+                    {scriptFile && (
+                      <button type="button" onClick={() => setScriptFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover PDF</button>
+                    )}
+                  </div>
+                </>
+              )}
 
               <div>
                 <span className="text-xs font-medium text-slate-600">Plataformas</span>
@@ -449,7 +578,7 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
                   <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">Cancelar</button>
                 )}
                 <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-brand-gradient px-4 py-2 text-sm text-white font-medium">
-                  <Plus className="h-4 w-4" /> Salvar evento
+                  {kind === "Postagem" ? (<><Link2 className="h-4 w-4" /> Salvar e gerar link de aprovação</>) : (<><Plus className="h-4 w-4" /> Salvar evento</>)}
                 </button>
               </div>
             </form>
