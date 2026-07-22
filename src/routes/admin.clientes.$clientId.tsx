@@ -99,6 +99,7 @@ function ClientDetail() {
           clientId={client.id}
           items={client.calendar}
           onAdd={(item) => { addCalendarItem(client.id, item); toast.success("Conteúdo adicionado."); }}
+          onUpdate={(id, patch) => { updateCalendarItem(client.id, id, patch); toast.success("Evento atualizado."); }}
           onDelete={(id) => { deleteCalendarItem(client.id, id); toast.success("Conteúdo removido."); }}
         />
       )}
