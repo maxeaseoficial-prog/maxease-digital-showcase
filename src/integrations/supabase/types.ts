@@ -14,16 +14,294 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      calendar_items: {
+        Row: {
+          approval_history: Json
+          approval_token: string | null
+          approved_at: string | null
+          caption: string | null
+          client_id: string
+          cover_name: string | null
+          cover_path: string | null
+          created_at: string
+          date: string
+          files_deleted_at: string | null
+          files_purge_at: string | null
+          id: string
+          kind: string
+          platforms: string[]
+          script: string | null
+          script_name: string | null
+          script_path: string | null
+          status: string
+          tag_color: string | null
+          time: string | null
+          title: string
+          updated_at: string
+          video_name: string | null
+          video_path: string | null
+          video_type: string | null
+        }
+        Insert: {
+          approval_history?: Json
+          approval_token?: string | null
+          approved_at?: string | null
+          caption?: string | null
+          client_id: string
+          cover_name?: string | null
+          cover_path?: string | null
+          created_at?: string
+          date: string
+          files_deleted_at?: string | null
+          files_purge_at?: string | null
+          id?: string
+          kind: string
+          platforms?: string[]
+          script?: string | null
+          script_name?: string | null
+          script_path?: string | null
+          status?: string
+          tag_color?: string | null
+          time?: string | null
+          title: string
+          updated_at?: string
+          video_name?: string | null
+          video_path?: string | null
+          video_type?: string | null
+        }
+        Update: {
+          approval_history?: Json
+          approval_token?: string | null
+          approved_at?: string | null
+          caption?: string | null
+          client_id?: string
+          cover_name?: string | null
+          cover_path?: string | null
+          created_at?: string
+          date?: string
+          files_deleted_at?: string | null
+          files_purge_at?: string | null
+          id?: string
+          kind?: string
+          platforms?: string[]
+          script?: string | null
+          script_name?: string | null
+          script_path?: string | null
+          status?: string
+          tag_color?: string | null
+          time?: string | null
+          title?: string
+          updated_at?: string
+          video_name?: string | null
+          video_path?: string | null
+          video_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_items_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          active_project: string | null
+          avatar_url: string | null
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          active_project?: string | null
+          avatar_url?: string | null
+          company?: string | null
+          created_at?: string
+          email: string
+          id: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          active_project?: string | null
+          avatar_url?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      notices: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          message: string
+          read: boolean
+          title: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean
+          title: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_folders: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_folders_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          client_id: string
+          created_at: string
+          folder_id: string | null
+          id: string
+          pdf_name: string | null
+          pdf_path: string
+          title: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          folder_id?: string | null
+          id?: string
+          pdf_name?: string | null
+          pdf_path: string
+          title: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          folder_id?: string | null
+          id?: string
+          pdf_name?: string | null
+          pdf_path?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "report_folders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_config: {
+        Row: {
+          data: Json
+          id: number
+          updated_at: string
+        }
+        Insert: {
+          data?: Json
+          id?: number
+          updated_at?: string
+        }
+        Update: {
+          data?: Json
+          id?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "client"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +428,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "client"],
+    },
   },
 } as const
