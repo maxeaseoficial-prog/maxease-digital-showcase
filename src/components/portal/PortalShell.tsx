@@ -15,7 +15,7 @@ import {
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
 import { usePortalAuth } from "@/lib/portal/auth";
-import { mockClient, mockNotices } from "@/lib/portal/mockData";
+import { usePortalData } from "@/lib/portal/data";
 
 const NAV = [
   { to: "/cliente/dashboard", label: "Dashboard", icon: LayoutDashboard },

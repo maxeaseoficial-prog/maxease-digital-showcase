@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { PortalAuthProvider } from "@/lib/portal/auth";
+import { PortalDataProvider } from "@/lib/portal/data";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -11,10 +12,12 @@ export const Route = createFileRoute("/cliente")({
 function ClienteLayout() {
   return (
     <PortalAuthProvider>
-      <PortalShell>
-        <Outlet />
-      </PortalShell>
-      <Toaster />
+      <PortalDataProvider>
+        <PortalShell>
+          <Outlet />
+        </PortalShell>
+        <Toaster />
+      </PortalDataProvider>
     </PortalAuthProvider>
   );
 }
