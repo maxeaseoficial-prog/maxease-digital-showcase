@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Plus, Trash2, CalendarDays, FileText, Bell, Save, ChevronLeft, ChevronRight, X, Upload, Folder, FolderPlus } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, X, Upload, Folder, FolderPlus } from "lucide-react";
 import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
