@@ -689,7 +689,7 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
                     onRemove={() => clearSlot(videoUpload, setVideoUpload)}
                   />
                   <UploadSlotField
-                    label="Capa do vídeo"
+                    label={isEditing ? "Substituir capa (opcional)" : "Capa do vídeo"}
                     icon={<ImageIcon className="h-4 w-4" />}
                     placeholder="Selecionar imagem de capa"
                     accept="image/*"
