@@ -20,15 +20,17 @@ function RelatoriosPage() {
   const [selected, setSelected] = useState<Report | null>(null);
 
   useEffect(() => {
-    if (session) {
-      const client = findClientByEmail(session.email);
-      if (client && client.reports.length > 0) {
-        setReports(client.reports);
-        return;
-      }
-    }
-    setReports(mockReports);
+    let alive = true;
+    (async () => {
+      if (!session) { setReports(mockReports); return; }
+      const client = await findClientByEmail(session.email);
+      if (!alive) return;
+      if (client && client.reports.length > 0) setReports(client.reports);
+      else setReports(mockReports);
+    })();
+    return () => { alive = false; };
   }, [session]);
+
 
   const folders = useMemo(() => {
     const map = new Map<string, Report[]>();
