@@ -501,13 +501,32 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
     if (isEditing && editing) {
-      onUpdate(editing.id, { title, caption, time, status, platforms, kind, tagColor });
+      if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
+      if (videoUpload && videoUpload.status !== "done") { toast.error("O upload do vídeo não concluiu."); return; }
+      if (coverUpload && coverUpload.status !== "done") { toast.error("O upload da capa não concluiu."); return; }
+      if (scriptUpload && scriptUpload.status !== "done") { toast.error("O PDF do roteiro não concluiu o upload."); return; }
+      const patch: Partial<CalItem> = { title, caption, time, status, platforms, kind, tagColor };
+      if (videoUpload?.status === "done") {
+        patch.videoFile = toStoredFile(videoUpload, true);
+        if (editing.videoFile?.dataUrl) void removeUploaded("videos", editing.videoFile.dataUrl);
+      }
+      if (coverUpload?.status === "done") {
+        patch.coverFile = toStoredFile(coverUpload);
+        if (editing.coverFile?.dataUrl) void removeUploaded("thumbnails", editing.coverFile.dataUrl);
+      }
+      if (scriptUpload?.status === "done") {
+        patch.scriptFile = toStoredFile(scriptUpload);
+        if (editing.scriptFile?.dataUrl) void removeUploaded("pdfs", editing.scriptFile.dataUrl);
+      }
+      onUpdate(editing.id, patch);
+      toast.success("Evento atualizado.");
       onClose();
       return;
     }
     if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
     if (!videoUpload || videoUpload.status !== "done") { toast.error("Envie o vídeo (upload deve concluir)."); return; }
     if (!coverUpload || coverUpload.status !== "done") { toast.error("Envie a capa (upload deve concluir)."); return; }
+
     if (scriptUpload && scriptUpload.status !== "done") { toast.error("O PDF do roteiro não concluiu o upload."); return; }
     const token = generateToken();
     const now = new Date();
@@ -651,8 +670,17 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
 
               {kind === "Postagem" ? (
                 <>
+                  {isEditing && (editing?.videoFile || editing?.coverFile) && (
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 space-y-1">
+                      <div className="font-semibold text-slate-700">Arquivos atuais</div>
+                      {editing?.videoFile && <div className="flex items-center gap-1.5"><Video className="h-3 w-3" /> {editing.videoFile.name}</div>}
+                      {editing?.coverFile && <div className="flex items-center gap-1.5"><ImageIcon className="h-3 w-3" /> {editing.coverFile.name}</div>}
+                      <div className="text-[11px] text-slate-500 mt-1">Envie um novo arquivo abaixo para substituir. Deixe em branco para manter.</div>
+                    </div>
+                  )}
                   <UploadSlotField
-                    label="Vídeo (preferencialmente 9:16, até 1 GB)"
+                    label={isEditing ? "Substituir vídeo (opcional, até 1 GB)" : "Vídeo (preferencialmente 9:16, até 1 GB)"}
+
                     icon={<Video className="h-4 w-4" />}
                     placeholder="Selecionar vídeo"
                     accept="video/*"
@@ -661,7 +689,7 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
                     onRemove={() => clearSlot(videoUpload, setVideoUpload)}
                   />
                   <UploadSlotField
-                    label="Capa do vídeo"
+                    label={isEditing ? "Substituir capa (opcional)" : "Capa do vídeo"}
                     icon={<ImageIcon className="h-4 w-4" />}
                     placeholder="Selecionar imagem de capa"
                     accept="image/*"
@@ -714,8 +742,9 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
                   <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">Cancelar</button>
                 )}
                 <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-brand-gradient px-4 py-2 text-sm text-white font-medium">
-                  {kind === "Postagem" ? (<><Link2 className="h-4 w-4" /> Salvar e gerar link de aprovação</>) : (<><Plus className="h-4 w-4" /> Salvar evento</>)}
+                  {isEditing ? (<><Save className="h-4 w-4" /> Salvar alterações</>) : kind === "Postagem" ? (<><Link2 className="h-4 w-4" /> Salvar e gerar link de aprovação</>) : (<><Plus className="h-4 w-4" /> Salvar evento</>)}
                 </button>
+
               </div>
             </form>
           )}
