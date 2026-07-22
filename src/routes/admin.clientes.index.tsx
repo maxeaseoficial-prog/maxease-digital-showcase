@@ -90,11 +90,16 @@ function ClientesContent() {
         </div>
       )}
 
-      {open && <NewClientModal onClose={() => setOpen(false)} onCreate={(input) => {
-        const c = createClient(input);
-        toast.success(`Cliente ${c.company} criado.`);
-        setOpen(false);
+      {open && <NewClientModal onClose={() => setOpen(false)} onCreate={async (input) => {
+        try {
+          const c = await createClient(input);
+          toast.success(`Cliente ${c.company} criado.`);
+          setOpen(false);
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Erro ao criar cliente.");
+        }
       }} />}
+
 
       {confirmTarget && (
         <ConfirmDialog

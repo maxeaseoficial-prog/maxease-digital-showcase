@@ -3,11 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { CheckCircle2, MessageSquare, Clock, Calendar as CalendarIcon, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-import {
-  findCalendarItemByToken,
-  submitApprovalDecision,
-  STORAGE_KEY,
-} from "@/lib/admin/store";
+import { getApprovalByToken, submitApproval } from "@/lib/approval.functions";
+import { calRowToContent } from "@/lib/admin/store";
 import type { CalendarContent } from "@/lib/portal/mockData";
 
 export const Route = createFileRoute("/aprovacao/$token")({
@@ -25,18 +22,21 @@ function ApprovacaoPage() {
   const [state, setState] = useState<{ item: CalendarContent; clientName: string } | null | undefined>(undefined);
   const [mode, setMode] = useState<"idle" | "confirm-approve" | "request">("idle");
   const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const load = () => {
-      const result = findCalendarItemByToken(token);
-      if (!result) { setState(null); return; }
-      setState({ item: result.item, clientName: result.client.name });
-    };
-    load();
-    const onStorage = (e: StorageEvent) => { if (e.key === STORAGE_KEY) load(); };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    let alive = true;
+    (async () => {
+      try {
+        const res = await getApprovalByToken({ data: { token } });
+        if (!alive) return;
+        if (!res.found) { setState(null); return; }
+        setState({ item: calRowToContent(res.item as never), clientName: res.client.name });
+      } catch {
+        if (alive) setState(null);
+      }
+    })();
+    return () => { alive = false; };
   }, [token]);
 
   if (state === undefined) {
@@ -56,24 +56,43 @@ function ApprovacaoPage() {
   const { item, clientName } = state;
   const decided = item.status === "Aprovado" || item.status === "Alteração solicitada";
 
-  function approve() {
-    const res = submitApprovalDecision(token, "approved");
-    if (!res.ok || !res.item) { toast.error("Não foi possível registrar a aprovação."); return; }
-    setState((prev) => (prev ? { ...prev, item: res.item! } : prev));
-    setMode("idle");
-    toast.success("Conteúdo aprovado. Obrigado!");
+  async function approve() {
+    setSubmitting(true);
+    try {
+      await submitApproval({ data: { token, action: "approved" } });
+      const refreshed = await getApprovalByToken({ data: { token } });
+      if (refreshed.found) {
+        setState((prev) => (prev ? { ...prev, item: calRowToContent(refreshed.item as never) } : prev));
+      }
+      setMode("idle");
+      toast.success("Conteúdo aprovado. Obrigado!");
+    } catch {
+      toast.error("Não foi possível registrar a aprovação.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
-  function requestChanges() {
+  async function requestChanges() {
     const trimmed = message.trim();
     if (!trimmed) { toast.error("Descreva o ajuste desejado."); return; }
-    const res = submitApprovalDecision(token, "changes_requested", trimmed);
-    if (!res.ok || !res.item) { toast.error("Não foi possível registrar a solicitação."); return; }
-    setState((prev) => (prev ? { ...prev, item: res.item! } : prev));
-    setMessage("");
-    setMode("idle");
-    toast.success("Solicitação enviada. A equipe MAXEASE já foi notificada.");
+    setSubmitting(true);
+    try {
+      await submitApproval({ data: { token, action: "changes_requested", message: trimmed } });
+      const refreshed = await getApprovalByToken({ data: { token } });
+      if (refreshed.found) {
+        setState((prev) => (prev ? { ...prev, item: calRowToContent(refreshed.item as never) } : prev));
+      }
+      setMessage("");
+      setMode("idle");
+      toast.success("Solicitação enviada. A equipe MAXEASE já foi notificada.");
+    } catch {
+      toast.error("Não foi possível registrar a solicitação.");
+    } finally {
+      setSubmitting(false);
+    }
   }
+
 
   return (
     <div className="min-h-screen bg-slate-50">
