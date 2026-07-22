@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, X, FileText, ArrowLeft } from "lucide-react";
-import { PortalPageHeader } from "@/components/portal/PortalShell";
-import { mockReports, mockClient, type Report } from "@/lib/portal/mockData";
-import { usePortalAuth } from "@/lib/portal/auth";
-import { findClientByEmail } from "@/lib/admin/store";
 import { toast } from "sonner";
+import { PortalPageHeader } from "@/components/portal/PortalShell";
+import { usePortalAuth } from "@/lib/portal/auth";
+import { usePortalData } from "@/lib/portal/data";
+import type { Report } from "@/lib/portal/mockData";
 
 export const Route = createFileRoute("/cliente/relatorios")({
   head: () => ({ meta: [{ title: "Relatórios — Portal do Cliente" }, { name: "robots", content: "noindex" }] }),
@@ -15,22 +15,9 @@ export const Route = createFileRoute("/cliente/relatorios")({
 
 function RelatoriosPage() {
   const { session } = usePortalAuth();
-  const [reports, setReports] = useState<Report[]>([]);
+  const { reports, loading, error } = usePortalData();
   const [openFolder, setOpenFolder] = useState<string | null>(null);
   const [selected, setSelected] = useState<Report | null>(null);
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      if (!session) { setReports(mockReports); return; }
-      const client = await findClientByEmail(session.email);
-      if (!alive) return;
-      if (client && client.reports.length > 0) setReports(client.reports);
-      else setReports(mockReports);
-    })();
-    return () => { alive = false; };
-  }, [session]);
-
 
   const folders = useMemo(() => {
     const map = new Map<string, Report[]>();
@@ -52,13 +39,25 @@ function RelatoriosPage() {
         subtitle={openFolder ? `Pasta: ${openFolder}` : "Clique em uma pasta para abrir os relatórios em PDF."}
       />
 
+      {error && (
+        <div className="mb-4 rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm p-3">
+          Falha ao carregar relatórios: {error}
+        </div>
+      )}
+
       {openFolder && (
         <button type="button" onClick={() => setOpenFolder(null)} className="mb-4 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800">
           <ArrowLeft className="h-4 w-4" /> Voltar às pastas
         </button>
       )}
 
-      {folders.length === 0 && (
+      {loading && reports.length === 0 && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-500">
+          Carregando relatórios...
+        </div>
+      )}
+
+      {!loading && folders.length === 0 && (
         <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-10 text-center text-sm text-slate-500">
           Nenhum relatório disponível ainda.
         </div>
@@ -105,7 +104,7 @@ function RelatoriosPage() {
       )}
 
       <AnimatePresence>
-        {selected && <PdfViewer report={selected} onClose={() => setSelected(null)} />}
+        {selected && <PdfViewer report={selected} company={session?.company ?? ""} onClose={() => setSelected(null)} />}
       </AnimatePresence>
     </div>
   );
@@ -137,7 +136,7 @@ function FolderIcon() {
   );
 }
 
-function PdfViewer({ report, onClose }: { report: Report; onClose: () => void }) {
+function PdfViewer({ report, company, onClose }: { report: Report; company: string; onClose: () => void }) {
   const filename = report.fileName ?? `Relatorio-${report.date.replace(/\s+/g, "-")}.pdf`;
 
   function download() {
@@ -196,32 +195,13 @@ function PdfViewer({ report, onClose }: { report: Report; onClose: () => void })
               <div>
                 <div className="text-xs uppercase tracking-widest text-brand-light font-semibold">MAXEASE Digital</div>
                 <h1 className="text-2xl sm:text-3xl font-bold mt-1 text-slate-900">{report.name}</h1>
-                <div className="text-sm text-slate-500 mt-1">Período: {report.period} • Cliente: {mockClient.company}</div>
+                <div className="text-sm text-slate-500 mt-1">Período: {report.period} • Cliente: {company}</div>
               </div>
               <div className="text-right">
                 <div className="text-[11px] uppercase text-slate-400">Referência</div>
                 <div className="text-sm font-semibold text-slate-700">{report.date}</div>
               </div>
             </div>
-            {report.highlights.length > 0 && (
-              <div>
-                <div className="text-xs uppercase tracking-wide text-slate-500 mb-3">Destaques do período</div>
-                <div className="grid grid-cols-2 gap-3">
-                  {report.highlights.map((h) => (
-                    <div key={h.label} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                      <div className="text-[10px] uppercase text-slate-500 tracking-wide">{h.label}</div>
-                      <div className="text-2xl font-bold text-slate-900 mt-1">{h.value}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {report.summary && (
-              <div className="mt-6">
-                <div className="text-xs uppercase tracking-wide text-slate-500 mb-2">Resumo executivo</div>
-                <p className="text-sm text-slate-700 leading-relaxed">{report.summary}</p>
-              </div>
-            )}
             <div className="mt-auto pt-6 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-400">
               <span>MAXEASE Digital • Relatório confidencial</span>
               <span>Página 1</span>

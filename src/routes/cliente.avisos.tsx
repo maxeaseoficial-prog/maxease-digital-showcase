@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Bell, CheckCheck } from "lucide-react";
+import { toast } from "sonner";
 import { PortalPageHeader } from "@/components/portal/PortalShell";
-import { mockNotices, type Notice } from "@/lib/portal/mockData";
+import { usePortalData } from "@/lib/portal/data";
 
 export const Route = createFileRoute("/cliente/avisos")({
   head: () => ({ meta: [{ title: "Avisos — Portal do Cliente" }, { name: "robots", content: "noindex" }] }),
@@ -11,15 +11,24 @@ export const Route = createFileRoute("/cliente/avisos")({
 });
 
 function AvisosPage() {
-  const [notices, setNotices] = useState<Notice[]>(mockNotices);
+  const { notices, loading, error, toggleNoticeRead, markAllNoticesRead } = usePortalData();
   const unread = notices.filter((n) => !n.read).length;
 
-  function toggle(id: string) {
-    setNotices((prev) => prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n)));
+  async function toggle(id: string, current: boolean) {
+    try {
+      await toggleNoticeRead(id, !current);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Não foi possível atualizar o aviso.");
+    }
   }
 
-  function markAll() {
-    setNotices((prev) => prev.map((n) => ({ ...n, read: true })));
+  async function markAll() {
+    try {
+      await markAllNoticesRead();
+      toast.success("Todos os avisos foram marcados como lidos.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Não foi possível atualizar os avisos.");
+    }
   }
 
   return (
@@ -29,9 +38,19 @@ function AvisosPage() {
         subtitle="Todas as atualizações e comunicados enviados pela equipe MAXEASE."
       />
 
+      {error && (
+        <div className="mb-4 rounded-xl border border-red-400/40 bg-red-500/10 text-red-200 text-sm p-3">
+          Falha ao carregar avisos: {error}
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-4">
         <div className="text-sm text-white/60">
-          {unread > 0 ? `${unread} não lida${unread > 1 ? "s" : ""}` : "Tudo em dia"}
+          {loading && notices.length === 0
+            ? "Carregando..."
+            : unread > 0
+            ? `${unread} não lida${unread > 1 ? "s" : ""}`
+            : "Tudo em dia"}
         </div>
         {unread > 0 && (
           <button
@@ -44,12 +63,18 @@ function AvisosPage() {
         )}
       </div>
 
+      {!loading && notices.length === 0 && (
+        <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-10 text-center text-sm text-white/60">
+          Nenhum aviso disponível no momento.
+        </div>
+      )}
+
       <div className="space-y-3">
         {notices.map((n, i) => (
           <motion.button
             key={n.id}
             type="button"
-            onClick={() => toggle(n.id)}
+            onClick={() => toggle(n.id, n.read)}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
