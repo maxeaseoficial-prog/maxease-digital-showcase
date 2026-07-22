@@ -32,7 +32,7 @@ export const Route = createFileRoute("/admin/clientes/$clientId")({
 function ClientDetail() {
   const { clientId } = Route.useParams();
   const navigate = useNavigate();
-  const { data, updateClient, deleteClient, addCalendarItem, deleteCalendarItem, addReport, deleteReport, addNotice, deleteNotice } = useAdminStore();
+  const { data, updateClient, deleteClient, addCalendarItem, updateCalendarItem, deleteCalendarItem, addReport, deleteReport, addNotice, deleteNotice } = useAdminStore();
   const client = data.clients.find((c) => c.id === clientId);
   const [tab, setTab] = useState<"perfil" | "calendario" | "relatorios" | "avisos">("perfil");
 
@@ -99,6 +99,7 @@ function ClientDetail() {
           clientId={client.id}
           items={client.calendar}
           onAdd={(item) => { addCalendarItem(client.id, item); toast.success("Conteúdo adicionado."); }}
+          onUpdate={(id, patch) => { updateCalendarItem(client.id, id, patch); toast.success("Evento atualizado."); }}
           onDelete={(id) => { deleteCalendarItem(client.id, id); toast.success("Conteúdo removido."); }}
         />
       )}
@@ -188,10 +189,27 @@ function toISODate(y: number, m: number, d: number) {
   return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
-function CalendarManager({ clientId, items, onAdd, onDelete }: { clientId: string; items: CalItem[]; onAdd: (i: Omit<CalItem, "id">) => void; onDelete: (id: string) => void }) {
+function CalendarManager({ clientId, items, onAdd, onUpdate, onDelete }: { clientId: string; items: CalItem[]; onAdd: (i: Omit<CalItem, "id">) => void; onUpdate: (id: string, patch: Partial<CalItem>) => void; onDelete: (id: string) => void }) {
   const today = new Date();
   const [cursor, setCursor] = useState({ y: today.getFullYear(), m: today.getMonth() });
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [editing, setEditing] = useState<CalItem | null>(null);
+  const [menu, setMenu] = useState<{ x: number; y: number; item: CalItem } | null>(null);
+
+  useEffect(() => {
+    if (!menu) return;
+    const close = () => setMenu(null);
+    window.addEventListener("click", close);
+    window.addEventListener("contextmenu", close);
+    window.addEventListener("scroll", close, true);
+    window.addEventListener("resize", close);
+    return () => {
+      window.removeEventListener("click", close);
+      window.removeEventListener("contextmenu", close);
+      window.removeEventListener("scroll", close, true);
+      window.removeEventListener("resize", close);
+    };
+  }, [menu]);
 
   const grid = useMemo(() => {
     const first = new Date(cursor.y, cursor.m, 1);
@@ -271,8 +289,16 @@ function CalendarManager({ clientId, items, onAdd, onDelete }: { clientId: strin
                   return (
                     <div
                       key={e.id}
-                      className="truncate rounded-md px-1.5 py-0.5 text-[10px] font-medium border"
+                      role="button"
+                      tabIndex={0}
+                      onContextMenu={(ev) => {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        setMenu({ x: ev.clientX, y: ev.clientY, item: e });
+                      }}
+                      className="truncate rounded-md px-1.5 py-0.5 text-[10px] font-medium border cursor-context-menu"
                       style={{ backgroundColor: `${color}1A`, borderColor: `${color}40`, color }}
+                      title="Clique com o botão direito para editar ou excluir"
                     >
                       {e.kind === "Gravação" ? "● " : ""}{e.time && <span className="opacity-70">{e.time} </span>}{e.title}
                     </div>
@@ -285,14 +311,51 @@ function CalendarManager({ clientId, items, onAdd, onDelete }: { clientId: strin
         })}
       </div>
 
+      {menu && (
+        <div
+          className="fixed z-[60] min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl py-1 text-sm"
+          style={{ left: Math.min(menu.x, (typeof window !== "undefined" ? window.innerWidth : 1000) - 200), top: Math.min(menu.y, (typeof window !== "undefined" ? window.innerHeight : 1000) - 100) }}
+          onClick={(e) => e.stopPropagation()}
+          onContextMenu={(e) => e.preventDefault()}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setEditing(menu.item);
+              setSelectedDate(menu.item.date);
+              setMenu(null);
+            }}
+            className="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+          >
+            <FileText className="h-4 w-4" /> Editar evento
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const item = menu.item;
+              setMenu(null);
+              if (confirm(`Excluir "${item.title}"? Essa ação não pode ser desfeita.`)) {
+                onDelete(item.id);
+              }
+            }}
+            className="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 flex items-center gap-2"
+          >
+            <Trash2 className="h-4 w-4" /> Excluir evento
+          </button>
+        </div>
+      )}
+
       <AnimatePresence>
         {selectedDate && (
           <DayModal
+            key={editing?.id ?? `new-${selectedDate}`}
             clientId={clientId}
             date={selectedDate}
             events={eventsByDate.get(selectedDate) ?? []}
-            onClose={() => setSelectedDate(null)}
+            editing={editing}
+            onClose={() => { setSelectedDate(null); setEditing(null); }}
             onAdd={(item) => onAdd({ ...item, date: selectedDate })}
+            onUpdate={onUpdate}
             onDelete={onDelete}
           />
         )}
@@ -312,16 +375,17 @@ interface UploadSlot {
   handle: UploadHandle;
 }
 
-function DayModal({ clientId, date, events, onClose, onAdd, onDelete }: { clientId: string; date: string; events: CalItem[]; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onDelete: (id: string) => void }) {
-  const [showForm, setShowForm] = useState(events.length === 0);
-  const [kind, setKind] = useState<CalendarKind>("Postagem");
-  const [title, setTitle] = useState("");
-  const [caption, setCaption] = useState("");
-  const [script, setScript] = useState("");
-  const [time, setTime] = useState("09:00");
-  const [status, setStatus] = useState<ContentStatus>("Planejado");
-  const [platforms, setPlatforms] = useState<Platform[]>(["Instagram"]);
-  const [tagColor, setTagColor] = useState<string>(TAG_COLORS[0]);
+function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, onDelete }: { clientId: string; date: string; events: CalItem[]; editing?: CalItem | null; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onUpdate: (id: string, patch: Partial<CalItem>) => void; onDelete: (id: string) => void }) {
+  const isEditing = !!editing;
+  const [showForm, setShowForm] = useState(events.length === 0 || isEditing);
+  const [kind, setKind] = useState<CalendarKind>(editing?.kind ?? "Postagem");
+  const [title, setTitle] = useState(editing?.title ?? "");
+  const [caption, setCaption] = useState(editing?.caption ?? "");
+  const [script, setScript] = useState(editing?.script ?? "");
+  const [time, setTime] = useState(editing?.time ?? "09:00");
+  const [status, setStatus] = useState<ContentStatus>(editing?.status ?? "Planejado");
+  const [platforms, setPlatforms] = useState<Platform[]>(editing?.platforms ?? ["Instagram"]);
+  const [tagColor, setTagColor] = useState<string>(editing?.tagColor ?? TAG_COLORS[0]);
   const [videoUpload, setVideoUpload] = useState<UploadSlot | undefined>();
   const [coverUpload, setCoverUpload] = useState<UploadSlot | undefined>();
   const [scriptUpload, setScriptUpload] = useState<UploadSlot | undefined>();
@@ -417,6 +481,11 @@ function DayModal({ clientId, date, events, onClose, onAdd, onDelete }: { client
   function submitGravacao(e: FormEvent) {
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
+    if (isEditing && editing) {
+      onUpdate(editing.id, { title, caption, script, time, status, platforms, kind, tagColor });
+      onClose();
+      return;
+    }
     if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
     if (scriptUpload && scriptUpload.status !== "done") { toast.error("O upload do PDF falhou. Reenvie ou remova."); return; }
     onAdd({
@@ -431,6 +500,11 @@ function DayModal({ clientId, date, events, onClose, onAdd, onDelete }: { client
   function submitPostagem(e: FormEvent) {
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
+    if (isEditing && editing) {
+      onUpdate(editing.id, { title, caption, time, status, platforms, kind, tagColor });
+      onClose();
+      return;
+    }
     if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
     if (!videoUpload || videoUpload.status !== "done") { toast.error("Envie o vídeo (upload deve concluir)."); return; }
     if (!coverUpload || coverUpload.status !== "done") { toast.error("Envie a capa (upload deve concluir)."); return; }
@@ -462,7 +536,7 @@ function DayModal({ clientId, date, events, onClose, onAdd, onDelete }: { client
       <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} onClick={(e) => e.stopPropagation()} className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
           <div>
-            <div className="text-xs uppercase tracking-wide text-brand-light font-semibold">Agenda</div>
+            <div className="text-xs uppercase tracking-wide text-brand-light font-semibold">{isEditing ? "Editando evento" : "Agenda"}</div>
             <div className="text-lg font-semibold text-slate-900">{label}</div>
           </div>
           <button type="button" onClick={onClose} className="h-9 w-9 rounded-full text-slate-500 hover:bg-slate-100 flex items-center justify-center">
