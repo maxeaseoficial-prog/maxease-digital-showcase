@@ -670,8 +670,17 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
 
               {kind === "Postagem" ? (
                 <>
+                  {isEditing && (editing?.videoFile || editing?.coverFile) && (
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 space-y-1">
+                      <div className="font-semibold text-slate-700">Arquivos atuais</div>
+                      {editing?.videoFile && <div className="flex items-center gap-1.5"><Video className="h-3 w-3" /> {editing.videoFile.name}</div>}
+                      {editing?.coverFile && <div className="flex items-center gap-1.5"><ImageIcon className="h-3 w-3" /> {editing.coverFile.name}</div>}
+                      <div className="text-[11px] text-slate-500 mt-1">Envie um novo arquivo abaixo para substituir. Deixe em branco para manter.</div>
+                    </div>
+                  )}
                   <UploadSlotField
-                    label="Vídeo (preferencialmente 9:16, até 1 GB)"
+                    label={isEditing ? "Substituir vídeo (opcional, até 1 GB)" : "Vídeo (preferencialmente 9:16, até 1 GB)"}
+
                     icon={<Video className="h-4 w-4" />}
                     placeholder="Selecionar vídeo"
                     accept="video/*"
