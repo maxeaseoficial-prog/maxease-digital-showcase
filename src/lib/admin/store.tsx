@@ -162,6 +162,17 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setData(readStorage());
     setHydrated(true);
+    if (typeof window === "undefined") return;
+    const sync = () => setData(readStorage());
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY) sync();
+    };
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("maxease:admin-data-updated", sync);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("maxease:admin-data-updated", sync);
+    };
   }, []);
 
   const persist = useCallback((next: AdminData) => {
