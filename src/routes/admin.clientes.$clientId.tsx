@@ -375,16 +375,17 @@ interface UploadSlot {
   handle: UploadHandle;
 }
 
-function DayModal({ clientId, date, events, onClose, onAdd, onDelete }: { clientId: string; date: string; events: CalItem[]; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onDelete: (id: string) => void }) {
-  const [showForm, setShowForm] = useState(events.length === 0);
-  const [kind, setKind] = useState<CalendarKind>("Postagem");
-  const [title, setTitle] = useState("");
-  const [caption, setCaption] = useState("");
-  const [script, setScript] = useState("");
-  const [time, setTime] = useState("09:00");
-  const [status, setStatus] = useState<ContentStatus>("Planejado");
-  const [platforms, setPlatforms] = useState<Platform[]>(["Instagram"]);
-  const [tagColor, setTagColor] = useState<string>(TAG_COLORS[0]);
+function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, onDelete }: { clientId: string; date: string; events: CalItem[]; editing?: CalItem | null; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onUpdate: (id: string, patch: Partial<CalItem>) => void; onDelete: (id: string) => void }) {
+  const isEditing = !!editing;
+  const [showForm, setShowForm] = useState(events.length === 0 || isEditing);
+  const [kind, setKind] = useState<CalendarKind>(editing?.kind ?? "Postagem");
+  const [title, setTitle] = useState(editing?.title ?? "");
+  const [caption, setCaption] = useState(editing?.caption ?? "");
+  const [script, setScript] = useState(editing?.script ?? "");
+  const [time, setTime] = useState(editing?.time ?? "09:00");
+  const [status, setStatus] = useState<ContentStatus>(editing?.status ?? "Planejado");
+  const [platforms, setPlatforms] = useState<Platform[]>(editing?.platforms ?? ["Instagram"]);
+  const [tagColor, setTagColor] = useState<string>(editing?.tagColor ?? TAG_COLORS[0]);
   const [videoUpload, setVideoUpload] = useState<UploadSlot | undefined>();
   const [coverUpload, setCoverUpload] = useState<UploadSlot | undefined>();
   const [scriptUpload, setScriptUpload] = useState<UploadSlot | undefined>();
