@@ -47,6 +47,15 @@ function CalendarioPage() {
         subtitle="Acompanhe todos os conteúdos previstos, em produção e publicados."
       />
 
+      {error && (
+        <div className="mb-4 rounded-xl border border-red-400/40 bg-red-500/10 text-red-200 text-sm p-3">
+          Falha ao carregar o calendário: {error}
+        </div>
+      )}
+      {loading && calendar.length === 0 && (
+        <div className="mb-4 text-sm text-white/60">Carregando calendário...</div>
+      )}
+
       <div className="rounded-2xl border border-white/10 glass p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div className="flex items-center gap-2">
@@ -72,7 +81,7 @@ function CalendarioPage() {
           </div>
           <button
             type="button"
-            onClick={() => setCursor(new Date(2026, 6, 1))}
+            onClick={() => { const t = new Date(); setCursor(new Date(t.getFullYear(), t.getMonth(), 1)); }}
             className="text-xs px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-white/70"
           >
             Hoje
