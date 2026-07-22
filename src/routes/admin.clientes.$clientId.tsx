@@ -5,10 +5,12 @@ import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRigh
 import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
-import type { ContentStatus, Platform } from "@/lib/portal/mockData";
+import type { ContentStatus, Platform, CalendarKind } from "@/lib/portal/mockData";
 
 const STATUSES: ContentStatus[] = ["Planejado", "Em Produção", "Aguardando Aprovação", "Aprovado", "Agendado", "Publicado", "Solicitou Alteração"];
 const PLATFORMS: Platform[] = ["Instagram", "Facebook", "TikTok"];
+const KINDS: CalendarKind[] = ["Postagem", "Gravação"];
+const TAG_COLORS = ["#1428FF", "#4F7CFF", "#22C55E", "#F59E0B", "#EF4444", "#A855F7", "#0EA5E9", "#64748B"];
 
 export const Route = createFileRoute("/admin/clientes/$clientId")({
   head: () => ({ meta: [{ title: "Gerenciar cliente — Admin" }, { name: "robots", content: "noindex" }] }),
