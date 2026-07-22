@@ -5,7 +5,7 @@ import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRigh
 import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
-import type { ContentStatus, Platform, CalendarKind } from "@/lib/portal/mockData";
+import { statusChipColor, type ContentStatus, type Platform, type CalendarKind } from "@/lib/portal/mockData";
 
 const STATUSES: ContentStatus[] = ["Planejado", "Em Produção", "Aguardando Aprovação", "Aprovado", "Agendado", "Publicado", "Solicitou Alteração"];
 const POST_STATUSES: ContentStatus[] = ["Planejado", "Pendente de aprovação", "Alteração solicitada", "Aprovado", "Publicado"];
