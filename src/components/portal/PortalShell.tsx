@@ -28,6 +28,7 @@ const NAV = [
 
 export function PortalShell({ children }: { children: ReactNode }) {
   const { session, hydrated, logout } = usePortalAuth();
+  const { notices } = usePortalData();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -46,7 +47,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
     );
   }
 
-  const unread = mockNotices.filter((n) => !n.read).length;
+  const unread = notices.filter((n) => !n.read).length;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -112,7 +113,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
                   <img src={logoAsset.url} alt="MAXEASE" className="h-8 w-auto" />
                 </Link>
                 <div className="hidden sm:block min-w-0">
-                  <div className="text-xs text-slate-500 truncate">{mockClient.company}</div>
+                  <div className="text-xs text-slate-500 truncate">{session.company}</div>
                   <div className="text-sm font-semibold text-slate-900 truncate">{session.name}</div>
                 </div>
               </div>
