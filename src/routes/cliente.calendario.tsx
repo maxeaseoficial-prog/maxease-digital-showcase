@@ -108,7 +108,7 @@ function CalendarioPage() {
                     <div className="space-y-1">
                       {items.slice(0, 2).map((it) => {
                         const PIcon = PLATFORM_ICON[it.platforms[0]];
-                        const color = it.tagColor;
+                        const color = statusChipColor(it.status) ?? it.tagColor;
                         return (
                           <button
                             key={it.id}
