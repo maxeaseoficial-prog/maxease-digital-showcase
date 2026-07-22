@@ -115,6 +115,7 @@ export type Database = {
           email: string
           id: string
           name: string
+          tenant_id: string | null
           updated_at: string
         }
         Insert: {
@@ -125,6 +126,7 @@ export type Database = {
           email: string
           id: string
           name: string
+          tenant_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -135,9 +137,18 @@ export type Database = {
           email?: string
           id?: string
           name?: string
+          tenant_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "clients_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notices: {
         Row: {
@@ -266,6 +277,30 @@ export type Database = {
         }
         Relationships: []
       }
+      tenants: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -301,7 +336,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "client"
+      app_role: "admin" | "client" | "operator"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -429,7 +464,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "client"],
+      app_role: ["admin", "client", "operator"],
     },
   },
 } as const

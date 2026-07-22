@@ -1,17 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { findClientByCredentials } from "@/lib/admin/store";
-
-const STORAGE_KEY = "maxease.portal.session";
-
-const DEMO_USER = {
-  email: "teste@gmail.com",
-  password: "teste123",
-  name: "Academia For Action",
-  company: "For Action",
-};
-
+import { supabase } from "@/integrations/supabase/client";
 
 export interface PortalSession {
+  userId: string;
   email: string;
   name: string;
   company: string;
@@ -20,55 +11,84 @@ export interface PortalSession {
 interface AuthContextValue {
   session: PortalSession | null;
   hydrated: boolean;
-  login: (email: string, password: string) => { ok: true } | { ok: false; error: string };
-  logout: () => void;
+  login: (email: string, password: string) => Promise<{ ok: true } | { ok: false; error: string }>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+async function loadClientSession(userId: string, email: string): Promise<PortalSession | null> {
+  // Must have 'client' role and matching row in clients table
+  const { data: role } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "client")
+    .maybeSingle();
+  if (!role) return null;
+  const { data: client } = await supabase
+    .from("clients")
+    .select("email, name, company")
+    .eq("id", userId)
+    .maybeSingle();
+  if (!client) return null;
+  return {
+    userId,
+    email: client.email ?? email,
+    name: client.name ?? email,
+    company: client.company ?? "",
+  };
+}
 
 export function PortalAuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<PortalSession | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setSession(JSON.parse(raw) as PortalSession);
-    } catch {
-      /* ignore */
+    let mounted = true;
+    async function hydrate() {
+      const { data } = await supabase.auth.getSession();
+      const u = data.session?.user;
+      if (u) {
+        const s = await loadClientSession(u.id, u.email ?? "");
+        if (mounted) setSession(s);
+      }
+      if (mounted) setHydrated(true);
     }
-    setHydrated(true);
+    hydrate();
+    const { data: sub } = supabase.auth.onAuthStateChange(async (event, s) => {
+      if (event === "SIGNED_OUT") {
+        setSession(null);
+        return;
+      }
+      if (s?.user && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "USER_UPDATED")) {
+        const next = await loadClientSession(s.user.id, s.user.email ?? "");
+        setSession(next);
+      }
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
-  const login = useCallback((email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     const normalized = email.trim().toLowerCase();
-
-    // 1. Admin-created clients take priority
-    const adminClient = findClientByCredentials(normalized, password);
-    if (adminClient) {
-      const next: PortalSession = { email: adminClient.email, name: adminClient.name, company: adminClient.company };
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
-      setSession(next);
-      return { ok: true as const };
+    const { data, error } = await supabase.auth.signInWithPassword({ email: normalized, password });
+    if (error || !data.user) {
+      return { ok: false as const, error: "E-mail ou senha inválidos. Verifique suas credenciais." };
     }
-
-    // 2. Fallback: demo account
-    if (normalized === DEMO_USER.email && password === DEMO_USER.password) {
-      const next: PortalSession = { email: DEMO_USER.email, name: DEMO_USER.name, company: DEMO_USER.company };
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
-      setSession(next);
-      return { ok: true as const };
+    const s = await loadClientSession(data.user.id, data.user.email ?? normalized);
+    if (!s) {
+      await supabase.auth.signOut();
+      return { ok: false as const, error: "Este usuário não tem acesso à área do cliente." };
     }
-    return { ok: false as const, error: "E-mail ou senha inválidos. Verifique suas credenciais." };
+    setSession(s);
+    return { ok: true as const };
   }, []);
 
-
-  const logout = useCallback(() => {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      /* ignore */
-    }
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
     setSession(null);
   }, []);
 
