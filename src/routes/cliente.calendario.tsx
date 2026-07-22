@@ -215,6 +215,8 @@ function CalendarioPage() {
                     </a>
                   </div>
                 )}
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
