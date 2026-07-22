@@ -96,6 +96,7 @@ function ClientDetail() {
 
       {tab === "calendario" && (
         <CalendarManager
+          clientId={client.id}
           items={client.calendar}
           onAdd={(item) => { addCalendarItem(client.id, item); toast.success("Conteúdo adicionado."); }}
           onDelete={(id) => { deleteCalendarItem(client.id, id); toast.success("Conteúdo removido."); }}
@@ -104,6 +105,7 @@ function ClientDetail() {
 
       {tab === "relatorios" && (
         <ReportsManager
+          clientId={client.id}
           items={client.reports}
           onAdd={(r) => { addReport(client.id, r); toast.success("Relatório publicado."); }}
           onDelete={(id) => { deleteReport(client.id, id); toast.success("Relatório removido."); }}
