@@ -23,18 +23,16 @@ function AdminLoginPage() {
     if (hydrated && session) navigate({ to: "/admin/dashboard" });
   }, [hydrated, session, navigate]);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    setTimeout(() => {
-      const result = login(email, password);
-      if (result.ok) navigate({ to: "/admin/dashboard" });
-      else {
-        setError(result.error);
-        setLoading(false);
-      }
-    }, 300);
+    const result = await login(email, password);
+    if (result.ok) navigate({ to: "/admin/dashboard" });
+    else {
+      setError(result.error);
+      setLoading(false);
+    }
   }
 
   return (
