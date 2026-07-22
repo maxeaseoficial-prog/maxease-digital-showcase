@@ -4,6 +4,8 @@ export type ContentStatus =
   | "Planejado"
   | "Em Produção"
   | "Aguardando Aprovação"
+  | "Pendente de aprovação"
+  | "Alteração solicitada"
   | "Aprovado"
   | "Agendado"
   | "Publicado"
@@ -12,6 +14,12 @@ export type ContentStatus =
 export type Platform = "Instagram" | "Facebook" | "TikTok";
 
 export type CalendarKind = "Postagem" | "Gravação";
+
+export interface ApprovalHistoryEntry {
+  at: string;
+  action: "created" | "approved" | "changes_requested";
+  message?: string;
+}
 
 export interface CalendarContent {
   id: string;
@@ -25,6 +33,11 @@ export interface CalendarContent {
   kind?: CalendarKind;
   tagColor?: string; // hex color e.g. #1428FF
   scriptFile?: { name: string; dataUrl: string };
+  videoFile?: { name: string; dataUrl: string; type?: string };
+  coverFile?: { name: string; dataUrl: string };
+  approvalToken?: string;
+  approvalHistory?: ApprovalHistoryEntry[];
+  approvedAt?: string;
 }
 
 export interface ScriptFile {
