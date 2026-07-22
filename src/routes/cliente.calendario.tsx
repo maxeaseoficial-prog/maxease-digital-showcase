@@ -197,12 +197,24 @@ function CalendarioPage() {
                   <div className="text-xs uppercase text-white/50 mb-1">Legenda</div>
                   <p className="text-white/85 leading-relaxed">{selected.caption}</p>
                 </div>
+                {selected.kind && (
+                  <div>
+                    <div className="text-xs uppercase text-white/50 mb-1">Tipo</div>
+                    <p className="text-white/85">{selected.kind === "Gravação" ? "Dia de gravação" : "Conteúdo a postar"}</p>
+                  </div>
+                )}
                 <div>
                   <div className="text-xs uppercase text-white/50 mb-1">Roteiro</div>
                   <p className="text-white/85 leading-relaxed whitespace-pre-line">{selected.script}</p>
                 </div>
-              </div>
-            </motion.div>
+                {selected.scriptFile && (
+                  <div>
+                    <div className="text-xs uppercase text-white/50 mb-1">Roteiro em PDF</div>
+                    <a href={selected.scriptFile.dataUrl} download={selected.scriptFile.name} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+                      📄 {selected.scriptFile.name}
+                    </a>
+                  </div>
+                )}
           </motion.div>
         )}
       </AnimatePresence>
