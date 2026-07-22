@@ -51,6 +51,9 @@ export interface Report {
   date: string;
   highlights: { label: string; value: string }[];
   summary: string;
+  folder?: string;
+  fileName?: string;
+  fileDataUrl?: string;
 }
 
 export interface Approval {
