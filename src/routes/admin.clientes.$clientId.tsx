@@ -174,7 +174,8 @@ function ProfileEditor({ initial, onSave }: { initial: { name: string; company: 
   );
 }
 
-type CalItem = { id: string; title: string; caption: string; script: string; date: string; time: string; status: ContentStatus; platforms: Platform[]; kind?: CalendarKind; tagColor?: string; scriptFile?: { name: string; dataUrl: string } };
+import type { CalendarContent, ApprovalHistoryEntry } from "@/lib/portal/mockData";
+type CalItem = CalendarContent;
 
 const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 const MONTHS_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
