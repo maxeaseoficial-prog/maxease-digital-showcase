@@ -301,7 +301,18 @@ function CalendarManager({ clientId, items, onAdd, onDelete }: { clientId: strin
   );
 }
 
-function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; events: CalItem[]; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onDelete: (id: string) => void }) {
+interface UploadSlot {
+  file: File;
+  previewUrl?: string;                    // blob URL for local preview (cover only)
+  progress: number;                       // 0..100
+  status: "uploading" | "done" | "error";
+  errorMessage?: string;
+  bucket?: "videos" | "thumbnails" | "pdfs";
+  path?: string;                          // storage path once upload completes
+  handle: UploadHandle;
+}
+
+function DayModal({ clientId, date, events, onClose, onAdd, onDelete }: { clientId: string; date: string; events: CalItem[]; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onDelete: (id: string) => void }) {
   const [showForm, setShowForm] = useState(events.length === 0);
   const [kind, setKind] = useState<CalendarKind>("Postagem");
   const [title, setTitle] = useState("");
@@ -311,53 +322,107 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
   const [status, setStatus] = useState<ContentStatus>("Planejado");
   const [platforms, setPlatforms] = useState<Platform[]>(["Instagram"]);
   const [tagColor, setTagColor] = useState<string>(TAG_COLORS[0]);
-  const [scriptFile, setScriptFile] = useState<{ name: string; dataUrl: string } | undefined>(undefined);
-  const [videoFile, setVideoFile] = useState<{ name: string; dataUrl: string; type?: string } | undefined>(undefined);
-  const [coverFile, setCoverFile] = useState<{ name: string; dataUrl: string } | undefined>(undefined);
+  const [videoUpload, setVideoUpload] = useState<UploadSlot | undefined>();
+  const [coverUpload, setCoverUpload] = useState<UploadSlot | undefined>();
+  const [scriptUpload, setScriptUpload] = useState<UploadSlot | undefined>();
   const [lastLink, setLastLink] = useState<string | null>(null);
+  const uploadsRef = useRef<UploadSlot[]>([]);
+
+  // Track live uploads so a modal close can cancel + clean up
+  uploadsRef.current = [videoUpload, coverUpload, scriptUpload].filter(Boolean) as UploadSlot[];
+
+  useEffect(() => {
+    return () => {
+      for (const u of uploadsRef.current) {
+        if (u.status === "uploading") u.handle.cancel();
+        if (u.previewUrl) URL.revokeObjectURL(u.previewUrl);
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [y, m, d] = date.split("-").map(Number);
   const label = `${String(d).padStart(2, "0")} de ${MONTHS_PT[m - 1]} de ${y}`;
 
-  function readAsDataUrl(file: File, cb: (dataUrl: string) => void) {
-    const reader = new FileReader();
-    reader.onload = () => cb(String(reader.result));
-    reader.readAsDataURL(file);
+  function startUpload(
+    mediaKind: MediaKind,
+    file: File,
+    setSlot: (u: UploadSlot | undefined) => void,
+    withPreview = false,
+  ) {
+    const validationError = validateFile(mediaKind, file);
+    if (validationError) { toast.error(validationError); return; }
+    const previewUrl = withPreview ? URL.createObjectURL(file) : undefined;
+    const handle = uploadMedia({
+      kind: mediaKind,
+      clientId,
+      file,
+      onProgress: (percent) => {
+        setSlot({
+          file, previewUrl, progress: percent, status: "uploading", handle,
+        });
+      },
+    });
+    setSlot({ file, previewUrl, progress: 0, status: "uploading", handle });
+    handle.promise.then(({ bucket, path }) => {
+      setSlot({ file, previewUrl, progress: 100, status: "done", handle, bucket, path });
+    }).catch((err: Error) => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setSlot({ file, progress: 0, status: "error", errorMessage: err.message, handle });
+    });
+  }
+
+  function clearSlot(slot: UploadSlot | undefined, setSlot: (u: UploadSlot | undefined) => void) {
+    if (!slot) return;
+    if (slot.status === "uploading") slot.handle.cancel();
+    if (slot.previewUrl) URL.revokeObjectURL(slot.previewUrl);
+    if (slot.status === "done" && slot.bucket && slot.path) {
+      void removeUploaded(slot.bucket, slot.path);
+    }
+    setSlot(undefined);
   }
 
   function onScriptFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    if (file.type !== "application/pdf") { toast.error("Envie um PDF."); return; }
-    if (file.size > 10 * 1024 * 1024) { toast.error("PDF muito grande (máx 10MB)."); return; }
-    readAsDataUrl(file, (dataUrl) => setScriptFile({ name: file.name, dataUrl }));
+    startUpload("pdf", file, setScriptUpload);
   }
-
   function onVideoFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    if (!file.type.startsWith("video/")) { toast.error("Envie um arquivo de vídeo."); return; }
-    if (file.size > 80 * 1024 * 1024) { toast.error("Vídeo muito grande (máx 80MB)."); return; }
-    readAsDataUrl(file, (dataUrl) => setVideoFile({ name: file.name, dataUrl, type: file.type }));
+    startUpload("video", file, setVideoUpload);
   }
-
   function onCoverFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    if (!file.type.startsWith("image/")) { toast.error("Envie uma imagem."); return; }
-    if (file.size > 8 * 1024 * 1024) { toast.error("Imagem muito grande (máx 8MB)."); return; }
-    readAsDataUrl(file, (dataUrl) => setCoverFile({ name: file.name, dataUrl }));
+    startUpload("cover", file, setCoverUpload, true);
   }
 
   function resetForm() {
-    setTitle(""); setCaption(""); setScript(""); setScriptFile(undefined);
-    setVideoFile(undefined); setCoverFile(undefined);
+    setTitle(""); setCaption(""); setScript("");
+    setScriptUpload(undefined); setVideoUpload(undefined); setCoverUpload(undefined);
+  }
+
+  function anyUploading(): boolean {
+    return [videoUpload, coverUpload, scriptUpload].some((u) => u?.status === "uploading");
+  }
+
+  function toStoredFile(slot: UploadSlot | undefined, includeType = false): { name: string; dataUrl: string; type?: string } | undefined {
+    if (!slot || slot.status !== "done" || !slot.path) return undefined;
+    return includeType
+      ? { name: slot.file.name, dataUrl: slot.path, type: slot.file.type }
+      : { name: slot.file.name, dataUrl: slot.path };
   }
 
   function submitGravacao(e: FormEvent) {
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
-    onAdd({ title, caption, script, time, status, platforms, kind, tagColor, scriptFile });
+    if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
+    if (scriptUpload && scriptUpload.status !== "done") { toast.error("O upload do PDF falhou. Reenvie ou remova."); return; }
+    onAdd({
+      title, caption, script, time, status, platforms, kind, tagColor,
+      scriptFile: toStoredFile(scriptUpload),
+    });
     toast.success("Gravação criada.");
     resetForm();
     setShowForm(false);
@@ -366,8 +431,10 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
   function submitPostagem(e: FormEvent) {
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
-    if (!videoFile) { toast.error("Envie o vídeo."); return; }
-    if (!coverFile) { toast.error("Envie a capa do vídeo."); return; }
+    if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
+    if (!videoUpload || videoUpload.status !== "done") { toast.error("Envie o vídeo (upload deve concluir)."); return; }
+    if (!coverUpload || coverUpload.status !== "done") { toast.error("Envie a capa (upload deve concluir)."); return; }
+    if (scriptUpload && scriptUpload.status !== "done") { toast.error("O PDF do roteiro não concluiu o upload."); return; }
     const token = generateToken();
     const now = new Date();
     const stamp = `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}/${now.getFullYear()} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
@@ -376,7 +443,9 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
       title, caption, script: "", time,
       status: "Pendente de aprovação",
       platforms, kind: "Postagem", tagColor,
-      scriptFile, videoFile, coverFile,
+      scriptFile: toStoredFile(scriptUpload),
+      videoFile: toStoredFile(videoUpload, true),
+      coverFile: toStoredFile(coverUpload),
       approvalToken: token, approvalHistory: history,
     });
     const link = `${window.location.origin}/aprovacao/${token}`;
