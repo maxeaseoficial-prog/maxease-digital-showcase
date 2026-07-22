@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, X, FileText, ArrowLeft } from "lucide-react";
 import { PortalPageHeader } from "@/components/portal/PortalShell";
 import { mockReports, mockClient, type Report } from "@/lib/portal/mockData";
+import { usePortalAuth } from "@/lib/portal/auth";
+import { findClientByEmail } from "@/lib/admin/store";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/cliente/relatorios")({
@@ -12,35 +14,93 @@ export const Route = createFileRoute("/cliente/relatorios")({
 });
 
 function RelatoriosPage() {
+  const { session } = usePortalAuth();
+  const [reports, setReports] = useState<Report[]>([]);
+  const [openFolder, setOpenFolder] = useState<string | null>(null);
   const [selected, setSelected] = useState<Report | null>(null);
+
+  useEffect(() => {
+    if (session) {
+      const client = findClientByEmail(session.email);
+      if (client && client.reports.length > 0) {
+        setReports(client.reports);
+        return;
+      }
+    }
+    setReports(mockReports);
+  }, [session]);
+
+  const folders = useMemo(() => {
+    const map = new Map<string, Report[]>();
+    for (const r of reports) {
+      const key = r.folder ?? r.date ?? "Sem pasta";
+      const arr = map.get(key) ?? [];
+      arr.push(r);
+      map.set(key, arr);
+    }
+    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [reports]);
+
+  const currentFolder = openFolder ? folders.find(([n]) => n === openFolder) : null;
 
   return (
     <div>
       <PortalPageHeader
         title="Relatórios"
-        subtitle="Clique em uma pasta para abrir o relatório em PDF."
+        subtitle={openFolder ? `Pasta: ${openFolder}` : "Clique em uma pasta para abrir os relatórios em PDF."}
       />
 
-      {/* Finder-style folder grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4">
-        {mockReports.map((r, i) => (
-          <motion.button
-            key={r.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.04 }}
-            type="button"
-            onClick={() => setSelected(r)}
-            className="group flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-slate-100 focus:bg-brand-light/10 focus:outline-none transition-colors"
-          >
-            <FolderIcon />
-            <div className="text-center">
-              <div className="text-sm font-medium text-slate-800 leading-tight">{r.date}</div>
-              <div className="text-[11px] text-slate-500 mt-0.5">{r.period}</div>
-            </div>
-          </motion.button>
-        ))}
-      </div>
+      {openFolder && (
+        <button type="button" onClick={() => setOpenFolder(null)} className="mb-4 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800">
+          <ArrowLeft className="h-4 w-4" /> Voltar às pastas
+        </button>
+      )}
+
+      {folders.length === 0 && (
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-10 text-center text-sm text-slate-500">
+          Nenhum relatório disponível ainda.
+        </div>
+      )}
+
+      {!openFolder && folders.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4">
+          {folders.map(([name, items], i) => (
+            <motion.button
+              key={name}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 }}
+              type="button"
+              onClick={() => setOpenFolder(name)}
+              className="group flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-slate-100 focus:bg-brand-light/10 focus:outline-none transition-colors"
+            >
+              <FolderIcon />
+              <div className="text-center">
+                <div className="text-sm font-medium text-slate-800 leading-tight truncate max-w-[160px]">{name}</div>
+                <div className="text-[11px] text-slate-500 mt-0.5">{items.length} {items.length === 1 ? "relatório" : "relatórios"}</div>
+              </div>
+            </motion.button>
+          ))}
+        </div>
+      )}
+
+      {currentFolder && (
+        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {currentFolder[1].map((r, i) => (
+            <motion.li key={r.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
+              <button type="button" onClick={() => setSelected(r)} className="w-full text-left flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-light hover:shadow-sm transition-all">
+                <div className="h-12 w-12 rounded-lg bg-brand-light/10 text-brand-light flex items-center justify-center shrink-0">
+                  <FileText className="h-6 w-6" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-slate-900 truncate">{r.name}</div>
+                  <div className="text-xs text-slate-500 truncate">{r.fileName ?? "Visualizar relatório"} · {r.date}</div>
+                </div>
+              </button>
+            </motion.li>
+          ))}
+        </ul>
+      )}
 
       <AnimatePresence>
         {selected && <PdfViewer report={selected} onClose={() => setSelected(null)} />}
@@ -63,22 +123,12 @@ function FolderIcon() {
             <stop offset="100%" stopColor="#1428FF" />
           </linearGradient>
         </defs>
-        {/* Back tab */}
-        <path
-          d="M8 18 Q8 12 14 12 H46 L54 22 H106 Q112 22 112 28 V44 H8 Z"
-          fill="url(#folderBack)"
-        />
-        {/* Paper sheet peeking */}
+        <path d="M8 18 Q8 12 14 12 H46 L54 22 H106 Q112 22 112 28 V44 H8 Z" fill="url(#folderBack)" />
         <rect x="20" y="30" width="80" height="55" rx="3" fill="#ffffff" opacity="0.95" />
         <rect x="26" y="38" width="50" height="3" rx="1.5" fill="#cbd5e1" />
         <rect x="26" y="46" width="65" height="3" rx="1.5" fill="#e2e8f0" />
         <rect x="26" y="54" width="40" height="3" rx="1.5" fill="#e2e8f0" />
-        {/* Front */}
-        <path
-          d="M8 40 H112 V88 Q112 94 106 94 H14 Q8 94 8 88 Z"
-          fill="url(#folderFront)"
-        />
-        {/* Highlight */}
+        <path d="M8 40 H112 V88 Q112 94 106 94 H14 Q8 94 8 88 Z" fill="url(#folderFront)" />
         <path d="M8 40 H112 V46 H8 Z" fill="#ffffff" opacity="0.15" />
       </svg>
     </div>
@@ -86,7 +136,20 @@ function FolderIcon() {
 }
 
 function PdfViewer({ report, onClose }: { report: Report; onClose: () => void }) {
-  const filename = `Relatorio-${report.date.replace(/\s+/g, "-")}.pdf`;
+  const filename = report.fileName ?? `Relatorio-${report.date.replace(/\s+/g, "-")}.pdf`;
+
+  function download() {
+    if (report.fileDataUrl) {
+      const a = document.createElement("a");
+      a.href = report.fileDataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } else {
+      toast.success(`Download iniciado: ${filename}`);
+    }
+  }
 
   return (
     <motion.div
@@ -95,14 +158,9 @@ function PdfViewer({ report, onClose }: { report: Report; onClose: () => void })
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex flex-col"
     >
-      {/* Toolbar */}
       <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 bg-slate-800 border-b border-slate-700 text-white">
         <div className="flex items-center gap-3 min-w-0">
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-200 hover:text-white px-2 py-1 rounded-md hover:bg-white/10"
-          >
+          <button type="button" onClick={onClose} className="inline-flex items-center gap-1.5 text-sm text-slate-200 hover:text-white px-2 py-1 rounded-md hover:bg-white/10">
             <ArrowLeft className="h-4 w-4" /> Voltar
           </button>
           <div className="hidden sm:flex items-center gap-2 min-w-0">
@@ -111,85 +169,63 @@ function PdfViewer({ report, onClose }: { report: Report; onClose: () => void })
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => toast.success(`Download iniciado: ${filename}`)}
-            className="inline-flex items-center gap-1.5 rounded-md bg-brand-light hover:bg-brand-DEFAULT px-3 py-1.5 text-sm font-medium transition-colors"
-          >
+          <button type="button" onClick={download} className="inline-flex items-center gap-1.5 rounded-md bg-brand-light hover:bg-brand-DEFAULT px-3 py-1.5 text-sm font-medium transition-colors">
             <Download className="h-4 w-4" /> Baixar PDF
           </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-10 w-10 rounded-md flex items-center justify-center bg-red-500 hover:bg-red-600 text-white transition-colors shadow-md"
-            aria-label="Fechar"
-          >
+          <button type="button" onClick={onClose} className="h-10 w-10 rounded-md flex items-center justify-center bg-red-500 hover:bg-red-600 text-white transition-colors shadow-md" aria-label="Fechar">
             <X className="h-6 w-6" strokeWidth={3} />
           </button>
         </div>
       </div>
 
-      {/* PDF page area */}
       <div className="flex-1 overflow-y-auto p-4 sm:p-8">
-        <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.05 }}
-          className="mx-auto bg-white text-slate-900 shadow-2xl rounded-sm max-w-3xl aspect-[1/1.414] p-8 sm:p-14 flex flex-col"
-        >
-          {/* Header */}
-          <div className="flex items-start justify-between border-b border-slate-200 pb-6 mb-6">
-            <div>
-              <div className="text-xs uppercase tracking-widest text-brand-light font-semibold">
-                MAXEASE Digital
+        {report.fileDataUrl ? (
+          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mx-auto max-w-5xl h-[calc(100vh-140px)] bg-white rounded-sm shadow-2xl overflow-hidden">
+            <iframe src={report.fileDataUrl} title={filename} className="w-full h-full" />
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.05 }}
+            className="mx-auto bg-white text-slate-900 shadow-2xl rounded-sm max-w-3xl aspect-[1/1.414] p-8 sm:p-14 flex flex-col"
+          >
+            <div className="flex items-start justify-between border-b border-slate-200 pb-6 mb-6">
+              <div>
+                <div className="text-xs uppercase tracking-widest text-brand-light font-semibold">MAXEASE Digital</div>
+                <h1 className="text-2xl sm:text-3xl font-bold mt-1 text-slate-900">{report.name}</h1>
+                <div className="text-sm text-slate-500 mt-1">Período: {report.period} • Cliente: {mockClient.company}</div>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold mt-1 text-slate-900">
-                {report.name}
-              </h1>
-              <div className="text-sm text-slate-500 mt-1">
-                Período: {report.period} • Cliente: {mockClient.company}
+              <div className="text-right">
+                <div className="text-[11px] uppercase text-slate-400">Referência</div>
+                <div className="text-sm font-semibold text-slate-700">{report.date}</div>
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-[11px] uppercase text-slate-400">Referência</div>
-              <div className="text-sm font-semibold text-slate-700">{report.date}</div>
-            </div>
-          </div>
-
-          {/* KPIs */}
-          <div>
-            <div className="text-xs uppercase tracking-wide text-slate-500 mb-3">
-              Destaques do período
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              {report.highlights.map((h) => (
-                <div
-                  key={h.label}
-                  className="rounded-lg border border-slate-200 bg-slate-50 p-4"
-                >
-                  <div className="text-[10px] uppercase text-slate-500 tracking-wide">
-                    {h.label}
-                  </div>
-                  <div className="text-2xl font-bold text-slate-900 mt-1">{h.value}</div>
+            {report.highlights.length > 0 && (
+              <div>
+                <div className="text-xs uppercase tracking-wide text-slate-500 mb-3">Destaques do período</div>
+                <div className="grid grid-cols-2 gap-3">
+                  {report.highlights.map((h) => (
+                    <div key={h.label} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                      <div className="text-[10px] uppercase text-slate-500 tracking-wide">{h.label}</div>
+                      <div className="text-2xl font-bold text-slate-900 mt-1">{h.value}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+            )}
+            {report.summary && (
+              <div className="mt-6">
+                <div className="text-xs uppercase tracking-wide text-slate-500 mb-2">Resumo executivo</div>
+                <p className="text-sm text-slate-700 leading-relaxed">{report.summary}</p>
+              </div>
+            )}
+            <div className="mt-auto pt-6 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-400">
+              <span>MAXEASE Digital • Relatório confidencial</span>
+              <span>Página 1</span>
             </div>
-          </div>
-
-          {/* Summary */}
-          <div className="mt-6">
-            <div className="text-xs uppercase tracking-wide text-slate-500 mb-2">
-              Resumo executivo
-            </div>
-            <p className="text-sm text-slate-700 leading-relaxed">{report.summary}</p>
-          </div>
-
-          {/* Footer */}
-          <div className="mt-auto pt-6 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-400">
-            <span>MAXEASE Digital • Relatório confidencial</span>
-            <span>Página 1</span>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );
