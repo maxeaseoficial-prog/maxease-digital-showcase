@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { findClientByCredentials } from "@/lib/admin/store";
 
 const STORAGE_KEY = "maxease.portal.session";
 
@@ -8,6 +9,7 @@ const DEMO_USER = {
   name: "Academia For Action",
   company: "For Action",
 };
+
 
 export interface PortalSession {
   email: string;
@@ -40,18 +42,26 @@ export function PortalAuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback((email: string, password: string) => {
     const normalized = email.trim().toLowerCase();
+
+    // 1. Admin-created clients take priority
+    const adminClient = findClientByCredentials(normalized, password);
+    if (adminClient) {
+      const next: PortalSession = { email: adminClient.email, name: adminClient.name, company: adminClient.company };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      setSession(next);
+      return { ok: true as const };
+    }
+
+    // 2. Fallback: demo account
     if (normalized === DEMO_USER.email && password === DEMO_USER.password) {
       const next: PortalSession = { email: DEMO_USER.email, name: DEMO_USER.name, company: DEMO_USER.company };
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      } catch {
-        /* ignore */
-      }
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
       setSession(next);
       return { ok: true as const };
     }
     return { ok: false as const, error: "E-mail ou senha inválidos. Verifique suas credenciais." };
   }, []);
+
 
   const logout = useCallback(() => {
     try {
