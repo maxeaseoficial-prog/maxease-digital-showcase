@@ -36,19 +36,16 @@ function LoginInner() {
     if (hydrated && session) navigate({ to: "/cliente/dashboard" });
   }, [hydrated, session, navigate]);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    // Small delay for feedback
-    setTimeout(() => {
-      const result = login(email, password);
-      if (result.ok) navigate({ to: "/cliente/dashboard" });
-      else {
-        setError(result.error);
-        setLoading(false);
-      }
-    }, 400);
+    const result = await login(email, password);
+    if (result.ok) navigate({ to: "/cliente/dashboard" });
+    else {
+      setError(result.error);
+      setLoading(false);
+    }
   }
 
   return (
