@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X, Instagram, Facebook, Music2 } from "lucide-react";
 import { PortalPageHeader, StatusBadge } from "@/components/portal/PortalShell";
-import { mockCalendar, STATUS_STYLES, STATUS_DOT, type CalendarContent, type Platform } from "@/lib/portal/mockData";
+import { mockCalendar, STATUS_STYLES, STATUS_DOT, statusChipColor, type CalendarContent, type Platform } from "@/lib/portal/mockData";
 
 export const Route = createFileRoute("/cliente/calendario")({
   head: () => ({ meta: [{ title: "Calendário — Portal do Cliente" }, { name: "robots", content: "noindex" }] }),
