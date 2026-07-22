@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
 
-export const Route = createFileRoute("/admin/clientes")({
+export const Route = createFileRoute("/admin/clientes/")({
   head: () => ({ meta: [{ title: "Clientes — Admin" }, { name: "robots", content: "noindex" }] }),
   component: () => (
     <AdminShell>
@@ -48,8 +48,8 @@ function ClientesContent() {
           {data.clients.map((c) => (
             <div key={c.id} className="group rounded-2xl border border-slate-200 bg-white p-5 hover:shadow-sm transition-all">
               <div className="flex items-start justify-between">
-                <div className="h-11 w-11 rounded-xl bg-brand-gradient text-white flex items-center justify-center font-semibold">
-                  {c.company.charAt(0).toUpperCase()}
+                <div className="h-11 w-11 rounded-xl bg-brand-gradient text-white flex items-center justify-center font-semibold overflow-hidden">
+                  {c.avatarUrl ? <img src={c.avatarUrl} alt="" className="h-full w-full object-cover" /> : c.company.charAt(0).toUpperCase()}
                 </div>
                 <button
                   type="button"

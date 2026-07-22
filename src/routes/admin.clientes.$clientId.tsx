@@ -110,16 +110,42 @@ function ClientDetail() {
   );
 }
 
-function ProfileEditor({ initial, onSave }: { initial: { name: string; company: string; email: string; password: string; activeProject: string }; onSave: (patch: { name: string; company: string; email: string; password: string; activeProject: string }) => void }) {
+function ProfileEditor({ initial, onSave }: { initial: { name: string; company: string; email: string; password: string; activeProject: string; avatarUrl?: string }; onSave: (patch: { name: string; company: string; email: string; password: string; activeProject: string; avatarUrl?: string }) => void }) {
   const [name, setName] = useState(initial.name);
   const [company, setCompany] = useState(initial.company);
   const [email, setEmail] = useState(initial.email);
   const [password, setPassword] = useState(initial.password);
   const [project, setProject] = useState(initial.activeProject);
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(initial.avatarUrl);
+
+  function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { toast.error("Imagem muito grande (máx 2MB)."); return; }
+    const reader = new FileReader();
+    reader.onload = () => setAvatarUrl(String(reader.result));
+    reader.readAsDataURL(file);
+  }
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 max-w-2xl">
       <h2 className="text-sm font-semibold text-slate-900">Dados do cliente</h2>
+      <div className="mt-5 flex items-center gap-4">
+        <div className="h-20 w-20 rounded-full bg-brand-gradient text-white flex items-center justify-center overflow-hidden text-2xl font-semibold shrink-0">
+          {avatarUrl ? <img src={avatarUrl} alt="" className="h-full w-full object-cover" /> : (company.charAt(0).toUpperCase() || "?")}
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 cursor-pointer">
+            Enviar foto
+            <input type="file" accept="image/*" onChange={onFile} className="hidden" />
+          </label>
+          {avatarUrl && (
+            <button type="button" onClick={() => setAvatarUrl(undefined)} className="text-xs text-red-600 hover:underline text-left">
+              Remover foto
+            </button>
+          )}
+        </div>
+      </div>
       <div className="mt-5 grid sm:grid-cols-2 gap-4">
         <TextField label="Empresa" value={company} onChange={setCompany} />
         <TextField label="Responsável" value={name} onChange={setName} />
@@ -130,7 +156,7 @@ function ProfileEditor({ initial, onSave }: { initial: { name: string; company: 
         </div>
       </div>
       <div className="mt-6 flex justify-end">
-        <button type="button" onClick={() => onSave({ name, company, email: email.trim().toLowerCase(), password, activeProject: project })}
+        <button type="button" onClick={() => onSave({ name, company, email: email.trim().toLowerCase(), password, activeProject: project, avatarUrl })}
           className="inline-flex items-center gap-2 rounded-lg bg-brand-gradient px-4 py-2 text-sm font-medium text-white">
           <Save className="h-4 w-4" /> Salvar alterações
         </button>
