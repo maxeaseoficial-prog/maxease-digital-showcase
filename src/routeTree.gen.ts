@@ -23,6 +23,7 @@ import { Route as ClienteDashboardRouteImport } from './routes/cliente.dashboard
 import { Route as ClienteCalendarioRouteImport } from './routes/cliente.calendario'
 import { Route as ClienteAvisosRouteImport } from './routes/cliente.avisos'
 import { Route as ClienteAprovacoesRouteImport } from './routes/cliente.aprovacoes'
+import { Route as AprovacaoTokenRouteImport } from './routes/aprovacao.$token'
 import { Route as AdminSiteRouteImport } from './routes/admin.site'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
@@ -99,6 +100,11 @@ const ClienteAprovacoesRoute = ClienteAprovacoesRouteImport.update({
   path: '/aprovacoes',
   getParentRoute: () => ClienteRoute,
 } as any)
+const AprovacaoTokenRoute = AprovacaoTokenRouteImport.update({
+  id: '/aprovacao/$token',
+  path: '/aprovacao/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSiteRoute = AdminSiteRouteImport.update({
   id: '/site',
   path: '/site',
@@ -135,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/site': typeof AdminSiteRoute
+  '/aprovacao/$token': typeof AprovacaoTokenRoute
   '/cliente/aprovacoes': typeof ClienteAprovacoesRoute
   '/cliente/avisos': typeof ClienteAvisosRoute
   '/cliente/calendario': typeof ClienteCalendarioRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/site': typeof AdminSiteRoute
+  '/aprovacao/$token': typeof AprovacaoTokenRoute
   '/cliente/aprovacoes': typeof ClienteAprovacoesRoute
   '/cliente/avisos': typeof ClienteAvisosRoute
   '/cliente/calendario': typeof ClienteCalendarioRoute
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/site': typeof AdminSiteRoute
+  '/aprovacao/$token': typeof AprovacaoTokenRoute
   '/cliente/aprovacoes': typeof ClienteAprovacoesRoute
   '/cliente/avisos': typeof ClienteAvisosRoute
   '/cliente/calendario': typeof ClienteCalendarioRoute
@@ -199,6 +208,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/login'
     | '/admin/site'
+    | '/aprovacao/$token'
     | '/cliente/aprovacoes'
     | '/cliente/avisos'
     | '/cliente/calendario'
@@ -218,6 +228,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/login'
     | '/admin/site'
+    | '/aprovacao/$token'
     | '/cliente/aprovacoes'
     | '/cliente/avisos'
     | '/cliente/calendario'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/login'
     | '/admin/site'
+    | '/aprovacao/$token'
     | '/cliente/aprovacoes'
     | '/cliente/avisos'
     | '/cliente/calendario'
@@ -258,6 +270,7 @@ export interface RootRouteChildren {
   ClienteRoute: typeof ClienteRouteWithChildren
   LoginRoute: typeof LoginRoute
   SitesRoute: typeof SitesRoute
+  AprovacaoTokenRoute: typeof AprovacaoTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -360,6 +373,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClienteAprovacoesRouteImport
       parentRoute: typeof ClienteRoute
     }
+    '/aprovacao/$token': {
+      id: '/aprovacao/$token'
+      path: '/aprovacao/$token'
+      fullPath: '/aprovacao/$token'
+      preLoaderRoute: typeof AprovacaoTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/site': {
       id: '/admin/site'
       path: '/site'
@@ -448,6 +468,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClienteRoute: ClienteRouteWithChildren,
   LoginRoute: LoginRoute,
   SitesRoute: SitesRoute,
+  AprovacaoTokenRoute: AprovacaoTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
