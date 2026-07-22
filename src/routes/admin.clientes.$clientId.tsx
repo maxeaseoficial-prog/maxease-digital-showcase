@@ -742,8 +742,9 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
                   <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">Cancelar</button>
                 )}
                 <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-brand-gradient px-4 py-2 text-sm text-white font-medium">
-                  {kind === "Postagem" ? (<><Link2 className="h-4 w-4" /> Salvar e gerar link de aprovação</>) : (<><Plus className="h-4 w-4" /> Salvar evento</>)}
+                  {isEditing ? (<><Save className="h-4 w-4" /> Salvar alterações</>) : kind === "Postagem" ? (<><Link2 className="h-4 w-4" /> Salvar e gerar link de aprovação</>) : (<><Plus className="h-4 w-4" /> Salvar evento</>)}
                 </button>
+
               </div>
             </form>
           )}
