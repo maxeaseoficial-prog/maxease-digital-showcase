@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { CalendarContent, Notice, Report } from "@/lib/portal/mockData";
 
-const STORAGE_KEY = "maxease.admin.data.v1";
+export const STORAGE_KEY = "maxease.admin.data.v1";
 
 export interface SiteConfig {
   contact: {
