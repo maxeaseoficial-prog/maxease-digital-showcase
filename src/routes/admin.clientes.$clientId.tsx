@@ -188,7 +188,7 @@ function toISODate(y: number, m: number, d: number) {
   return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
-function CalendarManager({ items, onAdd, onDelete }: { items: CalItem[]; onAdd: (i: Omit<CalItem, "id">) => void; onDelete: (id: string) => void }) {
+function CalendarManager({ clientId, items, onAdd, onDelete }: { clientId: string; items: CalItem[]; onAdd: (i: Omit<CalItem, "id">) => void; onDelete: (id: string) => void }) {
   const today = new Date();
   const [cursor, setCursor] = useState({ y: today.getFullYear(), m: today.getMonth() });
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -288,6 +288,7 @@ function CalendarManager({ items, onAdd, onDelete }: { items: CalItem[]; onAdd: 
       <AnimatePresence>
         {selectedDate && (
           <DayModal
+            clientId={clientId}
             date={selectedDate}
             events={eventsByDate.get(selectedDate) ?? []}
             onClose={() => setSelectedDate(null)}
