@@ -255,11 +255,18 @@ function CalendarManager({ items, onAdd, onDelete }: { items: CalItem[]; onAdd: 
                 {cell.day}
               </div>
               <div className="flex-1 space-y-1 overflow-hidden">
-                {evts.slice(0, 3).map((e) => (
-                  <div key={e.id} className="truncate rounded-md bg-brand-light/10 border border-brand-light/20 px-1.5 py-0.5 text-[10px] font-medium text-brand-DEFAULT">
-                    {e.time && <span className="text-brand-light">{e.time} </span>}{e.title}
-                  </div>
-                ))}
+                {evts.slice(0, 3).map((e) => {
+                  const color = e.tagColor ?? "#1428FF";
+                  return (
+                    <div
+                      key={e.id}
+                      className="truncate rounded-md px-1.5 py-0.5 text-[10px] font-medium border"
+                      style={{ backgroundColor: `${color}1A`, borderColor: `${color}40`, color }}
+                    >
+                      {e.kind === "Gravação" ? "● " : ""}{e.time && <span className="opacity-70">{e.time} </span>}{e.title}
+                    </div>
+                  );
+                })}
                 {evts.length > 3 && <div className="text-[10px] text-slate-500">+{evts.length - 3} mais</div>}
               </div>
             </button>
