@@ -577,59 +577,47 @@ function DayModal({ clientId, date, events, onClose, onAdd, onDelete }: { client
 
               {kind === "Postagem" ? (
                 <>
-                  <div>
-                    <span className="text-xs font-medium text-slate-600">Vídeo (preferencialmente 9:16)</span>
-                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-                      <Video className="h-4 w-4" />
-                      <span className="truncate">{videoFile?.name ?? "Selecionar vídeo"}</span>
-                      <input type="file" accept="video/*" onChange={onVideoFile} className="hidden" />
-                    </label>
-                    {videoFile && (
-                      <button type="button" onClick={() => setVideoFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover vídeo</button>
-                    )}
-                  </div>
-
-                  <div>
-                    <span className="text-xs font-medium text-slate-600">Capa do vídeo</span>
-                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-                      <ImageIcon className="h-4 w-4" />
-                      <span className="truncate">{coverFile?.name ?? "Selecionar imagem de capa"}</span>
-                      <input type="file" accept="image/*" onChange={onCoverFile} className="hidden" />
-                    </label>
-                    {coverFile && (
-                      <div className="mt-2 flex items-center gap-2">
-                        <img src={coverFile.dataUrl} alt="Capa" className="h-14 w-14 object-cover rounded-md border border-slate-200" />
-                        <button type="button" onClick={() => setCoverFile(undefined)} className="text-xs text-red-600 hover:underline">Remover capa</button>
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <span className="text-xs font-medium text-slate-600">Roteiro em PDF (opcional)</span>
-                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-                      <Upload className="h-4 w-4" />
-                      <span className="truncate">{scriptFile?.name ?? "Selecionar PDF do roteiro"}</span>
-                      <input type="file" accept="application/pdf" onChange={onScriptFile} className="hidden" />
-                    </label>
-                    {scriptFile && (
-                      <button type="button" onClick={() => setScriptFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover PDF</button>
-                    )}
-                  </div>
+                  <UploadSlotField
+                    label="Vídeo (preferencialmente 9:16, até 1 GB)"
+                    icon={<Video className="h-4 w-4" />}
+                    placeholder="Selecionar vídeo"
+                    accept="video/*"
+                    slot={videoUpload}
+                    onFile={onVideoFile}
+                    onRemove={() => clearSlot(videoUpload, setVideoUpload)}
+                  />
+                  <UploadSlotField
+                    label="Capa do vídeo"
+                    icon={<ImageIcon className="h-4 w-4" />}
+                    placeholder="Selecionar imagem de capa"
+                    accept="image/*"
+                    slot={coverUpload}
+                    onFile={onCoverFile}
+                    onRemove={() => clearSlot(coverUpload, setCoverUpload)}
+                    preview
+                  />
+                  <UploadSlotField
+                    label="Roteiro em PDF (opcional)"
+                    icon={<Upload className="h-4 w-4" />}
+                    placeholder="Selecionar PDF do roteiro"
+                    accept="application/pdf"
+                    slot={scriptUpload}
+                    onFile={onScriptFile}
+                    onRemove={() => clearSlot(scriptUpload, setScriptUpload)}
+                  />
                 </>
               ) : (
                 <>
                   <TextField label="Roteiro (texto)" value={script} onChange={setScript} multiline />
-                  <div>
-                    <span className="text-xs font-medium text-slate-600">Roteiro em PDF</span>
-                    <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-                      <Upload className="h-4 w-4" />
-                      <span className="truncate">{scriptFile?.name ?? "Selecionar PDF do roteiro"}</span>
-                      <input type="file" accept="application/pdf" onChange={onScriptFile} className="hidden" />
-                    </label>
-                    {scriptFile && (
-                      <button type="button" onClick={() => setScriptFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover PDF</button>
-                    )}
-                  </div>
+                  <UploadSlotField
+                    label="Roteiro em PDF"
+                    icon={<Upload className="h-4 w-4" />}
+                    placeholder="Selecionar PDF do roteiro"
+                    accept="application/pdf"
+                    slot={scriptUpload}
+                    onFile={onScriptFile}
+                    onRemove={() => clearSlot(scriptUpload, setScriptUpload)}
+                  />
                 </>
               )}
 
