@@ -501,13 +501,32 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
     if (isEditing && editing) {
-      onUpdate(editing.id, { title, caption, time, status, platforms, kind, tagColor });
+      if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
+      if (videoUpload && videoUpload.status !== "done") { toast.error("O upload do vídeo não concluiu."); return; }
+      if (coverUpload && coverUpload.status !== "done") { toast.error("O upload da capa não concluiu."); return; }
+      if (scriptUpload && scriptUpload.status !== "done") { toast.error("O PDF do roteiro não concluiu o upload."); return; }
+      const patch: Partial<CalItem> = { title, caption, time, status, platforms, kind, tagColor };
+      if (videoUpload?.status === "done") {
+        patch.videoFile = toStoredFile(videoUpload, true);
+        if (editing.videoFile?.dataUrl) void removeUploaded("videos", editing.videoFile.dataUrl);
+      }
+      if (coverUpload?.status === "done") {
+        patch.coverFile = toStoredFile(coverUpload);
+        if (editing.coverFile?.dataUrl) void removeUploaded("thumbnails", editing.coverFile.dataUrl);
+      }
+      if (scriptUpload?.status === "done") {
+        patch.scriptFile = toStoredFile(scriptUpload);
+        if (editing.scriptFile?.dataUrl) void removeUploaded("pdfs", editing.scriptFile.dataUrl);
+      }
+      onUpdate(editing.id, patch);
+      toast.success("Evento atualizado.");
       onClose();
       return;
     }
     if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
     if (!videoUpload || videoUpload.status !== "done") { toast.error("Envie o vídeo (upload deve concluir)."); return; }
     if (!coverUpload || coverUpload.status !== "done") { toast.error("Envie a capa (upload deve concluir)."); return; }
+
     if (scriptUpload && scriptUpload.status !== "done") { toast.error("O PDF do roteiro não concluiu o upload."); return; }
     const token = generateToken();
     const now = new Date();
