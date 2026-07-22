@@ -32,7 +32,7 @@ export const Route = createFileRoute("/admin/clientes/$clientId")({
 function ClientDetail() {
   const { clientId } = Route.useParams();
   const navigate = useNavigate();
-  const { data, updateClient, deleteClient, addCalendarItem, deleteCalendarItem, addReport, deleteReport, addNotice, deleteNotice } = useAdminStore();
+  const { data, updateClient, deleteClient, addCalendarItem, updateCalendarItem, deleteCalendarItem, addReport, deleteReport, addNotice, deleteNotice } = useAdminStore();
   const client = data.clients.find((c) => c.id === clientId);
   const [tab, setTab] = useState<"perfil" | "calendario" | "relatorios" | "avisos">("perfil");
 
