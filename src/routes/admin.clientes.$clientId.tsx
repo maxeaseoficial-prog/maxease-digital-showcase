@@ -500,6 +500,11 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
   function submitPostagem(e: FormEvent) {
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
+    if (isEditing && editing) {
+      onUpdate(editing.id, { title, caption, time, status, platforms, kind, tagColor });
+      onClose();
+      return;
+    }
     if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
     if (!videoUpload || videoUpload.status !== "done") { toast.error("Envie o vídeo (upload deve concluir)."); return; }
     if (!coverUpload || coverUpload.status !== "done") { toast.error("Envie a capa (upload deve concluir)."); return; }
