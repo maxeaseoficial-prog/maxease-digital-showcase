@@ -23,6 +23,7 @@ export interface AdminClient {
   name: string;
   company: string;
   activeProject: string;
+  avatarUrl?: string;
   createdAt: string;
   calendar: CalendarContent[];
   reports: Report[];
