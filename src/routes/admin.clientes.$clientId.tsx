@@ -481,6 +481,11 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
   function submitGravacao(e: FormEvent) {
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
+    if (isEditing && editing) {
+      onUpdate(editing.id, { title, caption, script, time, status, platforms, kind, tagColor });
+      onClose();
+      return;
+    }
     if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
     if (scriptUpload && scriptUpload.status !== "done") { toast.error("O upload do PDF falhou. Reenvie ou remova."); return; }
     onAdd({
