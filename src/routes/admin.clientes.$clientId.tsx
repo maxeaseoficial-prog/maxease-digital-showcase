@@ -5,10 +5,12 @@ import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRigh
 import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
-import type { ContentStatus, Platform } from "@/lib/portal/mockData";
+import type { ContentStatus, Platform, CalendarKind } from "@/lib/portal/mockData";
 
 const STATUSES: ContentStatus[] = ["Planejado", "Em Produção", "Aguardando Aprovação", "Aprovado", "Agendado", "Publicado", "Solicitou Alteração"];
 const PLATFORMS: Platform[] = ["Instagram", "Facebook", "TikTok"];
+const KINDS: CalendarKind[] = ["Postagem", "Gravação"];
+const TAG_COLORS = ["#1428FF", "#4F7CFF", "#22C55E", "#F59E0B", "#EF4444", "#A855F7", "#0EA5E9", "#64748B"];
 
 export const Route = createFileRoute("/admin/clientes/$clientId")({
   head: () => ({ meta: [{ title: "Gerenciar cliente — Admin" }, { name: "robots", content: "noindex" }] }),
@@ -166,7 +168,7 @@ function ProfileEditor({ initial, onSave }: { initial: { name: string; company: 
   );
 }
 
-type CalItem = { id: string; title: string; caption: string; script: string; date: string; time: string; status: ContentStatus; platforms: Platform[] };
+type CalItem = { id: string; title: string; caption: string; script: string; date: string; time: string; status: ContentStatus; platforms: Platform[]; kind?: CalendarKind; tagColor?: string; scriptFile?: { name: string; dataUrl: string } };
 
 const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 const MONTHS_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -253,11 +255,18 @@ function CalendarManager({ items, onAdd, onDelete }: { items: CalItem[]; onAdd: 
                 {cell.day}
               </div>
               <div className="flex-1 space-y-1 overflow-hidden">
-                {evts.slice(0, 3).map((e) => (
-                  <div key={e.id} className="truncate rounded-md bg-brand-light/10 border border-brand-light/20 px-1.5 py-0.5 text-[10px] font-medium text-brand-DEFAULT">
-                    {e.time && <span className="text-brand-light">{e.time} </span>}{e.title}
-                  </div>
-                ))}
+                {evts.slice(0, 3).map((e) => {
+                  const color = e.tagColor ?? "#1428FF";
+                  return (
+                    <div
+                      key={e.id}
+                      className="truncate rounded-md px-1.5 py-0.5 text-[10px] font-medium border"
+                      style={{ backgroundColor: `${color}1A`, borderColor: `${color}40`, color }}
+                    >
+                      {e.kind === "Gravação" ? "● " : ""}{e.time && <span className="opacity-70">{e.time} </span>}{e.title}
+                    </div>
+                  );
+                })}
                 {evts.length > 3 && <div className="text-[10px] text-slate-500">+{evts.length - 3} mais</div>}
               </div>
             </button>
@@ -282,22 +291,35 @@ function CalendarManager({ items, onAdd, onDelete }: { items: CalItem[]; onAdd: 
 
 function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; events: CalItem[]; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onDelete: (id: string) => void }) {
   const [showForm, setShowForm] = useState(events.length === 0);
+  const [kind, setKind] = useState<CalendarKind>("Postagem");
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [script, setScript] = useState("");
   const [time, setTime] = useState("09:00");
   const [status, setStatus] = useState<ContentStatus>("Planejado");
   const [platforms, setPlatforms] = useState<Platform[]>(["Instagram"]);
+  const [tagColor, setTagColor] = useState<string>(TAG_COLORS[0]);
+  const [scriptFile, setScriptFile] = useState<{ name: string; dataUrl: string } | undefined>(undefined);
 
   const [y, m, d] = date.split("-").map(Number);
   const label = `${String(d).padStart(2, "0")} de ${MONTHS_PT[m - 1]} de ${y}`;
 
+  function onScriptFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== "application/pdf") { toast.error("Envie um PDF."); return; }
+    if (file.size > 10 * 1024 * 1024) { toast.error("PDF muito grande (máx 10MB)."); return; }
+    const reader = new FileReader();
+    reader.onload = () => setScriptFile({ name: file.name, dataUrl: String(reader.result) });
+    reader.readAsDataURL(file);
+  }
+
   function submit(e: FormEvent) {
     e.preventDefault();
     if (!title) { toast.error("Informe o título."); return; }
-    onAdd({ title, caption, script, time, status, platforms });
+    onAdd({ title, caption, script, time, status, platforms, kind, tagColor, scriptFile });
     toast.success("Evento criado.");
-    setTitle(""); setCaption(""); setScript("");
+    setTitle(""); setCaption(""); setScript(""); setScriptFile(undefined);
     setShowForm(false);
   }
 
@@ -319,18 +341,31 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
             <div>
               <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Eventos do dia</div>
               <ul className="space-y-2">
-                {events.map((ev) => (
-                  <li key={ev.id} className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-                    <div className="min-w-0">
-                      <div className="text-sm font-medium text-slate-900">{ev.time} · {ev.title}</div>
-                      <div className="text-xs text-slate-500 mt-0.5">{ev.platforms.join(", ")} · {ev.status}</div>
-                      {ev.caption && <div className="text-xs text-slate-600 mt-1 line-clamp-2">{ev.caption}</div>}
-                    </div>
-                    <button type="button" onClick={() => onDelete(ev.id)} className="text-slate-300 hover:text-red-500 shrink-0">
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </li>
-                ))}
+                {events.map((ev) => {
+                  const color = ev.tagColor ?? "#1428FF";
+                  return (
+                    <li key={ev.id} className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                          <div className="text-sm font-medium text-slate-900 truncate">{ev.time} · {ev.title}</div>
+                        </div>
+                        <div className="text-xs text-slate-500 mt-0.5">
+                          {(ev.kind ?? "Postagem")} · {ev.platforms.join(", ")} · {ev.status}
+                        </div>
+                        {ev.caption && <div className="text-xs text-slate-600 mt-1 line-clamp-2">{ev.caption}</div>}
+                        {ev.scriptFile && (
+                          <a href={ev.scriptFile.dataUrl} download={ev.scriptFile.name} className="mt-1 inline-flex items-center gap-1 text-xs text-brand-light hover:underline">
+                            <FileText className="h-3 w-3" /> {ev.scriptFile.name}
+                          </a>
+                        )}
+                      </div>
+                      <button type="button" onClick={() => onDelete(ev.id)} className="text-slate-300 hover:text-red-500 shrink-0">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}
@@ -343,6 +378,17 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
 
           {showForm && (
             <form onSubmit={submit} className="space-y-3 border-t border-slate-100 pt-4">
+              <div>
+                <span className="text-xs font-medium text-slate-600">Tipo</span>
+                <div className="mt-1.5 inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50">
+                  {KINDS.map((k) => (
+                    <button key={k} type="button" onClick={() => setKind(k)}
+                      className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${kind === k ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}>
+                      {k === "Postagem" ? "Conteúdo a postar" : "Dia de gravação"}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <TextField label="Título" value={title} onChange={setTitle} />
               <div className="grid grid-cols-2 gap-3">
                 <TextField label="Hora" value={time} onChange={setTime} type="time" />
@@ -353,8 +399,37 @@ function DayModal({ date, events, onClose, onAdd, onDelete }: { date: string; ev
                   </select>
                 </label>
               </div>
+
+              <div>
+                <span className="text-xs font-medium text-slate-600">Cor da tag</span>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  {TAG_COLORS.map((c) => (
+                    <button key={c} type="button" onClick={() => setTagColor(c)} aria-label={c}
+                      className={`h-7 w-7 rounded-full border-2 transition-transform ${tagColor === c ? "scale-110 border-slate-900" : "border-white shadow-sm"}`}
+                      style={{ backgroundColor: c }} />
+                  ))}
+                  <label className="inline-flex items-center gap-1.5 ml-1 text-xs text-slate-500 cursor-pointer">
+                    <input type="color" value={tagColor} onChange={(e) => setTagColor(e.target.value)} className="h-7 w-7 rounded border border-slate-200 bg-white cursor-pointer" />
+                    Personalizada
+                  </label>
+                </div>
+              </div>
+
               <TextField label="Legenda" value={caption} onChange={setCaption} multiline />
-              <TextField label="Roteiro" value={script} onChange={setScript} multiline />
+              <TextField label="Roteiro (texto)" value={script} onChange={setScript} multiline />
+
+              <div>
+                <span className="text-xs font-medium text-slate-600">Roteiro em PDF</span>
+                <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
+                  <Upload className="h-4 w-4" />
+                  <span className="truncate">{scriptFile?.name ?? "Selecionar PDF do roteiro"}</span>
+                  <input type="file" accept="application/pdf" onChange={onScriptFile} className="hidden" />
+                </label>
+                {scriptFile && (
+                  <button type="button" onClick={() => setScriptFile(undefined)} className="mt-1.5 text-xs text-red-600 hover:underline">Remover PDF</button>
+                )}
+              </div>
+
               <div>
                 <span className="text-xs font-medium text-slate-600">Plataformas</span>
                 <div className="mt-2 flex flex-wrap gap-2">

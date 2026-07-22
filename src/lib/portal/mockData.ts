@@ -11,6 +11,8 @@ export type ContentStatus =
 
 export type Platform = "Instagram" | "Facebook" | "TikTok";
 
+export type CalendarKind = "Postagem" | "Gravação";
+
 export interface CalendarContent {
   id: string;
   title: string;
@@ -20,6 +22,9 @@ export interface CalendarContent {
   date: string; // ISO
   time: string; // HH:mm
   status: ContentStatus;
+  kind?: CalendarKind;
+  tagColor?: string; // hex color e.g. #1428FF
+  scriptFile?: { name: string; dataUrl: string };
 }
 
 export interface ScriptFile {
