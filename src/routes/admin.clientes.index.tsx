@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
 
-export const Route = createFileRoute("/admin/clientes")({
+export const Route = createFileRoute("/admin/clientes/")({
   head: () => ({ meta: [{ title: "Clientes — Admin" }, { name: "robots", content: "noindex" }] }),
   component: () => (
     <AdminShell>
