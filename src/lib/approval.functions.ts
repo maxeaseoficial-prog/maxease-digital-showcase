@@ -53,11 +53,11 @@ export const submitApproval = createServerFn({ method: "POST" })
     const stamp = fmtStamp();
     const history = Array.isArray(row.approval_history) ? row.approval_history : [];
     const entry = { at: stamp, action: data.action, message: data.message };
-    const patch: Record<string, unknown> = {
+    const patch = {
       status: data.action === "approved" ? "Aprovado" : "Alteração solicitada",
-      approval_history: [...history, entry],
+      approval_history: [...history, entry] as unknown as never,
+      approved_at: data.action === "approved" ? new Date().toISOString() : (row.approved_at ?? null),
     };
-    if (data.action === "approved") patch.approved_at = new Date().toISOString();
     const { error: uErr } = await supabaseAdmin
       .from("calendar_items")
       .update(patch)
