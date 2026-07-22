@@ -802,17 +802,15 @@ function ReportsManager({ clientId, items, onAdd, onDelete }: { clientId: string
           )}
         </div>
 
-        <div>
-          <span className="text-xs font-medium text-slate-600">Arquivo PDF</span>
-          <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-3 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-            <Upload className="h-4 w-4" />
-            <span className="truncate">{fileName || "Selecionar PDF"}</span>
-            <input type="file" accept="application/pdf" onChange={onFile} className="hidden" />
-          </label>
-          {fileDataUrl && (
-            <button type="button" onClick={() => { setFileDataUrl(""); setFileName(""); }} className="mt-1.5 text-xs text-red-600 hover:underline">Remover arquivo</button>
-          )}
-        </div>
+        <UploadSlotField
+          label="Arquivo PDF"
+          icon={<Upload className="h-4 w-4" />}
+          placeholder="Selecionar PDF"
+          accept="application/pdf"
+          slot={pdfUpload}
+          onFile={onFile}
+          onRemove={removePdf}
+        />
 
         <button type="submit" className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-brand-gradient px-4 py-2 text-sm text-white font-medium">
           <Plus className="h-4 w-4" /> Publicar relatório
