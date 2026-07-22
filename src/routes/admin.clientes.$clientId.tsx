@@ -289,8 +289,16 @@ function CalendarManager({ clientId, items, onAdd, onUpdate, onDelete }: { clien
                   return (
                     <div
                       key={e.id}
-                      className="truncate rounded-md px-1.5 py-0.5 text-[10px] font-medium border"
+                      role="button"
+                      tabIndex={0}
+                      onContextMenu={(ev) => {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        setMenu({ x: ev.clientX, y: ev.clientY, item: e });
+                      }}
+                      className="truncate rounded-md px-1.5 py-0.5 text-[10px] font-medium border cursor-context-menu"
                       style={{ backgroundColor: `${color}1A`, borderColor: `${color}40`, color }}
+                      title="Clique com o botão direito para editar ou excluir"
                     >
                       {e.kind === "Gravação" ? "● " : ""}{e.time && <span className="opacity-70">{e.time} </span>}{e.title}
                     </div>
@@ -303,14 +311,51 @@ function CalendarManager({ clientId, items, onAdd, onUpdate, onDelete }: { clien
         })}
       </div>
 
+      {menu && (
+        <div
+          className="fixed z-[60] min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl py-1 text-sm"
+          style={{ left: Math.min(menu.x, (typeof window !== "undefined" ? window.innerWidth : 1000) - 200), top: Math.min(menu.y, (typeof window !== "undefined" ? window.innerHeight : 1000) - 100) }}
+          onClick={(e) => e.stopPropagation()}
+          onContextMenu={(e) => e.preventDefault()}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setEditing(menu.item);
+              setSelectedDate(menu.item.date);
+              setMenu(null);
+            }}
+            className="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+          >
+            <FileText className="h-4 w-4" /> Editar evento
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const item = menu.item;
+              setMenu(null);
+              if (confirm(`Excluir "${item.title}"? Essa ação não pode ser desfeita.`)) {
+                onDelete(item.id);
+              }
+            }}
+            className="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 flex items-center gap-2"
+          >
+            <Trash2 className="h-4 w-4" /> Excluir evento
+          </button>
+        </div>
+      )}
+
       <AnimatePresence>
         {selectedDate && (
           <DayModal
+            key={editing?.id ?? `new-${selectedDate}`}
             clientId={clientId}
             date={selectedDate}
             events={eventsByDate.get(selectedDate) ?? []}
-            onClose={() => setSelectedDate(null)}
+            editing={editing}
+            onClose={() => { setSelectedDate(null); setEditing(null); }}
             onAdd={(item) => onAdd({ ...item, date: selectedDate })}
+            onUpdate={onUpdate}
             onDelete={onDelete}
           />
         )}
