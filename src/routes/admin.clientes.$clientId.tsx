@@ -7,7 +7,7 @@ import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
 import { statusChipColor, type ContentStatus, type Platform, type CalendarKind } from "@/lib/portal/mockData";
 import { uploadMedia, removeUploaded, type UploadHandle } from "@/lib/admin/upload";
-import { validateFile, type MediaKind } from "@/lib/admin/media";
+import { validateFile, probeVideoCompatibility, type MediaKind } from "@/lib/admin/media";
 
 const STATUSES: ContentStatus[] = ["Planejado", "Em Produção", "Aguardando Aprovação", "Aprovado", "Agendado", "Publicado", "Solicitou Alteração"];
 const POST_STATUSES: ContentStatus[] = ["Planejado", "Pendente de aprovação", "Alteração solicitada", "Aprovado", "Publicado"];
