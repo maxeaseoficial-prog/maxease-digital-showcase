@@ -9,7 +9,7 @@ export const MAX_VIDEO_BYTES = 1024 * 1024 * 1024; // 1 GB
 export const MAX_COVER_BYTES = 10 * 1024 * 1024;   // 10 MB
 export const MAX_PDF_BYTES   = 25 * 1024 * 1024;   // 25 MB
 
-export const ACCEPT_VIDEO = ["video/mp4", "video/quicktime", "video/webm", "video/x-m4v"];
+export const ACCEPT_VIDEO = ["video/mp4", "video/webm"];
 export const ACCEPT_IMAGE = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
 export const ACCEPT_PDF   = ["application/pdf"];
 
@@ -23,8 +23,15 @@ export const BUCKET_FOR: Record<MediaKind, "videos" | "thumbnails" | "pdfs"> = {
 
 export function validateFile(kind: MediaKind, file: File): string | null {
   if (kind === "video") {
-    if (!ACCEPT_VIDEO.includes(file.type) && !file.type.startsWith("video/")) {
-      return "Formato de vídeo não suportado. Use MP4, MOV ou WEBM.";
+    const name = file.name.toLowerCase();
+    // Reject .mov / quicktime up front: iPhone MOV files are usually HEVC,
+    // which is not supported by Android/older devices — audio plays but the
+    // video stays black. Force uploaders to export as MP4 (H.264).
+    if (file.type === "video/quicktime" || name.endsWith(".mov")) {
+      return "Formato .MOV não é compatível com todos os celulares. Exporte o vídeo como MP4 (H.264) e envie novamente.";
+    }
+    if (!ACCEPT_VIDEO.includes(file.type)) {
+      return "Formato de vídeo não suportado. Envie MP4 (H.264) ou WEBM.";
     }
     if (file.size > MAX_VIDEO_BYTES) return "Vídeo excede o limite de 1 GB.";
   } else if (kind === "cover") {
@@ -35,6 +42,24 @@ export function validateFile(kind: MediaKind, file: File): string | null {
     if (file.size > MAX_PDF_BYTES) return "PDF excede o limite de 25 MB.";
   }
   return null;
+}
+
+// Probes the first ~1 MB of an MP4 to detect HEVC (hvc1/hev1) codec, which
+// many Android devices decode as audio-only. Returns an error message when
+// the file is HEVC, or null when it's safe (H.264/AVC or unknown box).
+export async function probeVideoCompatibility(file: File): Promise<string | null> {
+  if (!file.type.startsWith("video/")) return null;
+  try {
+    const slice = file.slice(0, 1024 * 1024);
+    const buf = new Uint8Array(await slice.arrayBuffer());
+    const text = new TextDecoder("latin1").decode(buf);
+    if (/hvc1|hev1|hvcC/.test(text)) {
+      return "Este vídeo está em HEVC (H.265) e não abre em vários celulares. Exporte como MP4 H.264 (AVC) e envie novamente.";
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 export function extFor(file: File, kind: MediaKind): string {
