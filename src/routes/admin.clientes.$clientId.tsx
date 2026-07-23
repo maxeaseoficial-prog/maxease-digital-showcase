@@ -7,7 +7,7 @@ import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
 import { statusChipColor, type ContentStatus, type Platform, type CalendarKind } from "@/lib/portal/mockData";
 import { uploadMedia, removeUploaded, type UploadHandle } from "@/lib/admin/upload";
-import { validateFile, probeVideoCompatibility, type MediaKind } from "@/lib/admin/media";
+import { inspectVideoFile, validateFile, type MediaKind } from "@/lib/admin/media";
 
 const STATUSES: ContentStatus[] = ["Planejado", "Em Produção", "Aguardando Aprovação", "Aprovado", "Agendado", "Publicado", "Solicitou Alteração"];
 const POST_STATUSES: ContentStatus[] = ["Planejado", "Pendente de aprovação", "Alteração solicitada", "Aprovado", "Publicado"];
@@ -454,9 +454,16 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
   function onVideoFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    // Probe for HEVC (H.265) — plays audio-only on many Android/older devices.
-    probeVideoCompatibility(file).then((err) => {
-      if (err) { toast.error(err); return; }
+    // Inspect the real MP4 tracks. The file extension alone does not prove
+    // Android-safe playback; HEVC/H.265 often shows only the poster + audio.
+    inspectVideoFile(file).then((inspection) => {
+      if (!inspection.compatible) {
+        toast.error(inspection.message ?? "Vídeo incompatível.", {
+          description: `Detectado: vídeo ${inspection.videoCodec.toUpperCase()} · áudio ${inspection.audioCodec.toUpperCase()}`,
+          duration: 9000,
+        });
+        return;
+      }
       startUpload("video", file, setVideoUpload);
     });
   }
@@ -478,7 +485,7 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
   function toStoredFile(slot: UploadSlot | undefined, includeType = false): { name: string; dataUrl: string; type?: string } | undefined {
     if (!slot || slot.status !== "done" || !slot.path) return undefined;
     return includeType
-      ? { name: slot.file.name, dataUrl: slot.path, type: slot.file.type }
+      ? { name: slot.file.name, dataUrl: slot.path, type: "video/mp4" }
       : { name: slot.file.name, dataUrl: slot.path };
   }
 
@@ -683,11 +690,11 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
                     </div>
                   )}
                   <UploadSlotField
-                    label={isEditing ? "Substituir vídeo (opcional, somente MP4 H.264, até 1 GB)" : "Vídeo (somente MP4 H.264, preferencialmente 9:16, até 1 GB)"}
+                    label={isEditing ? "Substituir vídeo (opcional, até 1 GB)" : "Vídeo (até 1 GB)"}
 
                     icon={<Video className="h-4 w-4" />}
                     placeholder="Selecionar vídeo"
-                    accept="video/mp4,.mp4"
+                    accept="video/*,.mp4,.mov"
                     slot={videoUpload}
                     onFile={onVideoFile}
                     onRemove={() => clearSlot(videoUpload, setVideoUpload)}
