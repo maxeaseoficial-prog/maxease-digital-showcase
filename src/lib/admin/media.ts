@@ -28,13 +28,13 @@ export function validateFile(kind: MediaKind, file: File): string | null {
     // which is not supported by Android/older devices — audio plays but the
     // video stays black. Force uploaders to export as MP4 (H.264).
     if (file.type === "video/quicktime" || name.endsWith(".mov")) {
-      return "Formato .MOV não é compatível com todos os celulares. Exporte o vídeo como MP4 (H.264) e envie novamente.";
+      return VIDEO_COMPATIBILITY_USER_MESSAGE;
     }
-    if (!name.endsWith(".mp4")) {
-      return "Envie somente vídeo MP4 em H.264. Outros formatos podem tocar apenas áudio em alguns celulares.";
+    if (!isMp4Candidate(file)) {
+      return VIDEO_COMPATIBILITY_USER_MESSAGE;
     }
-    if (!ACCEPT_VIDEO.includes(file.type)) {
-      return "Formato de vídeo não suportado. Envie somente MP4 em H.264.";
+    if (file.type && !ACCEPT_VIDEO.includes(file.type) && file.type !== "application/octet-stream") {
+      return VIDEO_COMPATIBILITY_USER_MESSAGE;
     }
     if (file.size > MAX_VIDEO_BYTES) return "Vídeo excede o limite de 1 GB.";
   } else if (kind === "cover") {
@@ -49,8 +49,26 @@ export function validateFile(kind: MediaKind, file: File): string | null {
 
 const VIDEO_INCOMPATIBLE_MESSAGE = "Este vídeo não está em MP4 H.264 (AVC), que é o formato mais compatível com celulares. Exporte novamente como MP4 H.264 e reenvie.";
 const VIDEO_UNKNOWN_CODEC_MESSAGE = "Não consegui confirmar que este MP4 está em H.264. Para evitar o problema de capa com áudio, exporte novamente como MP4 H.264 (AVC) e reenvie.";
+const VIDEO_COMPATIBILITY_USER_MESSAGE = "O vídeo selecionado utiliza um codec que pode não funcionar em alguns dispositivos Android.\n\nPara garantir compatibilidade total, envie um vídeo exportado em MP4 (H.264 + AAC).";
 const MP4_SCAN_BYTES = 8 * 1024 * 1024;
 const MP4_MAX_MOOV_READ_BYTES = 32 * 1024 * 1024;
+
+export type VideoCodec = "h264" | "hevc" | "av1" | "mpeg4" | "vp9" | "unknown";
+export type AudioCodec = "aac" | "ac3" | "eac3" | "opus" | "mp3" | "unknown" | "none";
+
+export interface VideoInspection {
+  fileType: string;
+  videoCodec: VideoCodec;
+  audioCodec: AudioCodec;
+  hasAudioTrack: boolean;
+  compatible: boolean;
+  message?: string;
+}
+
+function isMp4Candidate(file: File) {
+  const name = file.name.toLowerCase();
+  return name.endsWith(".mp4") || file.type === "video/mp4" || file.type === "application/octet-stream" || file.type === "";
+}
 
 function hasHevcMarker(text: string) {
   return /hvc1|hev1|hvcC|dvh1|dvhe/i.test(text);
@@ -62,6 +80,25 @@ function hasAvcMarker(text: string) {
 
 function hasKnownUnsupportedMarker(text: string) {
   return /mp4v|av01|vp09/i.test(text);
+}
+
+function detectVideoCodec(text: string): VideoCodec {
+  if (hasHevcMarker(text)) return "hevc";
+  if (/av01/i.test(text)) return "av1";
+  if (/vp09/i.test(text)) return "vp9";
+  if (/mp4v/i.test(text)) return "mpeg4";
+  if (hasAvcMarker(text)) return "h264";
+  return "unknown";
+}
+
+function detectAudioCodec(text: string, hasAudioTrack: boolean): AudioCodec {
+  if (!hasAudioTrack) return "none";
+  if (/mp4a|aac|esds/i.test(text)) return "aac";
+  if (/ec-3/i.test(text)) return "eac3";
+  if (/ac-3/i.test(text)) return "ac3";
+  if (/Opus/i.test(text)) return "opus";
+  if (/.mp3/i.test(text)) return "mp3";
+  return "unknown";
 }
 
 async function readFileText(file: File, start: number, length: number): Promise<string> {
@@ -121,18 +158,53 @@ async function readMp4CodecText(file: File): Promise<string> {
 
 // Detects the actual MP4 codec before upload. Older Android/iOS devices need
 // H.264/AVC; HEVC/H.265 often plays as poster/cover + audio only.
-export async function probeVideoCompatibility(file: File): Promise<string | null> {
-  if (!file.type.startsWith("video/")) return null;
+export async function inspectVideoFile(file: File): Promise<VideoInspection> {
   const validationError = validateFile("video", file);
-  if (validationError) return validationError;
+  if (validationError) {
+    return {
+      fileType: file.type || "desconhecido",
+      videoCodec: "unknown",
+      audioCodec: "unknown",
+      hasAudioTrack: false,
+      compatible: false,
+      message: validationError,
+    };
+  }
+
   try {
     const codecText = await readMp4CodecText(file);
-    if (hasHevcMarker(codecText) || hasKnownUnsupportedMarker(codecText)) return VIDEO_INCOMPATIBLE_MESSAGE;
-    if (hasAvcMarker(codecText)) return null;
-    return VIDEO_UNKNOWN_CODEC_MESSAGE;
+    const videoCodec = detectVideoCodec(codecText);
+    const hasAudioTrack = /soun/i.test(codecText);
+    const audioCodec = detectAudioCodec(codecText, hasAudioTrack);
+    const audioCompatible = audioCodec === "aac" || audioCodec === "none";
+    const compatible = videoCodec === "h264" && audioCompatible;
+
+    return {
+      fileType: file.type || "video/mp4",
+      videoCodec,
+      audioCodec,
+      hasAudioTrack,
+      compatible,
+      message: compatible ? undefined : VIDEO_COMPATIBILITY_USER_MESSAGE,
+    };
   } catch {
-    return VIDEO_UNKNOWN_CODEC_MESSAGE;
+    return {
+      fileType: file.type || "desconhecido",
+      videoCodec: "unknown",
+      audioCodec: "unknown",
+      hasAudioTrack: false,
+      compatible: false,
+      message: VIDEO_UNKNOWN_CODEC_MESSAGE,
+    };
   }
+}
+
+export async function probeVideoCompatibility(file: File): Promise<string | null> {
+  if (file.type && !file.type.startsWith("video/") && file.type !== "application/octet-stream") return null;
+  const inspection = await inspectVideoFile(file);
+  if (inspection.compatible) return null;
+  if (["hevc", "av1", "mpeg4", "vp9"].includes(inspection.videoCodec)) return VIDEO_INCOMPATIBLE_MESSAGE;
+  return inspection.message ?? VIDEO_UNKNOWN_CODEC_MESSAGE;
 }
 
 export function extFor(file: File, kind: MediaKind): string {

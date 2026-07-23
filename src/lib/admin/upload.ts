@@ -46,7 +46,11 @@ export function uploadMedia({ kind, clientId, file, onProgress }: UploadOptions)
       xhr.setRequestHeader("Authorization", `Bearer ${token}`);
       xhr.setRequestHeader("x-upsert", "false");
       xhr.setRequestHeader("cache-control", "3600");
-      if (file.type) xhr.setRequestHeader("content-type", file.type);
+      if (kind === "video") {
+        xhr.setRequestHeader("content-type", "video/mp4");
+      } else if (file.type) {
+        xhr.setRequestHeader("content-type", file.type);
+      }
 
       xhr.upload.onprogress = (e) => {
         if (!e.lengthComputable || !onProgress) return;

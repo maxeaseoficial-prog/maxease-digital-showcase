@@ -23,6 +23,7 @@ function ApprovacaoPage() {
   const [mode, setMode] = useState<"idle" | "confirm-approve" | "request">("idle");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -114,13 +115,26 @@ function ApprovacaoPage() {
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div className="bg-slate-900 flex items-center justify-center relative aspect-[9/16] md:aspect-auto md:min-h-[520px]">
               {item.videoFile ? (
-                <video
-                  src={item.videoFile.dataUrl}
-                  poster={item.coverFile?.dataUrl}
-                  controls
-                  playsInline
-                  className="w-full h-full object-contain bg-black"
-                />
+                <div className="relative h-full w-full">
+                  <video
+                    key={item.videoFile.dataUrl}
+                    poster={item.coverFile?.dataUrl}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="h-full w-full bg-black object-contain"
+                    onCanPlay={() => setVideoFailed(false)}
+                    onError={() => setVideoFailed(true)}
+                  >
+                    <source src={item.videoFile.dataUrl} type={item.videoFile.type || "video/mp4"} />
+                    Seu navegador não suporta a reprodução deste vídeo.
+                  </video>
+                  {videoFailed && (
+                    <div className="absolute inset-x-4 bottom-4 rounded-xl border border-red-200 bg-white/95 p-3 text-xs text-red-700 shadow-lg">
+                      Não foi possível reproduzir este vídeo neste dispositivo. Solicite à equipe MAXEASE um novo envio em MP4 H.264 com áudio AAC.
+                    </div>
+                  )}
+                </div>
               ) : item.coverFile ? (
                 <img src={item.coverFile.dataUrl} alt="Capa" className="w-full h-full object-contain" />
               ) : (
