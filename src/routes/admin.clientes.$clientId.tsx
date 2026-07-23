@@ -683,11 +683,11 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
                     </div>
                   )}
                   <UploadSlotField
-                    label={isEditing ? "Substituir vídeo (opcional, até 1 GB)" : "Vídeo (preferencialmente 9:16, até 1 GB)"}
+                    label={isEditing ? "Substituir vídeo (opcional, MP4 H.264, até 1 GB)" : "Vídeo (MP4 H.264, preferencialmente 9:16, até 1 GB)"}
 
                     icon={<Video className="h-4 w-4" />}
                     placeholder="Selecionar vídeo"
-                    accept="video/*"
+                    accept="video/mp4,video/webm"
                     slot={videoUpload}
                     onFile={onVideoFile}
                     onRemove={() => clearSlot(videoUpload, setVideoUpload)}
