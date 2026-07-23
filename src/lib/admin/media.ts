@@ -9,7 +9,7 @@ export const MAX_VIDEO_BYTES = 1024 * 1024 * 1024; // 1 GB
 export const MAX_COVER_BYTES = 10 * 1024 * 1024;   // 10 MB
 export const MAX_PDF_BYTES   = 25 * 1024 * 1024;   // 25 MB
 
-export const ACCEPT_VIDEO = ["video/mp4", "video/webm"];
+export const ACCEPT_VIDEO = ["video/mp4"];
 export const ACCEPT_IMAGE = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
 export const ACCEPT_PDF   = ["application/pdf"];
 
@@ -30,8 +30,11 @@ export function validateFile(kind: MediaKind, file: File): string | null {
     if (file.type === "video/quicktime" || name.endsWith(".mov")) {
       return "Formato .MOV não é compatível com todos os celulares. Exporte o vídeo como MP4 (H.264) e envie novamente.";
     }
+    if (!name.endsWith(".mp4")) {
+      return "Envie somente vídeo MP4 em H.264. Outros formatos podem tocar apenas áudio em alguns celulares.";
+    }
     if (!ACCEPT_VIDEO.includes(file.type)) {
-      return "Formato de vídeo não suportado. Envie MP4 (H.264) ou WEBM.";
+      return "Formato de vídeo não suportado. Envie somente MP4 em H.264.";
     }
     if (file.size > MAX_VIDEO_BYTES) return "Vídeo excede o limite de 1 GB.";
   } else if (kind === "cover") {
@@ -44,28 +47,98 @@ export function validateFile(kind: MediaKind, file: File): string | null {
   return null;
 }
 
-// Probes the first ~1 MB of an MP4 to detect HEVC (hvc1/hev1) codec, which
-// many Android devices decode as audio-only. Returns an error message when
-// the file is HEVC, or null when it's safe (H.264/AVC or unknown box).
+const VIDEO_INCOMPATIBLE_MESSAGE = "Este vídeo não está em MP4 H.264 (AVC), que é o formato mais compatível com celulares. Exporte novamente como MP4 H.264 e reenvie.";
+const VIDEO_UNKNOWN_CODEC_MESSAGE = "Não consegui confirmar que este MP4 está em H.264. Para evitar o problema de capa com áudio, exporte novamente como MP4 H.264 (AVC) e reenvie.";
+const MP4_SCAN_BYTES = 8 * 1024 * 1024;
+const MP4_MAX_MOOV_READ_BYTES = 32 * 1024 * 1024;
+
+function hasHevcMarker(text: string) {
+  return /hvc1|hev1|hvcC|dvh1|dvhe/i.test(text);
+}
+
+function hasAvcMarker(text: string) {
+  return /avc1|avc2|avc3|avc4|avcC/i.test(text);
+}
+
+function hasKnownUnsupportedMarker(text: string) {
+  return /mp4v|av01|vp09/i.test(text);
+}
+
+async function readFileText(file: File, start: number, length: number): Promise<string> {
+  const safeStart = Math.max(0, Math.min(start, file.size));
+  const safeEnd = Math.max(safeStart, Math.min(safeStart + length, file.size));
+  const buf = await file.slice(safeStart, safeEnd).arrayBuffer();
+  return new TextDecoder("latin1").decode(buf);
+}
+
+async function readBoxHeader(file: File, offset: number): Promise<{ type: string; size: number } | null> {
+  if (offset + 8 > file.size) return null;
+  const buf = await file.slice(offset, Math.min(offset + 16, file.size)).arrayBuffer();
+  if (buf.byteLength < 8) return null;
+  const view = new DataView(buf);
+  const smallSize = view.getUint32(0);
+  const type = String.fromCharCode(
+    view.getUint8(4),
+    view.getUint8(5),
+    view.getUint8(6),
+    view.getUint8(7),
+  );
+  if (smallSize === 1) {
+    if (buf.byteLength < 16) return null;
+    const high = view.getUint32(8);
+    const low = view.getUint32(12);
+    return { type, size: high * 2 ** 32 + low };
+  }
+  if (smallSize === 0) return { type, size: file.size - offset };
+  return { type, size: smallSize };
+}
+
+async function readMp4CodecText(file: File): Promise<string> {
+  let offset = 0;
+  let boxesRead = 0;
+  while (offset + 8 < file.size && boxesRead < 80) {
+    boxesRead += 1;
+    const box = await readBoxHeader(file, offset);
+    if (!box || box.size < 8) break;
+    if (box.type === "moov") {
+      const readable = Math.min(box.size, MP4_MAX_MOOV_READ_BYTES);
+      const head = await readFileText(file, offset, readable);
+      if (box.size > readable) {
+        const tailStart = offset + box.size - MP4_SCAN_BYTES;
+        return `${head}\n${await readFileText(file, tailStart, MP4_SCAN_BYTES)}`;
+      }
+      return head;
+    }
+    offset += box.size;
+  }
+
+  const head = await readFileText(file, 0, MP4_SCAN_BYTES);
+  const tail = file.size > MP4_SCAN_BYTES
+    ? await readFileText(file, file.size - MP4_SCAN_BYTES, MP4_SCAN_BYTES)
+    : "";
+  return `${head}\n${tail}`;
+}
+
+// Detects the actual MP4 codec before upload. Older Android/iOS devices need
+// H.264/AVC; HEVC/H.265 often plays as poster/cover + audio only.
 export async function probeVideoCompatibility(file: File): Promise<string | null> {
   if (!file.type.startsWith("video/")) return null;
+  const validationError = validateFile("video", file);
+  if (validationError) return validationError;
   try {
-    const slice = file.slice(0, 1024 * 1024);
-    const buf = new Uint8Array(await slice.arrayBuffer());
-    const text = new TextDecoder("latin1").decode(buf);
-    if (/hvc1|hev1|hvcC/.test(text)) {
-      return "Este vídeo está em HEVC (H.265) e não abre em vários celulares. Exporte como MP4 H.264 (AVC) e envie novamente.";
-    }
-    return null;
+    const codecText = await readMp4CodecText(file);
+    if (hasHevcMarker(codecText) || hasKnownUnsupportedMarker(codecText)) return VIDEO_INCOMPATIBLE_MESSAGE;
+    if (hasAvcMarker(codecText)) return null;
+    return VIDEO_UNKNOWN_CODEC_MESSAGE;
   } catch {
-    return null;
+    return VIDEO_UNKNOWN_CODEC_MESSAGE;
   }
 }
 
 export function extFor(file: File, kind: MediaKind): string {
   const fromName = file.name.match(/\.([a-z0-9]+)$/i)?.[1]?.toLowerCase();
   if (fromName) return fromName;
-  if (kind === "video") return file.type === "video/quicktime" ? "mov" : "mp4";
+  if (kind === "video") return "mp4";
   if (kind === "cover") return file.type === "image/png" ? "png" : "jpg";
   return "pdf";
 }
