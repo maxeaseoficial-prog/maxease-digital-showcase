@@ -7,7 +7,7 @@ import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { useAdminStore } from "@/lib/admin/store";
 import { statusChipColor, type ContentStatus, type Platform, type CalendarKind } from "@/lib/portal/mockData";
 import { uploadMedia, removeUploaded, type UploadHandle } from "@/lib/admin/upload";
-import { validateFile, type MediaKind } from "@/lib/admin/media";
+import { validateFile, probeVideoCompatibility, type MediaKind } from "@/lib/admin/media";
 
 const STATUSES: ContentStatus[] = ["Planejado", "Em Produção", "Aguardando Aprovação", "Aprovado", "Agendado", "Publicado", "Solicitou Alteração"];
 const POST_STATUSES: ContentStatus[] = ["Planejado", "Pendente de aprovação", "Alteração solicitada", "Aprovado", "Publicado"];
@@ -454,7 +454,11 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
   function onVideoFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    startUpload("video", file, setVideoUpload);
+    // Probe for HEVC (H.265) — plays audio-only on many Android/older devices.
+    probeVideoCompatibility(file).then((err) => {
+      if (err) { toast.error(err); return; }
+      startUpload("video", file, setVideoUpload);
+    });
   }
   function onCoverFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]; e.target.value = "";
@@ -679,11 +683,11 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
                     </div>
                   )}
                   <UploadSlotField
-                    label={isEditing ? "Substituir vídeo (opcional, até 1 GB)" : "Vídeo (preferencialmente 9:16, até 1 GB)"}
+                    label={isEditing ? "Substituir vídeo (opcional, MP4 H.264, até 1 GB)" : "Vídeo (MP4 H.264, preferencialmente 9:16, até 1 GB)"}
 
                     icon={<Video className="h-4 w-4" />}
                     placeholder="Selecionar vídeo"
-                    accept="video/*"
+                    accept="video/mp4,video/webm"
                     slot={videoUpload}
                     onFile={onVideoFile}
                     onRemove={() => clearSlot(videoUpload, setVideoUpload)}
