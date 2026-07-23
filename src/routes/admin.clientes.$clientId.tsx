@@ -454,7 +454,11 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
   function onVideoFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]; e.target.value = "";
     if (!file) return;
-    startUpload("video", file, setVideoUpload);
+    // Probe for HEVC (H.265) — plays audio-only on many Android/older devices.
+    probeVideoCompatibility(file).then((err) => {
+      if (err) { toast.error(err); return; }
+      startUpload("video", file, setVideoUpload);
+    });
   }
   function onCoverFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]; e.target.value = "";
