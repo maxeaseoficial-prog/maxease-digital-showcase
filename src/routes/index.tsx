@@ -614,7 +614,7 @@ const projects = [
 
 export function Sites() {
   return (
-    <section id="sites" className="relative py-28 sm:py-36">
+    <section id="sites" className="relative py-28 sm:py-36 overflow-hidden">
       <GradientOrb className="left-[-10%] top-1/3" size={500} />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
         <Reveal>
