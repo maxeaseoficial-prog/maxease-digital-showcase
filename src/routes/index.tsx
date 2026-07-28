@@ -738,7 +738,7 @@ function Clients() {
 /* ---------------- About ---------------- */
 function About() {
   return (
-    <section id="sobre" className="relative py-28 sm:py-36">
+    <section id="sobre" className="relative py-28 sm:py-36 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <Reveal>
