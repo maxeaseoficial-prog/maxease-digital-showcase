@@ -691,7 +691,7 @@ function Counter({ to, suffix = "", label }: { to: number; suffix?: string; labe
 
 function Clients() {
   return (
-    <section id="clientes" className="relative py-28 sm:py-36">
+    <section id="clientes" className="relative py-28 sm:py-36 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <div className="text-center max-w-2xl mx-auto mb-14">
