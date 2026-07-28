@@ -154,14 +154,14 @@ export function Navbar() {
         scrolled ? "py-3" : "py-5"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="mx-auto max-w-7xl px-3 sm:px-6">
         <div
-          className={`flex items-center justify-between rounded-2xl px-4 sm:px-6 py-3 transition-all duration-500 ${
+          className={`flex items-center justify-between gap-2 rounded-2xl px-3 sm:px-6 py-3 transition-all duration-500 ${
             scrolled ? "glass-strong shadow-elegant" : ""
           }`}
         >
-          <Link to="/" hash="inicio" className="flex items-center gap-2 shrink-0">
-            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-11 sm:h-16 w-auto" />
+          <Link to="/" hash="inicio" className="flex items-center gap-2 shrink-0 min-w-0">
+            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-9 sm:h-16 w-auto" />
           </Link>
           <nav className="hidden lg:flex items-center gap-8">
             {links.map((l) =>
