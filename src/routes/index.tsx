@@ -785,7 +785,7 @@ function About() {
 function CTA() {
   const { open: openQuote } = useQuoteModal();
   return (
-    <section id="contato" className="relative py-24 sm:py-32">
+    <section id="contato" className="relative py-24 sm:py-32 overflow-hidden">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
           <div className="relative overflow-hidden rounded-3xl p-10 sm:p-16 text-center ring-1 ring-white/10"
