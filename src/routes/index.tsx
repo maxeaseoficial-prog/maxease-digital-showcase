@@ -490,7 +490,7 @@ function Services() {
     { icon: Megaphone, title: "Criativos para campanhas", desc: "Vídeos para tráfego pago, vídeos de divulgação e edição de vídeos que geram resultado." },
   ];
   return (
-    <section id="servicos" className="relative py-28 sm:py-36">
+    <section id="servicos" className="relative py-28 sm:py-36 overflow-hidden">
       <GradientOrb className="right-[-15%] top-1/4" size={500} />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
         <Reveal>
