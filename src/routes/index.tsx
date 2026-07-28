@@ -154,14 +154,14 @@ export function Navbar() {
         scrolled ? "py-3" : "py-5"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="mx-auto max-w-7xl px-3 sm:px-6">
         <div
-          className={`flex items-center justify-between rounded-2xl px-4 sm:px-6 py-3 transition-all duration-500 ${
+          className={`flex items-center justify-between gap-2 rounded-2xl px-3 sm:px-6 py-3 transition-all duration-500 ${
             scrolled ? "glass-strong shadow-elegant" : ""
           }`}
         >
-          <Link to="/" hash="inicio" className="flex items-center gap-2 shrink-0">
-            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-11 sm:h-16 w-auto" />
+          <Link to="/" hash="inicio" className="flex items-center gap-2 shrink-0 min-w-0">
+            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-9 sm:h-16 w-auto" />
           </Link>
           <nav className="hidden lg:flex items-center gap-8">
             {links.map((l) =>
@@ -490,7 +490,7 @@ function Services() {
     { icon: Megaphone, title: "Criativos para campanhas", desc: "Vídeos para tráfego pago, vídeos de divulgação e edição de vídeos que geram resultado." },
   ];
   return (
-    <section id="servicos" className="relative py-28 sm:py-36">
+    <section id="servicos" className="relative py-28 sm:py-36 overflow-hidden">
       <GradientOrb className="right-[-15%] top-1/4" size={500} />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
         <Reveal>
@@ -614,7 +614,7 @@ const projects = [
 
 export function Sites() {
   return (
-    <section id="sites" className="relative py-28 sm:py-36">
+    <section id="sites" className="relative py-28 sm:py-36 overflow-hidden">
       <GradientOrb className="left-[-10%] top-1/3" size={500} />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
         <Reveal>
@@ -691,7 +691,7 @@ function Counter({ to, suffix = "", label }: { to: number; suffix?: string; labe
 
 function Clients() {
   return (
-    <section id="clientes" className="relative py-28 sm:py-36">
+    <section id="clientes" className="relative py-28 sm:py-36 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <div className="text-center max-w-2xl mx-auto mb-14">
@@ -738,7 +738,7 @@ function Clients() {
 /* ---------------- About ---------------- */
 function About() {
   return (
-    <section id="sobre" className="relative py-28 sm:py-36">
+    <section id="sobre" className="relative py-28 sm:py-36 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <Reveal>
@@ -785,7 +785,7 @@ function About() {
 function CTA() {
   const { open: openQuote } = useQuoteModal();
   return (
-    <section id="contato" className="relative py-24 sm:py-32">
+    <section id="contato" className="relative py-24 sm:py-32 overflow-hidden">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
           <div className="relative overflow-hidden rounded-3xl p-10 sm:p-16 text-center ring-1 ring-white/10"
