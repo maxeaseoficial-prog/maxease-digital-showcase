@@ -377,7 +377,7 @@ interface UploadSlot {
   handle: UploadHandle;
 }
 
-function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, onDelete }: { clientId: string; date: string; events: CalItem[]; editing?: CalItem | null; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onUpdate: (id: string, patch: Partial<CalItem>) => void; onDelete: (id: string) => void }) {
+function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, onDelete, onGenerated }: { clientId: string; date: string; events: CalItem[]; editing?: CalItem | null; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onUpdate: (id: string, patch: Partial<CalItem>) => void; onDelete: (id: string) => void; onGenerated: (link: string) => void }) {
   const isEditing = !!editing;
   const [showForm, setShowForm] = useState(events.length === 0 || isEditing);
   const [kind, setKind] = useState<CalendarKind>(editing?.kind ?? "Postagem");
@@ -391,8 +391,9 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
   const [videoUpload, setVideoUpload] = useState<UploadSlot | undefined>();
   const [coverUpload, setCoverUpload] = useState<UploadSlot | undefined>();
   const [scriptUpload, setScriptUpload] = useState<UploadSlot | undefined>();
-  const [lastLink, setLastLink] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const uploadsRef = useRef<UploadSlot[]>([]);
+
 
   // Track live uploads so a modal close can cancel + clean up
   uploadsRef.current = [videoUpload, coverUpload, scriptUpload].filter(Boolean) as UploadSlot[];
