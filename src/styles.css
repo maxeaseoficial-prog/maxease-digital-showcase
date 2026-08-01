@@ -227,10 +227,24 @@
 .portal-surface .text-white\/40 { color: #94a3b8; }
 .portal-surface .text-brand-light { color: #1e40ff; }
 
-/* Keep icons/text white when sitting on the brand gradient badges */
+/* Keep icons/text white on dark/brand surfaces (buttons, badges, tiles) */
+.portal-surface .bg-brand-gradient,
+.portal-surface .bg-slate-900,
+.portal-surface .bg-slate-800,
 .portal-surface .bg-brand-gradient .text-white,
 .portal-surface .bg-brand-gradient .text-white\/80,
-.portal-surface .bg-brand-gradient .text-white\/85 { color: #ffffff; }
+.portal-surface .bg-brand-gradient .text-white\/85,
+.portal-surface .bg-slate-900 .text-white,
+.portal-surface .bg-slate-900 .text-white\/80,
+.portal-surface .bg-slate-900 .text-white\/85,
+.portal-surface .bg-slate-800 .text-white,
+.portal-surface .bg-slate-800 .text-white\/85 { color: #ffffff; }
+
+/* Dark surfaces must not be repainted by the light-surface overrides */
+.portal-surface .bg-slate-900 { background-color: #0f172a; }
+.portal-surface .bg-slate-800 { background-color: #1e293b; }
+.portal-surface .hover\:bg-slate-800:hover { background-color: #1e293b; }
+
 
 /* Inner tiles (subtle gray surfaces inside cards) */
 .portal-surface .bg-white\/\[0\.02\],
