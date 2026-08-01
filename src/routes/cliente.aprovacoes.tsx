@@ -121,7 +121,7 @@ function AprovacoesPage() {
                   type="button"
                   onClick={() => handleApprove(it)}
                   disabled={submitting}
-                  className="flex-1 min-w-0 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-4 py-2.5 text-xs font-medium hover:scale-[1.02] transition-transform disabled:opacity-60"
+                  className="flex-1 min-w-0 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-60"
                 >
                   <ThumbsUp className="h-3.5 w-3.5" /> Aprovar
                 </button>
@@ -219,7 +219,7 @@ function AprovacoesPage() {
                           type="button"
                           onClick={() => handleRequestChange(selected)}
                           disabled={!changeMessage.trim() || submitting}
-                          className="flex-1 rounded-xl bg-brand-gradient px-4 py-2.5 text-sm font-medium disabled:opacity-50"
+                          className="flex-1 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-50"
                         >
                           Enviar solicitação
                         </button>
@@ -238,7 +238,7 @@ function AprovacoesPage() {
                         type="button"
                         onClick={() => handleApprove(selected)}
                         disabled={submitting}
-                        className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-4 py-3 text-sm font-medium hover:scale-[1.02] transition-transform disabled:opacity-60"
+                        className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-60"
                       >
                         <CheckCircle2 className="h-4 w-4" /> Aprovar conteúdo
                       </button>
