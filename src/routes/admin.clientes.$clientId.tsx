@@ -252,29 +252,43 @@ function CalendarManager({ clientId, items, onAdd, onUpdate, onDelete }: { clien
   const todayISO = toISODate(today.getFullYear(), today.getMonth(), today.getDate());
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6">
-      <div className="flex items-center justify-between mb-4 gap-3">
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => setCursor((c) => ({ y: c.m === 0 ? c.y - 1 : c.y, m: c.m === 0 ? 11 : c.m - 1 }))} className="h-9 w-9 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center justify-center">
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button type="button" onClick={() => setCursor((c) => ({ y: c.m === 11 ? c.y + 1 : c.y, m: c.m === 11 ? 0 : c.m + 1 }))} className="h-9 w-9 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center justify-center">
-            <ChevronRight className="h-4 w-4" />
-          </button>
-          <h2 className="text-base sm:text-lg font-semibold text-slate-900 ml-1">
-            {MONTHS_PT[cursor.m]} {cursor.y}
+    <Panel className="overflow-hidden">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-6">
+        <div className="flex items-center gap-3">
+          <h2 className="text-[15px] font-semibold tracking-tight text-slate-900">
+            {MONTHS_PT[cursor.m]} <span className="font-normal text-slate-400">{cursor.y}</span>
           </h2>
         </div>
-        <button type="button" onClick={() => setCursor({ y: today.getFullYear(), m: today.getMonth() })} className="text-xs font-medium text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50">
-          Hoje
-        </button>
+        <div className="flex items-center gap-1.5">
+          <UIButton variant="ghost" size="sm" onClick={() => setCursor({ y: today.getFullYear(), m: today.getMonth() })}>
+            Hoje
+          </UIButton>
+          <div className="flex items-center rounded-lg border border-slate-200">
+            <button type="button" aria-label="Mês anterior"
+              onClick={() => setCursor((c) => ({ y: c.m === 0 ? c.y - 1 : c.y, m: c.m === 0 ? 11 : c.m - 1 }))}
+              className="grid h-8 w-8 place-items-center rounded-l-lg text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900">
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="h-5 w-px bg-slate-200" />
+            <button type="button" aria-label="Próximo mês"
+              onClick={() => setCursor((c) => ({ y: c.m === 11 ? c.y + 1 : c.y, m: c.m === 11 ? 0 : c.m + 1 }))}
+              className="grid h-8 w-8 place-items-center rounded-r-lg text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900">
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-px bg-slate-200 border border-slate-200 rounded-xl overflow-hidden text-[11px] uppercase tracking-wide text-slate-500 font-semibold">
+      <div className="grid grid-cols-7 border-y border-slate-100 bg-slate-50/50">
         {WEEKDAYS.map((w) => (
-          <div key={w} className="bg-slate-50 py-2 text-center">{w}</div>
+          <div key={w} className="py-2.5 text-center text-[11px] font-medium uppercase tracking-[0.08em] text-slate-400">
+            {w}
+          </div>
         ))}
-        {grid.map((cell) => {
+      </div>
+
+      <div className="grid grid-cols-7">
+        {grid.map((cell, i) => {
           const evts = eventsByDate.get(cell.date) ?? [];
           const isToday = cell.date === todayISO;
           return (
@@ -282,16 +296,26 @@ function CalendarManager({ clientId, items, onAdd, onUpdate, onDelete }: { clien
               key={cell.date + (cell.inMonth ? "" : "o")}
               type="button"
               onClick={() => setSelectedDate(cell.date)}
-              className={`min-h-[92px] sm:min-h-[110px] bg-white p-1.5 text-left flex flex-col hover:bg-brand-light/5 transition-colors ${cell.inMonth ? "" : "opacity-40"}`}
+              className={`group relative flex min-h-[104px] flex-col gap-1.5 p-2 text-left transition-colors duration-150 sm:min-h-[124px] sm:p-2.5 ${
+                i % 7 !== 6 ? "border-r" : ""
+              } border-b border-slate-100 ${cell.inMonth ? "bg-white hover:bg-slate-50/80" : "bg-slate-50/40"}`}
             >
-              <div className={`text-xs font-semibold mb-1 flex items-center justify-center h-6 w-6 rounded-full ${isToday ? "bg-brand-gradient text-white" : "text-slate-700"}`}>
+              <span
+                className={`grid h-6 w-6 place-items-center rounded-full text-[12px] tabular-nums transition-colors ${
+                  isToday
+                    ? "bg-slate-900 font-semibold text-white"
+                    : cell.inMonth
+                      ? "font-medium text-slate-600"
+                      : "text-slate-300"
+                }`}
+              >
                 {cell.day}
-              </div>
-              <div className="flex-1 space-y-1 overflow-hidden">
+              </span>
+              <span className="flex-1 space-y-1 overflow-hidden">
                 {evts.slice(0, 3).map((e) => {
-                  const color = statusChipColor(e.status) ?? e.tagColor ?? "#1428FF";
+                  const color = statusChipColor(e.status) ?? e.tagColor ?? "#64748B";
                   return (
-                    <div
+                    <span
                       key={e.id}
                       role="button"
                       tabIndex={0}
@@ -300,54 +324,69 @@ function CalendarManager({ clientId, items, onAdd, onUpdate, onDelete }: { clien
                         ev.stopPropagation();
                         setMenu({ x: ev.clientX, y: ev.clientY, item: e });
                       }}
-                      className="truncate rounded-md px-1.5 py-0.5 text-[10px] font-medium border cursor-context-menu"
-                      style={{ backgroundColor: `${color}1A`, borderColor: `${color}40`, color }}
+                      className="flex items-center gap-1.5 truncate rounded-md bg-slate-50 px-1.5 py-1 text-[11px] font-medium text-slate-600 transition-colors hover:bg-slate-100"
                       title="Clique com o botão direito para editar ou excluir"
                     >
-                      {e.kind === "Gravação" ? "● " : ""}{e.time && <span className="opacity-70">{e.time} </span>}{e.title}
-                    </div>
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+                      {e.time && <span className="shrink-0 tabular-nums text-slate-400">{e.time}</span>}
+                      <span className="truncate">{e.title}</span>
+                    </span>
                   );
                 })}
-                {evts.length > 3 && <div className="text-[10px] text-slate-500">+{evts.length - 3} mais</div>}
-              </div>
+                {evts.length > 3 && (
+                  <span className="block pl-1.5 text-[11px] text-slate-400">+{evts.length - 3} mais</span>
+                )}
+              </span>
+              <span className="pointer-events-none absolute right-2 top-2 text-slate-300 opacity-0 transition-opacity group-hover:opacity-100">
+                <Plus className="h-3.5 w-3.5" />
+              </span>
             </button>
           );
         })}
       </div>
 
-      {menu && (
-        <div
-          className="fixed z-[60] min-w-[180px] rounded-lg border border-slate-200 bg-white shadow-xl py-1 text-sm"
-          style={{ left: Math.min(menu.x, (typeof window !== "undefined" ? window.innerWidth : 1000) - 200), top: Math.min(menu.y, (typeof window !== "undefined" ? window.innerHeight : 1000) - 100) }}
-          onClick={(e) => e.stopPropagation()}
-          onContextMenu={(e) => e.preventDefault()}
-        >
-          <button
-            type="button"
-            onClick={() => {
-              setEditing(menu.item);
-              setSelectedDate(menu.item.date);
-              setMenu(null);
+      <AnimatePresence>
+        {menu && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: -4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.12 }}
+            className="fixed z-[60] min-w-[184px] overflow-hidden rounded-xl border border-slate-200/80 bg-white p-1 shadow-[0_16px_40px_-16px_rgba(15,23,42,0.28)]"
+            style={{
+              left: Math.min(menu.x, (typeof window !== "undefined" ? window.innerWidth : 1000) - 200),
+              top: Math.min(menu.y, (typeof window !== "undefined" ? window.innerHeight : 1000) - 110),
             }}
-            className="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+            onClick={(e) => e.stopPropagation()}
+            onContextMenu={(e) => e.preventDefault()}
           >
-            <FileText className="h-4 w-4" /> Editar evento
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const item = menu.item;
-              setMenu(null);
-              if (confirm(`Excluir "${item.title}"? Essa ação não pode ser desfeita.`)) {
-                onDelete(item.id);
-              }
-            }}
-            className="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 flex items-center gap-2"
-          >
-            <Trash2 className="h-4 w-4" /> Excluir evento
-          </button>
-        </div>
-      )}
+            <button
+              type="button"
+              onClick={() => {
+                setEditing(menu.item);
+                setSelectedDate(menu.item.date);
+                setMenu(null);
+              }}
+              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-slate-700 transition-colors hover:bg-slate-50"
+            >
+              <Pencil className="h-3.5 w-3.5 text-slate-400" /> Editar conteúdo
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const item = menu.item;
+                setMenu(null);
+                if (confirm(`Excluir "${item.title}"? Essa ação não pode ser desfeita.`)) {
+                  onDelete(item.id);
+                }
+              }}
+              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-red-600 transition-colors hover:bg-red-50"
+            >
+              <Trash2 className="h-3.5 w-3.5" /> Excluir
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {selectedDate && (
@@ -361,12 +400,34 @@ function CalendarManager({ clientId, items, onAdd, onUpdate, onDelete }: { clien
             onAdd={(item) => onAdd({ ...item, date: selectedDate })}
             onUpdate={onUpdate}
             onDelete={onDelete}
+            onGenerated={(link) => {
+              setSelectedDate(null);
+              setEditing(null);
+              setSuccessLink(link);
+            }}
           />
         )}
       </AnimatePresence>
-    </div>
+
+      <SuccessModal
+        open={!!successLink}
+        onClose={() => setSuccessLink(null)}
+        title="Conteúdo criado com sucesso"
+        message="Seu conteúdo foi salvo e o link de aprovação já está disponível."
+        link={successLink ?? undefined}
+        onCopy={() => {
+          try {
+            navigator.clipboard?.writeText(successLink ?? "");
+            toast.success("Link copiado");
+          } catch {
+            toast.error("Não foi possível copiar o link.");
+          }
+        }}
+      />
+    </Panel>
   );
 }
+
 
 interface UploadSlot {
   file: File;
