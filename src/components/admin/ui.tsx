@@ -438,7 +438,7 @@ export function UploadField({
       <FieldLabel hint={hint}>{label}</FieldLabel>
 
       {!slot && (
-        <label className="group flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-slate-250 bg-slate-50/60 px-4 py-4 transition-colors duration-150 hover:border-slate-300 hover:bg-slate-50">
+        <label className="group flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-slate-200 bg-slate-50/60 px-4 py-4 transition-colors duration-150 hover:border-slate-300 hover:bg-slate-50">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white text-slate-400 ring-1 ring-slate-200 transition-colors group-hover:text-slate-600">
             {icon ?? <UploadCloud className="h-4 w-4" />}
           </span>
