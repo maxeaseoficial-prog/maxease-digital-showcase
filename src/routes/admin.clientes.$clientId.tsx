@@ -148,41 +148,45 @@ function ProfileEditor({ initial, onSave }: { initial: { name: string; company: 
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 max-w-2xl">
-      <h2 className="text-sm font-semibold text-slate-900">Dados do cliente</h2>
-      <div className="mt-5 flex items-center gap-4">
-        <div className="h-20 w-20 rounded-full bg-brand-gradient text-white flex items-center justify-center overflow-hidden text-2xl font-semibold shrink-0">
-          {avatarUrl ? <img src={avatarUrl} alt="" className="h-full w-full object-cover" /> : (company.charAt(0).toUpperCase() || "?")}
+    <Panel className="max-w-2xl">
+      <div className="border-b border-slate-100 px-6 py-5 sm:px-8">
+        <h2 className="text-[15px] font-semibold tracking-tight text-slate-900">Dados do cliente</h2>
+        <p className="mt-0.5 text-[13px] text-slate-400">Credenciais de acesso e identificação do projeto.</p>
+      </div>
+      <div className="space-y-8 px-6 py-7 sm:px-8">
+        <div className="flex items-center gap-5">
+          <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full bg-slate-100 text-xl font-semibold text-slate-500 ring-1 ring-slate-200">
+            {avatarUrl ? <img src={avatarUrl} alt="" className="h-full w-full object-cover" /> : (company.charAt(0).toUpperCase() || "?")}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="inline-flex h-8 cursor-pointer items-center rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-700 transition-colors hover:bg-slate-50">
+              Enviar foto
+              <input type="file" accept="image/*" onChange={onFile} className="hidden" />
+            </label>
+            {avatarUrl && (
+              <UIButton variant="ghost" size="sm" onClick={() => setAvatarUrl(undefined)} className="text-slate-400 hover:text-red-600">
+                Remover
+              </UIButton>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <label className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 cursor-pointer">
-            Enviar foto
-            <input type="file" accept="image/*" onChange={onFile} className="hidden" />
-          </label>
-          {avatarUrl && (
-            <button type="button" onClick={() => setAvatarUrl(undefined)} className="text-xs text-red-600 hover:underline text-left">
-              Remover foto
-            </button>
-          )}
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="Empresa" value={company} onChange={setCompany} />
+          <Field label="Responsável" value={name} onChange={setName} />
+          <Field label="E-mail de acesso" value={email} onChange={setEmail} type="email" />
+          <Field label="Senha" value={password} onChange={setPassword} />
+          <Field label="Projeto ativo" value={project} onChange={setProject} className="sm:col-span-2" />
         </div>
       </div>
-      <div className="mt-5 grid sm:grid-cols-2 gap-4">
-        <TextField label="Empresa" value={company} onChange={setCompany} />
-        <TextField label="Responsável" value={name} onChange={setName} />
-        <TextField label="E-mail (login)" value={email} onChange={setEmail} type="email" />
-        <TextField label="Senha" value={password} onChange={setPassword} />
-        <div className="sm:col-span-2">
-          <TextField label="Projeto ativo" value={project} onChange={setProject} />
-        </div>
-      </div>
-      <div className="mt-6 flex justify-end">
-        <button type="button" onClick={() => onSave({ name, company, email: email.trim().toLowerCase(), password, activeProject: project, avatarUrl })}
-          className="inline-flex items-center gap-2 rounded-lg bg-brand-gradient px-4 py-2 text-sm font-medium text-white">
+      <div className="flex justify-end border-t border-slate-100 bg-slate-50/60 px-6 py-4 sm:px-8">
+        <UIButton variant="primary" onClick={() => onSave({ name, company, email: email.trim().toLowerCase(), password, activeProject: project, avatarUrl })}>
           <Save className="h-4 w-4" /> Salvar alterações
-        </button>
+        </UIButton>
       </div>
-    </div>
+    </Panel>
   );
+
 }
 
 import type { CalendarContent, ApprovalHistoryEntry } from "@/lib/portal/mockData";
