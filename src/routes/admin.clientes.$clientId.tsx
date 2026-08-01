@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, X, Upload, Folder, FolderPlus, Link2, Copy, Video, Image as ImageIcon, XCircle } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, Upload, Folder, FolderPlus, Link2, Video, Image as ImageIcon, Pencil, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
+import { UIButton, Field, SelectField, Segmented, Chip, Panel, FormBlock, Modal, SuccessModal, UploadField, EmptyState, FieldLabel } from "@/components/admin/ui";
 import { useAdminStore } from "@/lib/admin/store";
 import { statusChipColor, type ContentStatus, type Platform, type CalendarKind } from "@/lib/portal/mockData";
 import { uploadMedia, removeUploaded, type UploadHandle } from "@/lib/admin/upload";
 import { inspectVideoFile, validateFile, type MediaKind } from "@/lib/admin/media";
+
 
 const STATUSES: ContentStatus[] = ["Planejado", "Em Produção", "Aguardando Aprovação", "Aprovado", "Agendado", "Publicado", "Solicitou Alteração"];
 const POST_STATUSES: ContentStatus[] = ["Planejado", "Pendente de aprovação", "Alteração solicitada", "Aprovado", "Publicado"];
