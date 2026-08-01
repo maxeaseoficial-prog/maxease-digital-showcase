@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, Upload, Folder, FolderPlus, Link2, Video, Image as ImageIcon, Pencil } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, Upload, Folder, Link2, Video, Image as ImageIcon, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { UIButton, Field, SelectField, Segmented, Chip, Panel, FormBlock, Modal, SuccessModal, UploadField, EmptyState, FieldLabel } from "@/components/admin/ui";
