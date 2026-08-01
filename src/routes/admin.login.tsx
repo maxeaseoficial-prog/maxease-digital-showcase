@@ -88,7 +88,7 @@ function AdminLoginPage() {
               )}
 
               <button type="submit" disabled={loading}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-6 py-3 text-sm font-medium text-white shadow-[0_10px_30px_-8px_rgba(30,64,255,0.6)] transition-transform hover:scale-[1.02] disabled:opacity-60">
+                className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:opacity-60">
                 {loading ? "Entrando..." : "Entrar no painel"}
                 {!loading && <ArrowRight className="h-4 w-4" />}
               </button>
