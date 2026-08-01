@@ -989,18 +989,10 @@ function NoticesManager({ items, onAdd, onDelete }: { items: { id: string; title
 
 function TextField({ label, value, onChange, placeholder, type = "text", multiline }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string; multiline?: boolean }) {
   return (
-    <label className="block">
-      <span className="text-xs font-medium text-slate-600">{label}</span>
-      {multiline ? (
-        <textarea rows={3} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-          className="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 outline-none focus:border-brand-light focus:ring-2 focus:ring-brand-light/20" />
-      ) : (
-        <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-          className="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 outline-none focus:border-brand-light focus:ring-2 focus:ring-brand-light/20" />
-      )}
-    </label>
+    <Field label={label} value={value} onChange={onChange} placeholder={placeholder} type={type} multiline={multiline} />
   );
 }
+
 
 function UploadSlotField({
   label, icon, placeholder, accept, slot, onFile, onRemove, preview, hint,
