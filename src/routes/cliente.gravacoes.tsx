@@ -73,7 +73,7 @@ function GravacoesPage() {
             >
               <div className="p-4 sm:p-5">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-xl bg-brand-gradient flex flex-col items-center justify-center shrink-0 text-white leading-none">
+                  <div className="h-12 w-12 rounded-xl bg-slate-900 flex flex-col items-center justify-center shrink-0 text-white leading-none">
                     <span className="text-[9px] uppercase opacity-80">{monthAbbr(mm)}</span>
                     <span className="text-lg font-bold">{dd}</span>
                   </div>

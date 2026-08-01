@@ -53,8 +53,8 @@ export function PortalShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <div className="flex min-h-screen">
         {/* Sidebar desktop (navigation kept dark on purpose) */}
-        <aside className="hidden lg:flex w-72 shrink-0 flex-col border-r border-white/10 bg-[rgba(6,8,26,0.95)] text-white">
-          <div className="px-6 py-6 border-b border-white/10">
+        <aside className="hidden lg:flex w-72 shrink-0 flex-col border-r border-white/[0.06] bg-[#0B1020] text-white">
+          <div className="px-6 py-6 border-b border-white/[0.06]">
             <Link to="/cliente/dashboard" className="flex items-center gap-2">
               <img src={logoAsset.url} alt="MAXEASE" className="h-10 w-auto" />
             </Link>
@@ -67,10 +67,10 @@ export function PortalShell({ children }: { children: ReactNode }) {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all ${
+                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13.5px] transition-colors duration-150 ${
                     active
-                      ? "bg-brand-gradient text-white shadow-[0_10px_30px_-12px_rgba(30,64,255,0.7)]"
-                      : "text-white/70 hover:text-white hover:bg-white/5"
+                      ? "bg-white/[0.08] text-white"
+                      : "text-white/60 hover:text-white hover:bg-white/[0.04]"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" strokeWidth={2} />
@@ -82,14 +82,14 @@ export function PortalShell({ children }: { children: ReactNode }) {
               );
             })}
           </nav>
-          <div className="p-4 border-t border-white/10">
+          <div className="p-4 border-t border-white/[0.06]">
             <button
               type="button"
               onClick={() => {
                 logout();
                 navigate({ to: "/login" });
               }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-[13.5px] text-white/60 hover:text-white hover:bg-white/[0.04] transition-colors"
             >
               <LogOut className="h-4 w-4" strokeWidth={2} /> Sair
             </button>
@@ -98,7 +98,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
 
         {/* Main */}
         <div className="flex-1 min-w-0 flex flex-col">
-          <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/85 backdrop-blur-xl">
+          <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl">
             <div className="flex items-center justify-between gap-4 px-4 sm:px-6 py-3.5">
               <div className="flex items-center gap-3 min-w-0">
                 <button
@@ -125,12 +125,12 @@ export function PortalShell({ children }: { children: ReactNode }) {
                 >
                   <Bell className="h-4 w-4" strokeWidth={2} />
                   {unread > 0 && (
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-brand-gradient text-[10px] font-bold text-white flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-slate-900 text-[10px] font-semibold text-white flex items-center justify-center">
                       {unread}
                     </span>
                   )}
                 </Link>
-                <div className="hidden md:flex h-9 w-9 items-center justify-center rounded-lg bg-brand-gradient text-sm font-semibold text-white shrink-0">
+                <div className="hidden md:flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 text-[13px] font-semibold text-white shrink-0">
                   {session.name.charAt(0)}
                 </div>
               </div>
@@ -156,7 +156,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm lg:hidden"
             />
             <motion.aside
               key="drawer"
@@ -164,9 +164,9 @@ export function PortalShell({ children }: { children: ReactNode }) {
               animate={{ x: 0 }}
               exit={{ x: -320 }}
               transition={{ type: "spring", damping: 30, stiffness: 260 }}
-              className="fixed inset-y-0 left-0 z-50 w-72 bg-[rgba(6,8,26,0.95)] backdrop-blur-xl border-r border-white/10 flex flex-col lg:hidden"
+              className="fixed inset-y-0 left-0 z-50 w-72 bg-[#0B1020] backdrop-blur-xl border-r border-white/[0.06] flex flex-col lg:hidden"
             >
-              <div className="flex items-center justify-between px-6 py-6 border-b border-white/10">
+              <div className="flex items-center justify-between px-6 py-6 border-b border-white/[0.06]">
                 <img src={logoAsset.url} alt="MAXEASE" className="h-10 w-auto" />
                 <button
                   type="button"
@@ -186,7 +186,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
                       key={item.to}
                       to={item.to}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all ${
-                        active ? "bg-brand-gradient text-white" : "text-white/70 hover:text-white hover:bg-white/5"
+                        active ? "bg-white/[0.08] text-white" : "text-white/60 hover:text-white hover:bg-white/[0.04]"
                       }`}
                     >
                       <Icon className="h-4 w-4" />
@@ -195,14 +195,14 @@ export function PortalShell({ children }: { children: ReactNode }) {
                   );
                 })}
               </nav>
-              <div className="p-4 border-t border-white/10">
+              <div className="p-4 border-t border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => {
                     logout();
                     navigate({ to: "/login" });
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-white/70 hover:text-white hover:bg-white/5"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[13.5px] text-white/60 hover:text-white hover:bg-white/[0.04]"
                 >
                   <LogOut className="h-4 w-4" /> Sair
                 </button>
@@ -218,8 +218,8 @@ export function PortalShell({ children }: { children: ReactNode }) {
 export function PortalPageHeader({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="mb-8">
-      <h1 className="text-2xl sm:text-[28px] font-bold tracking-tight text-slate-900">{title}</h1>
-      {subtitle && <p className="mt-1.5 text-sm text-slate-500">{subtitle}</p>}
+      <h1 className="text-[22px] sm:text-[26px] font-semibold tracking-[-0.02em] text-slate-900">{title}</h1>
+      {subtitle && <p className="mt-1.5 text-[13.5px] text-slate-400">{subtitle}</p>}
     </div>
   );
 }

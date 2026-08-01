@@ -34,14 +34,14 @@ function SiteConfigContent() {
         subtitle="Atualize links de contato e textos principais exibidos no site institucional."
         action={
           <button type="button" onClick={save}
-            className="inline-flex items-center gap-2 rounded-lg bg-brand-gradient px-4 py-2 text-sm font-medium text-white hover:scale-[1.02] transition-transform">
+            className="inline-flex items-center gap-2 h-9 rounded-lg bg-slate-900 px-4 text-[13.5px] font-medium text-white transition-colors hover:bg-slate-800">
             <Save className="h-4 w-4" /> Salvar alterações
           </button>
         }
       />
 
       <div className="grid lg:grid-cols-2 gap-4">
-        <section className="rounded-2xl border border-slate-200 bg-white p-6">
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-6">
           <h2 className="text-sm font-semibold text-slate-900">Links de contato</h2>
           <p className="text-xs text-slate-500 mt-1">Aparecem no rodapé, na navbar e nos CTAs do site.</p>
           <div className="mt-5 space-y-4">
@@ -52,7 +52,7 @@ function SiteConfigContent() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-6">
+        <section className="rounded-2xl border border-slate-200/80 bg-white p-6">
           <h2 className="text-sm font-semibold text-slate-900">Textos da Hero</h2>
           <p className="text-xs text-slate-500 mt-1">Título e subtítulo exibidos na primeira dobra da home.</p>
           <div className="mt-5 space-y-4">

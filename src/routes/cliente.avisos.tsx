@@ -87,7 +87,7 @@ function AvisosPage() {
             <div className="flex items-start gap-4">
               <div
                 className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${
-                  n.read ? "bg-white/5 text-white/50" : "bg-brand-gradient text-white"
+                  n.read ? "bg-white/5 text-white/50" : "bg-slate-900 text-white"
                 }`}
               >
                 <Bell className="h-4 w-4" />

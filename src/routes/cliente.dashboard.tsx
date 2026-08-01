@@ -105,27 +105,28 @@ function DashboardPage() {
         {cards.map((c, i) => {
           const Icon = c.icon;
           return (
-            <motion.div key={c.label} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+            <motion.div key={c.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}>
               <Link
                 to={c.to}
-                className={`group relative block overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br ${c.accent} p-5 hover:border-white/25 transition-all hover:scale-[1.02]`}
+                className="group relative block overflow-hidden rounded-2xl border border-white/10 p-5 transition-all duration-200 hover:-translate-y-0.5"
               >
                 <div className="absolute inset-0 glass opacity-90 -z-10" />
                 <div className="flex items-start justify-between">
-                  <div className="h-11 w-11 rounded-xl bg-brand-gradient flex items-center justify-center shadow-[0_8px_20px_-8px_rgba(30,64,255,0.7)]">
-                    <Icon className="h-5 w-5 text-white" />
+                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-slate-900">
+                    <Icon className="h-[18px] w-[18px] text-white" strokeWidth={2} />
                   </div>
-                  <ArrowRight className="h-4 w-4 text-white/40 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                  <ArrowRight className="h-4 w-4 text-white/30 transition-all group-hover:translate-x-0.5 group-hover:text-white/70" />
                 </div>
-                <div className="mt-5">
-                  <div className="text-xs uppercase tracking-wider text-white/50">{c.label}</div>
-                  <div className="mt-1 text-lg font-semibold">{loading ? "…" : c.value}</div>
-                  {"subtitle" in c && c.subtitle && <div className="text-xs text-white/60 mt-1">{c.subtitle}</div>}
+                <div className="mt-6">
+                  <div className="text-[11px] font-medium uppercase tracking-[0.12em] text-white/50">{c.label}</div>
+                  <div className="mt-1.5 text-[17px] font-semibold tracking-[-0.01em]">{loading ? "…" : c.value}</div>
+                  {"subtitle" in c && c.subtitle && <div className="mt-1 text-[12.5px] text-white/60">{c.subtitle}</div>}
                 </div>
               </Link>
             </motion.div>
           );
         })}
+
 
         <motion.div
           initial={{ opacity: 0, y: 15 }}

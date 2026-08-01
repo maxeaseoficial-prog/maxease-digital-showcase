@@ -112,7 +112,7 @@ function RelatoriosPage() {
 
 function FolderIcon() {
   return (
-    <div className="relative w-24 h-20 sm:w-28 sm:h-24 transition-transform group-hover:-translate-y-1 group-hover:scale-105 drop-shadow-[0_8px_16px_rgba(30,64,255,0.25)]">
+    <div className="relative w-24 h-20 sm:w-28 sm:h-24 transition-transform group-hover:-translate-y-1 group-hover:scale-105 drop-shadow-[0_10px_20px_rgba(15,23,42,0.12)]">
       <svg viewBox="0 0 120 100" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="folderBack" x1="0" y1="0" x2="0" y2="1">
