@@ -505,7 +505,6 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
       title, caption, script, time, status, platforms, kind, tagColor,
       scriptFile: toStoredFile(scriptUpload),
     });
-    toast.success("Gravação criada.");
     resetForm();
     setShowForm(false);
   }
@@ -532,7 +531,6 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
         if (editing.scriptFile?.dataUrl) void removeUploaded("pdfs", editing.scriptFile.dataUrl);
       }
       onUpdate(editing.id, patch);
-      toast.success("Evento atualizado.");
       onClose();
       return;
     }
@@ -554,155 +552,159 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
       coverFile: toStoredFile(coverUpload),
       approvalToken: token, approvalHistory: history,
     });
-    const link = `${window.location.origin}/aprovacao/${token}`;
-    setLastLink(link);
-    try { navigator.clipboard?.writeText(link); } catch { /* ignore */ }
-    toast.success("Conteúdo salvo. Link de aprovação copiado.");
     resetForm();
+    onGenerated(`${window.location.origin}/aprovacao/${token}`);
   }
 
   const useStatuses = kind === "Postagem" ? POST_STATUSES : STATUSES;
+  const isPost = kind === "Postagem";
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
-      <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} onClick={(e) => e.stopPropagation()} className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-          <div>
-            <div className="text-xs uppercase tracking-wide text-brand-light font-semibold">{isEditing ? "Editando evento" : "Agenda"}</div>
-            <div className="text-lg font-semibold text-slate-900">{label}</div>
-          </div>
-          <button type="button" onClick={onClose} className="h-9 w-9 rounded-full text-slate-500 hover:bg-slate-100 flex items-center justify-center">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          {events.length > 0 && (
-            <div>
-              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Eventos do dia</div>
-              <ul className="space-y-2">
-                {events.map((ev) => {
-                  const color = ev.tagColor ?? "#1428FF";
-                  return (
-                    <li key={ev.id} className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
-                          <div className="text-sm font-medium text-slate-900 truncate">{ev.time} · {ev.title}</div>
-                        </div>
-                        <div className="text-xs text-slate-500 mt-0.5">
-                          {(ev.kind ?? "Postagem")} · {ev.platforms.join(", ")} · {ev.status}
-                        </div>
-                        {ev.caption && <div className="text-xs text-slate-600 mt-1 line-clamp-2">{ev.caption}</div>}
+    <Modal
+      open
+      onClose={onClose}
+      eyebrow={isEditing ? "Editando conteúdo" : "Agenda"}
+      title={label}
+      size="lg"
+      footer={
+        showForm ? (
+          <>
+            {events.length > 0 && !isEditing && (
+              <UIButton variant="ghost" onClick={() => setShowForm(false)}>Cancelar</UIButton>
+            )}
+            {(events.length === 0 || isEditing) && (
+              <UIButton variant="ghost" onClick={onClose}>Cancelar</UIButton>
+            )}
+            <UIButton
+              variant="primary"
+              onClick={() => formRef.current?.requestSubmit()}
+            >
+              {isEditing ? (<><Save className="h-4 w-4" /> Salvar alterações</>)
+                : isPost ? (<><Link2 className="h-4 w-4" /> Salvar e gerar link</>)
+                : (<><Plus className="h-4 w-4" /> Salvar evento</>)}
+            </UIButton>
+          </>
+        ) : (
+          <>
+            <UIButton variant="ghost" onClick={onClose}>Fechar</UIButton>
+            <UIButton variant="primary" onClick={() => setShowForm(true)}>
+              <Plus className="h-4 w-4" /> Novo conteúdo
+            </UIButton>
+          </>
+        )
+      }
+    >
+      <div className="space-y-8 pt-1">
+        {events.length > 0 && !isEditing && (
+          <section>
+            <h3 className="mb-3 text-[13px] font-semibold uppercase tracking-[0.06em] text-slate-500">
+              Conteúdos deste dia
+            </h3>
+            <ul className="space-y-2">
+              {events.map((ev) => {
+                const color = ev.tagColor ?? "#64748B";
+                return (
+                  <li key={ev.id} className="group flex items-start gap-3 rounded-lg border border-slate-200/80 px-3.5 py-3 transition-colors hover:bg-slate-50/70">
+                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-[13.5px] font-medium text-slate-900">{ev.title}</div>
+                      <div className="mt-0.5 text-[12px] text-slate-400">
+                        {ev.time} · {(ev.kind ?? "Postagem")} · {ev.status}
+                      </div>
+                      {ev.caption && <p className="mt-1.5 line-clamp-2 text-[12.5px] leading-relaxed text-slate-500">{ev.caption}</p>}
+                      <div className="mt-2 flex flex-wrap items-center gap-3">
                         {ev.approvalToken && (
                           <button
                             type="button"
                             onClick={() => {
                               const link = `${window.location.origin}/aprovacao/${ev.approvalToken}`;
-                              try { navigator.clipboard?.writeText(link); toast.success("Link copiado."); } catch { toast.error("Não foi possível copiar."); }
+                              try { navigator.clipboard?.writeText(link); toast.success("Link copiado"); } catch { toast.error("Não foi possível copiar."); }
                             }}
-                            className="mt-1 inline-flex items-center gap-1 text-xs text-brand-light hover:underline"
+                            className="inline-flex items-center gap-1.5 text-[12px] font-medium text-slate-500 transition-colors hover:text-slate-900"
                           >
-                            <Link2 className="h-3 w-3" /> Copiar link de aprovação
+                            <Link2 className="h-3.5 w-3.5" /> Copiar link
                           </button>
                         )}
                         {ev.scriptFile && (
-                          <a href={ev.scriptFile.dataUrl} download={ev.scriptFile.name} className="mt-1 ml-3 inline-flex items-center gap-1 text-xs text-brand-light hover:underline">
-                            <FileText className="h-3 w-3" /> {ev.scriptFile.name}
+                          <a href={ev.scriptFile.dataUrl} download={ev.scriptFile.name} className="inline-flex items-center gap-1.5 text-[12px] font-medium text-slate-500 transition-colors hover:text-slate-900">
+                            <FileText className="h-3.5 w-3.5" /> Roteiro
                           </a>
                         )}
                       </div>
-                      <button type="button" onClick={() => onDelete(ev.id)} className="text-slate-300 hover:text-red-500 shrink-0">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-
-          {lastLink && (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
-              <div className="text-xs font-semibold text-emerald-800 mb-1">Link de aprovação gerado</div>
-              <div className="flex items-center gap-2">
-                <input readOnly value={lastLink} className="flex-1 min-w-0 rounded-md border border-emerald-200 bg-white px-2 py-1.5 text-xs text-slate-700" />
-                <button type="button" onClick={() => { try { navigator.clipboard?.writeText(lastLink); toast.success("Copiado."); } catch { /* ignore */ } }} className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-emerald-700">
-                  <Copy className="h-3 w-3" /> Copiar
-                </button>
-              </div>
-            </div>
-          )}
-
-          {!showForm && (
-            <button type="button" onClick={() => setShowForm(true)} className="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 text-slate-600 hover:border-brand-light hover:text-brand-light px-4 py-3 text-sm font-medium">
-              <Plus className="h-4 w-4" /> Adicionar novo evento
-            </button>
-          )}
-
-          {showForm && (
-            <form onSubmit={kind === "Postagem" ? submitPostagem : submitGravacao} className="space-y-3 border-t border-slate-100 pt-4">
-              <div>
-                <span className="text-xs font-medium text-slate-600">Tipo</span>
-                <div className="mt-1.5 inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50">
-                  {KINDS.map((k) => (
-                    <button key={k} type="button" onClick={() => { setKind(k); setStatus(k === "Postagem" ? "Planejado" : "Planejado"); }}
-                      className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${kind === k ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}>
-                      {k === "Postagem" ? "Conteúdo a postar" : "Dia de gravação"}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onDelete(ev.id)}
+                      aria-label="Excluir"
+                      className="shrink-0 rounded-md p-1.5 text-slate-300 opacity-0 transition-all hover:bg-red-50 hover:text-red-500 focus-visible:opacity-100 group-hover:opacity-100"
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </button>
-                  ))}
-                </div>
-              </div>
-              <TextField label="Título do conteúdo" value={title} onChange={setTitle} />
-              <div className="grid grid-cols-2 gap-3">
-                <TextField label="Horário" value={time} onChange={setTime} type="time" />
-                <label className="block">
-                  <span className="text-xs font-medium text-slate-600">Status</span>
-                  <select value={status} onChange={(e) => setStatus(e.target.value as ContentStatus)} className="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900">
-                    {useStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </label>
-              </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
 
-              <div>
-                <span className="text-xs font-medium text-slate-600">Cor da tag</span>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
+        {showForm && (
+          <form ref={formRef} onSubmit={isPost ? submitPostagem : submitGravacao} className="space-y-8">
+            <FormBlock title="Informações">
+              <div className="space-y-2">
+                <FieldLabel>Tipo de conteúdo</FieldLabel>
+                <Segmented
+                  value={kind}
+                  onChange={(k) => { setKind(k); setStatus("Planejado"); }}
+                  options={KINDS.map((k) => ({ value: k, label: k === "Postagem" ? "Conteúdo a postar" : "Dia de gravação" }))}
+                />
+              </div>
+              <Field label="Título" value={title} onChange={setTitle} placeholder="Ex: Reels institucional" />
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Horário" value={time} onChange={setTime} type="time" />
+                <SelectField label="Status" value={status} onChange={(v) => setStatus(v as ContentStatus)} options={useStatuses} />
+              </div>
+              <div className="space-y-2">
+                <FieldLabel hint="usada no calendário">Cor da etiqueta</FieldLabel>
+                <div className="flex flex-wrap items-center gap-2">
                   {TAG_COLORS.map((c) => (
                     <button key={c} type="button" onClick={() => setTagColor(c)} aria-label={c}
-                      className={`h-7 w-7 rounded-full border-2 transition-transform ${tagColor === c ? "scale-110 border-slate-900" : "border-white shadow-sm"}`}
+                      className={`h-6 w-6 rounded-full transition-transform duration-150 ${tagColor === c ? "scale-110 ring-2 ring-slate-900 ring-offset-2" : "ring-1 ring-slate-200 hover:scale-105"}`}
                       style={{ backgroundColor: c }} />
                   ))}
-                  <label className="inline-flex items-center gap-1.5 ml-1 text-xs text-slate-500 cursor-pointer">
-                    <input type="color" value={tagColor} onChange={(e) => setTagColor(e.target.value)} className="h-7 w-7 rounded border border-slate-200 bg-white cursor-pointer" />
-                    Personalizada
-                  </label>
+                  <input type="color" value={tagColor} onChange={(e) => setTagColor(e.target.value)} aria-label="Cor personalizada"
+                    className="ml-1 h-6 w-6 cursor-pointer rounded-full border border-slate-200 bg-white p-0" />
                 </div>
               </div>
+            </FormBlock>
 
-              <TextField label="Legenda" value={caption} onChange={setCaption} multiline />
+            <FormBlock title="Conteúdo">
+              <Field label="Legenda" value={caption} onChange={setCaption} multiline rows={4} placeholder="Texto que acompanha a publicação" />
+              {!isPost && <Field label="Roteiro" value={script} onChange={setScript} multiline rows={5} placeholder="Cenas, falas e orientações da gravação" />}
+            </FormBlock>
 
-              {kind === "Postagem" ? (
+            <FormBlock title="Arquivos" description={isEditing ? "Envie um novo arquivo para substituir. Deixe em branco para manter o atual." : undefined}>
+              {isEditing && (editing?.videoFile || editing?.coverFile) && (
+                <div className="rounded-lg bg-slate-50 px-3.5 py-3 text-[12.5px] text-slate-500">
+                  <div className="mb-1 font-medium text-slate-700">Arquivos atuais</div>
+                  {editing?.videoFile && <div className="flex items-center gap-1.5"><Video className="h-3.5 w-3.5" /> {editing.videoFile.name}</div>}
+                  {editing?.coverFile && <div className="flex items-center gap-1.5"><ImageIcon className="h-3.5 w-3.5" /> {editing.coverFile.name}</div>}
+                </div>
+              )}
+              {isPost && (
                 <>
-                  {isEditing && (editing?.videoFile || editing?.coverFile) && (
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 space-y-1">
-                      <div className="font-semibold text-slate-700">Arquivos atuais</div>
-                      {editing?.videoFile && <div className="flex items-center gap-1.5"><Video className="h-3 w-3" /> {editing.videoFile.name}</div>}
-                      {editing?.coverFile && <div className="flex items-center gap-1.5"><ImageIcon className="h-3 w-3" /> {editing.coverFile.name}</div>}
-                      <div className="text-[11px] text-slate-500 mt-1">Envie um novo arquivo abaixo para substituir. Deixe em branco para manter.</div>
-                    </div>
-                  )}
                   <UploadSlotField
-                    label={isEditing ? "Substituir vídeo (opcional, até 1 GB)" : "Vídeo (até 1 GB)"}
-
+                    label="Vídeo"
+                    hint="MP4 até 1 GB"
                     icon={<Video className="h-4 w-4" />}
                     placeholder="Selecionar vídeo"
-                    accept="video/*,.mp4,.mov"
+                    accept="video/mp4,.mp4"
                     slot={videoUpload}
                     onFile={onVideoFile}
                     onRemove={() => clearSlot(videoUpload, setVideoUpload)}
                   />
                   <UploadSlotField
-                    label={isEditing ? "Substituir capa (opcional)" : "Capa do vídeo"}
+                    label="Capa"
+                    hint="imagem"
                     icon={<ImageIcon className="h-4 w-4" />}
                     placeholder="Selecionar imagem de capa"
                     accept="image/*"
@@ -711,61 +713,37 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
                     onRemove={() => clearSlot(coverUpload, setCoverUpload)}
                     preview
                   />
-                  <UploadSlotField
-                    label="Roteiro em PDF (opcional)"
-                    icon={<Upload className="h-4 w-4" />}
-                    placeholder="Selecionar PDF do roteiro"
-                    accept="application/pdf"
-                    slot={scriptUpload}
-                    onFile={onScriptFile}
-                    onRemove={() => clearSlot(scriptUpload, setScriptUpload)}
-                  />
-                </>
-              ) : (
-                <>
-                  <TextField label="Roteiro (texto)" value={script} onChange={setScript} multiline />
-                  <UploadSlotField
-                    label="Roteiro em PDF"
-                    icon={<Upload className="h-4 w-4" />}
-                    placeholder="Selecionar PDF do roteiro"
-                    accept="application/pdf"
-                    slot={scriptUpload}
-                    onFile={onScriptFile}
-                    onRemove={() => clearSlot(scriptUpload, setScriptUpload)}
-                  />
                 </>
               )}
+              <UploadSlotField
+                label="Roteiro em PDF"
+                hint="opcional"
+                icon={<Upload className="h-4 w-4" />}
+                placeholder="Selecionar PDF"
+                accept="application/pdf"
+                slot={scriptUpload}
+                onFile={onScriptFile}
+                onRemove={() => clearSlot(scriptUpload, setScriptUpload)}
+              />
+            </FormBlock>
 
-              <div>
-                <span className="text-xs font-medium text-slate-600">Plataformas</span>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {PLATFORMS.map((p) => {
-                    const active = platforms.includes(p);
-                    return (
-                      <button key={p} type="button" onClick={() => setPlatforms((prev) => active ? prev.filter((x) => x !== p) : [...prev, p])}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${active ? "bg-brand-gradient text-white border-transparent" : "bg-white border-slate-200 text-slate-600"}`}>
-                        {p}
-                      </button>
-                    );
-                  })}
-                </div>
+            <FormBlock title="Plataformas">
+              <div className="flex flex-wrap gap-2">
+                {PLATFORMS.map((p) => (
+                  <Chip key={p} active={platforms.includes(p)}
+                    onClick={() => setPlatforms((prev) => prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p])}>
+                    {p}
+                  </Chip>
+                ))}
               </div>
-              <div className="flex justify-end gap-2 pt-2">
-                {events.length > 0 && (
-                  <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">Cancelar</button>
-                )}
-                <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-brand-gradient px-4 py-2 text-sm text-white font-medium">
-                  {isEditing ? (<><Save className="h-4 w-4" /> Salvar alterações</>) : kind === "Postagem" ? (<><Link2 className="h-4 w-4" /> Salvar e gerar link de aprovação</>) : (<><Plus className="h-4 w-4" /> Salvar evento</>)}
-                </button>
-
-              </div>
-            </form>
-          )}
-        </div>
-      </motion.div>
-    </motion.div>
+            </FormBlock>
+          </form>
+        )}
+      </div>
+    </Modal>
   );
 }
+
 
 type ReportItem = { id: string; name: string; period: string; date: string; summary: string; highlights: { label: string; value: string }[]; folder?: string; fileName?: string; fileDataUrl?: string };
 
