@@ -40,51 +40,55 @@ function ClientDetail() {
 
   if (!client) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center">
+      <Panel className="p-10 text-center">
         <p className="text-sm text-slate-600">Cliente não encontrado.</p>
-        <Link to="/admin/clientes" className="mt-4 inline-flex items-center gap-1.5 text-sm text-brand-light">
+        <Link to="/admin/clientes" className="mt-4 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900">
           <ArrowLeft className="h-4 w-4" /> Voltar
         </Link>
-      </div>
+      </Panel>
     );
   }
 
   return (
     <div>
-      <Link to="/admin/clientes" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 mb-4">
-        <ArrowLeft className="h-4 w-4" /> Voltar aos clientes
+      <Link to="/admin/clientes" className="mb-5 inline-flex items-center gap-1.5 text-[13px] text-slate-400 transition-colors hover:text-slate-900">
+        <ArrowLeft className="h-3.5 w-3.5" /> Clientes
       </Link>
 
       <AdminPageHeader
         title={client.company}
         subtitle={`${client.name} · ${client.email}`}
         action={
-          <button
-            type="button"
+          <UIButton
+            variant="danger"
             onClick={() => {
               if (confirm(`Excluir cliente ${client.company}? Essa ação não pode ser desfeita.`)) {
                 deleteClient(client.id);
-                toast.success("Cliente excluído.");
+                toast.success("Cliente excluído");
                 navigate({ to: "/admin/clientes" });
               }
             }}
-            className="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm text-red-600 hover:bg-red-50"
           >
-            <Trash2 className="h-4 w-4" /> Excluir
-          </button>
+            <Trash2 className="h-4 w-4" /> Excluir cliente
+          </UIButton>
         }
       />
 
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="mb-8 flex gap-6 overflow-x-auto border-b border-slate-200/80">
         {(["perfil", "calendario", "relatorios", "avisos"] as const).map((t) => (
           <button key={t} type="button" onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              tab === t ? "bg-brand-gradient text-white" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+            className={`relative shrink-0 pb-3 text-[13.5px] font-medium transition-colors ${
+              tab === t ? "text-slate-900" : "text-slate-400 hover:text-slate-600"
             }`}>
             {t === "perfil" ? "Perfil & Login" : t === "calendario" ? "Calendário" : t === "relatorios" ? "Relatórios" : "Avisos"}
+            {tab === t && (
+              <motion.span layoutId="admin-client-tab" className="absolute -bottom-px left-0 right-0 h-0.5 rounded-full bg-slate-900"
+                transition={{ type: "spring", stiffness: 420, damping: 34 }} />
+            )}
           </button>
         ))}
       </div>
+
 
       {tab === "perfil" && (
         <ProfileEditor
