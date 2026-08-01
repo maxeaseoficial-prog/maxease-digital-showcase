@@ -1003,60 +1003,39 @@ function TextField({ label, value, onChange, placeholder, type = "text", multili
 }
 
 function UploadSlotField({
-  label, icon, placeholder, accept, slot, onFile, onRemove, preview,
+  label, icon, placeholder, accept, slot, onFile, onRemove, preview, hint,
 }: {
   label: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   placeholder: string;
   accept: string;
   slot: UploadSlot | undefined;
   onFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: () => void;
   preview?: boolean;
+  hint?: string;
 }) {
-  const status = slot?.status;
-  const percent = Math.min(100, Math.round(slot?.progress ?? 0));
-  const displayName = slot?.file.name ?? placeholder;
-
   return (
-    <div>
-      <span className="text-xs font-medium text-slate-600">{label}</span>
-      <label className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2.5 text-sm text-slate-600 hover:border-brand-light hover:text-brand-light cursor-pointer">
-        {icon}
-        <span className="truncate flex-1">{displayName}</span>
-        <input type="file" accept={accept} onChange={onFile} className="hidden" />
-      </label>
-
-      {slot && status === "uploading" && (
-        <div className="mt-2 space-y-1">
-          <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-            <div className="h-full bg-brand-gradient transition-[width] duration-200" style={{ width: `${percent}%` }} />
-          </div>
-          <div className="flex items-center justify-between text-[11px] text-slate-500">
-            <span>Enviando… {percent}%</span>
-            <button type="button" onClick={onRemove} className="inline-flex items-center gap-1 text-red-600 hover:underline">
-              <XCircle className="h-3 w-3" /> Cancelar
-            </button>
-          </div>
-        </div>
-      )}
-
-      {slot && status === "done" && (
-        <div className="mt-2 flex items-center gap-2">
-          {preview && slot.previewUrl && (
-            <img src={slot.previewUrl} alt="Preview" className="h-14 w-14 object-cover rounded-md border border-slate-200" />
-          )}
-          <span className="text-[11px] text-emerald-600">Upload concluído</span>
-          <button type="button" onClick={onRemove} className="text-xs text-red-600 hover:underline">Remover</button>
-        </div>
-      )}
-
-      {slot && status === "error" && (
-        <div className="mt-2 text-xs text-red-600">
-          Falha no upload: {slot.errorMessage ?? "erro desconhecido"}
-          <button type="button" onClick={onRemove} className="ml-2 underline">Remover</button>
-        </div>
-      )}
-    </div>
+    <UploadField
+      label={label}
+      hint={hint}
+      icon={icon}
+      placeholder={placeholder}
+      accept={accept}
+      onFile={onFile}
+      onRemove={onRemove}
+      slot={
+        slot
+          ? {
+              name: slot.file.name,
+              progress: slot.progress,
+              status: slot.status,
+              errorMessage: slot.errorMessage,
+              previewUrl: preview ? slot.previewUrl : undefined,
+            }
+          : undefined
+      }
+    />
   );
 }
+
