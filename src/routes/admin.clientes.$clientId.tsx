@@ -197,6 +197,8 @@ function CalendarManager({ clientId, items, onAdd, onUpdate, onDelete }: { clien
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [editing, setEditing] = useState<CalItem | null>(null);
   const [menu, setMenu] = useState<{ x: number; y: number; item: CalItem } | null>(null);
+  const [successLink, setSuccessLink] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (!menu) return;
