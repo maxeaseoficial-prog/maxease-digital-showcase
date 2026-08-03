@@ -113,7 +113,7 @@ function ApprovacaoPage() {
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2">
-            <div className="bg-slate-900 flex items-center justify-center relative aspect-[9/16] md:aspect-auto md:min-h-[520px]">
+            <div className={`bg-slate-900 flex items-center justify-center relative ${item.videoFile ? "aspect-[9/16] md:aspect-auto md:min-h-[520px]" : "aspect-video"}`}>
               {item.videoFile ? (
                 <div className="relative h-full w-full">
                   <video
