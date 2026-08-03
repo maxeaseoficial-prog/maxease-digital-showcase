@@ -1077,6 +1077,39 @@ function NoticesManager({ items, onAdd, onDelete }: { items: { id: string; title
 
 
 function PdfViewerModal({ report, onClose }: { report: { name: string; fileDataUrl: string }; onClose: () => void }) {
+  const [resolvedUrl, setResolvedUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    import("@/lib/admin/media").then(({ resolveMediaUrl }) => {
+      resolveMediaUrl("pdfs", report.fileDataUrl)
+        .then((url) => { if (alive) setResolvedUrl(url); })
+        .catch((err) => {
+          console.error("PDF resolution error:", err);
+          toast.error("Não foi possível carregar o arquivo PDF.");
+        });
+    });
+    return () => { alive = false; };
+  }, [report.fileDataUrl]);
+
+  async function download() {
+    if (!resolvedUrl) return;
+    try {
+      const response = await fetch(resolvedUrl);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = report.name.endsWith(".pdf") ? report.name : `${report.name}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(blobUrl);
+      a.remove();
+    } catch (err) {
+      window.open(resolvedUrl, "_blank");
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -1103,14 +1136,15 @@ function PdfViewerModal({ report, onClose }: { report: { name: string; fileDataU
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <a 
-              href={report.fileDataUrl} 
-              download 
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
+            <button 
+              type="button"
+              onClick={download}
+              disabled={!resolvedUrl}
+              className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
             >
               <Download className="h-4 w-4" /> 
               <span className="hidden sm:inline">Baixar</span>
-            </a>
+            </button>
             <button 
               type="button" 
               onClick={onClose}
@@ -1121,11 +1155,18 @@ function PdfViewerModal({ report, onClose }: { report: { name: string; fileDataU
           </div>
         </div>
         <div className="flex-1 bg-slate-100/50 p-4 sm:p-6 overflow-hidden">
-          <iframe 
-            src={`${report.fileDataUrl}#toolbar=0`} 
-            title={report.name}
-            className="w-full h-full rounded-lg border border-slate-200 bg-white shadow-sm"
-          />
+          {resolvedUrl ? (
+            <iframe 
+              src={`${resolvedUrl}#toolbar=0`} 
+              title={report.name}
+              className="w-full h-full rounded-lg border border-slate-200 bg-white shadow-sm"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-slate-400">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-DEFAULT mb-4"></div>
+              <p className="text-sm">Carregando relatório...</p>
+            </div>
+          )}
         </div>
       </motion.div>
     </motion.div>

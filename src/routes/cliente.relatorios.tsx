@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, X, FileText, ArrowLeft } from "lucide-react";
@@ -137,18 +137,40 @@ function FolderIcon() {
 }
 
 function PdfViewer({ report, company, onClose }: { report: Report; company: string; onClose: () => void }) {
+  const [resolvedUrl, setResolvedUrl] = useState<string | null>(null);
   const filename = report.fileName ?? `Relatorio-${report.date.replace(/\s+/g, "-")}.pdf`;
 
-  function download() {
-    if (report.fileDataUrl) {
+  useEffect(() => {
+    let alive = true;
+    import("@/lib/admin/media").then(({ resolveMediaUrl }) => {
+      if (report.fileDataUrl) {
+        resolveMediaUrl("pdfs", report.fileDataUrl)
+          .then((url) => { if (alive) setResolvedUrl(url); })
+          .catch((err) => {
+            console.error("PDF resolution error:", err);
+            toast.error("Não foi possível carregar o arquivo PDF.");
+          });
+      }
+    });
+    return () => { alive = false; };
+  }, [report.fileDataUrl]);
+
+  async function download() {
+    if (!resolvedUrl) return;
+    try {
+      const response = await fetch(resolvedUrl);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = report.fileDataUrl;
+      a.href = blobUrl;
       a.download = filename;
       document.body.appendChild(a);
       a.click();
+      window.URL.revokeObjectURL(blobUrl);
       a.remove();
-    } else {
-      toast.success(`Download iniciado: ${filename}`);
+    } catch (err) {
+      console.error("Download error:", err);
+      window.open(resolvedUrl, "_blank");
     }
   }
 
@@ -180,14 +202,19 @@ function PdfViewer({ report, company, onClose }: { report: Report; company: stri
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 sm:p-8">
-        {report.fileDataUrl ? (
+        {resolvedUrl ? (
           <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mx-auto max-w-5xl h-[calc(100vh-140px)] bg-white rounded-sm shadow-2xl overflow-hidden">
             <iframe 
-              src={`${report.fileDataUrl}#toolbar=0`} 
+              src={`${resolvedUrl}#toolbar=0`} 
               title={filename} 
               className="w-full h-full border-none" 
             />
           </motion.div>
+        ) : report.fileDataUrl ? (
+          <div className="flex flex-col items-center justify-center h-64 text-white">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mb-4"></div>
+            <p className="text-sm opacity-70">Carregando relatório...</p>
+          </div>
         ) : (
           <motion.div
             initial={{ y: 30, opacity: 0 }}
