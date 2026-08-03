@@ -3,7 +3,9 @@
 // paths always start with the client_id so RLS ("client reads own files")
 // authorizes signed reads for the owning cliente.
 
-import { supabase } from "@/integrations/supabase/client";
+import { createSupabaseClient } from "@/lib/supabase-factory";
+
+const supabase = createSupabaseClient('maxease-admin-auth');
 
 export const MAX_VIDEO_BYTES = 1024 * 1024 * 1024; // 1 GB
 export const MAX_COVER_BYTES = 10 * 1024 * 1024;   // 10 MB

@@ -8,7 +8,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { createSupabaseClient } from "@/lib/supabase-factory";
+
+const supabase = createSupabaseClient('maxease-portal-auth');
 import { calRowToContent } from "@/lib/admin/store";
 import { usePortalAuth } from "@/lib/portal/auth";
 import type { CalendarContent, Notice, Report } from "@/lib/portal/mockData";
