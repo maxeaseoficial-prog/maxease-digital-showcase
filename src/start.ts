@@ -23,7 +23,7 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
 // remote OG images and outbound links to WhatsApp — no UX changes.
 const SECURITY_HEADERS: Record<string, string> = {
   "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
+  "X-Frame-Options": "SAMEORIGIN",
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy":
     "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), interest-cohort=()",
@@ -34,7 +34,7 @@ const SECURITY_HEADERS: Record<string, string> = {
     "default-src 'self'",
     "base-uri 'self'",
     "object-src 'none'",
-    "frame-ancestors 'none'",
+    "frame-ancestors 'self'",
     "form-action 'self' https://api.whatsapp.com https://wa.me",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https://fonts.gstatic.com",
@@ -43,7 +43,7 @@ const SECURITY_HEADERS: Record<string, string> = {
     "connect-src 'self' https: wss:",
     "media-src 'self' https: data: blob:",
     "worker-src 'self' blob:",
-    "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
+    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
     "manifest-src 'self'",
     "upgrade-insecure-requests",
   ].join("; "),
