@@ -923,13 +923,17 @@ function ReportsManager({ clientId, items, onAdd, onDelete }: { clientId: string
                 <ul className="space-y-1">
                   {reports.map((r) => (
                     <li key={r.id} className="group flex items-center justify-between gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-slate-50">
-                      <div className="flex min-w-0 items-center gap-3">
-                        <FileText className="h-4 w-4 shrink-0 text-slate-300" />
+                      <button 
+                        type="button"
+                        onClick={() => r.fileDataUrl && setPreviewReport({ name: r.name, fileDataUrl: r.fileDataUrl })}
+                        className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none"
+                      >
+                        <FileText className="h-4 w-4 shrink-0 text-slate-300 group-hover:text-brand-light" />
                         <div className="min-w-0">
-                          <div className="truncate text-[13.5px] font-medium text-slate-900">{r.name}</div>
+                          <div className="truncate text-[13.5px] font-medium text-slate-900 group-hover:text-brand-light">{r.name}</div>
                           <div className="truncate text-[12px] text-slate-400">{r.fileName ?? "Sem arquivo"} · {r.date}</div>
                         </div>
-                      </div>
+                      </button>
                       <button type="button" onClick={() => onDelete(r.id)} aria-label="Excluir"
                         className="shrink-0 rounded-md p-1.5 text-slate-300 opacity-0 transition-all hover:bg-red-50 hover:text-red-500 group-hover:opacity-100">
                         <Trash2 className="h-4 w-4" />
