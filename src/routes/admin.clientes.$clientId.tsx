@@ -818,6 +818,15 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
           </form>
         )}
       </div>
+
+      <AnimatePresence>
+        {previewScript && (
+          <PdfViewerModal
+            report={previewScript}
+            onClose={() => setPreviewScript(null)}
+          />
+        )}
+      </AnimatePresence>
     </Modal>
   );
 }
