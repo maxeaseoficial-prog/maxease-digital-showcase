@@ -700,9 +700,13 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
                           </button>
                         )}
                         {ev.scriptFile && (
-                          <a href={ev.scriptFile.dataUrl} download={ev.scriptFile.name} className="inline-flex items-center gap-1.5 text-[12px] font-medium text-slate-500 transition-colors hover:text-slate-900">
+                          <button 
+                            type="button" 
+                            onClick={() => ev.scriptFile && setPreviewScript({ name: ev.scriptFile.name, fileDataUrl: ev.scriptFile.dataUrl })}
+                            className="inline-flex items-center gap-1.5 text-[12px] font-medium text-slate-500 transition-colors hover:text-slate-900"
+                          >
                             <FileText className="h-3.5 w-3.5" /> Roteiro
-                          </a>
+                          </button>
                         )}
                       </div>
                     </div>
