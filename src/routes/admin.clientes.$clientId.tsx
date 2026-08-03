@@ -832,6 +832,7 @@ function ReportsManager({ clientId, items, onAdd, onDelete }: { clientId: string
   const [folderSelect, setFolderSelect] = useState(existingFolders[0] ?? "");
   const [folderNew, setFolderNew] = useState("");
   const [pdfUpload, setPdfUpload] = useState<UploadSlot | undefined>();
+  const [previewReport, setPreviewReport] = useState<{ name: string; fileDataUrl: string } | null>(null);
 
   useEffect(() => {
     return () => {
