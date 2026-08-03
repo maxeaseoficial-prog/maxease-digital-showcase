@@ -947,6 +947,15 @@ function ReportsManager({ clientId, items, onAdd, onDelete }: { clientId: string
         )}
       </Panel>
 
+      <AnimatePresence>
+        {previewReport && (
+          <PdfViewerModal
+            report={previewReport}
+            onClose={() => setPreviewReport(null)}
+          />
+        )}
+      </AnimatePresence>
+
       <Panel className="h-fit">
         <form onSubmit={submit}>
           <div className="border-b border-slate-100 px-6 py-5">
