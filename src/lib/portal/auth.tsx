@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { createSupabaseClient } from "@/lib/supabase-factory";
+
+const supabase = createSupabaseClient('maxease-portal-auth');
 
 export interface PortalSession {
   userId: string;
