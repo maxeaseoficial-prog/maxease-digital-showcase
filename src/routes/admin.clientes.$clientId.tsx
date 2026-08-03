@@ -609,7 +609,7 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
     }
     if (anyUploading()) { toast.error("Aguarde os uploads finalizarem."); return; }
     if (!videoUpload || videoUpload.status !== "done") { toast.error("Envie o vídeo (upload deve concluir)."); return; }
-    if (!coverUpload || coverUpload.status !== "done") { toast.error("Envie a capa (upload deve concluir)."); return; }
+    if (coverUpload && coverUpload.status !== "done") { toast.error("O upload da capa não concluiu."); return; }
 
     if (scriptUpload && scriptUpload.status !== "done") { toast.error("O PDF do roteiro não concluiu o upload."); return; }
     const token = generateToken();
