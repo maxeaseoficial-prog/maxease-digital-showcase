@@ -3,7 +3,7 @@
 // paths always start with the client_id so RLS ("client reads own files")
 // authorizes signed reads for the owning cliente.
 
-import { supabase } from "@/integrations/supabase/client";
+import { adminSupabase as supabase } from "@/integrations/supabase/client";
 
 export const MAX_VIDEO_BYTES = 1024 * 1024 * 1024; // 1 GB
 export const MAX_COVER_BYTES = 10 * 1024 * 1024;   // 10 MB
