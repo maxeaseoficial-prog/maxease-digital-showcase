@@ -9,9 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { toast } from "sonner";
-import { createSupabaseClient } from "@/lib/supabase-factory";
-
-const supabase = createSupabaseClient('maxease-admin-auth');
+import { adminSupabase as supabase } from "@/integrations/supabase/client";
 import {
   adminCreateClient,
   adminDeleteClient,

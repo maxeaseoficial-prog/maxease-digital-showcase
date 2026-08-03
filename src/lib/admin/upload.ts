@@ -2,9 +2,7 @@
 // progress events and a working AbortSignal — the JS SDK's upload() does
 // not expose progress. RLS on storage.objects gates the write:
 // "admin all buckets insert" allows any authenticated admin to write.
-import { createSupabaseClient } from "@/lib/supabase-factory";
-
-const supabase = createSupabaseClient('maxease-admin-auth');
+import { adminSupabase as supabase } from "@/integrations/supabase/client";
 import { BUCKET_FOR, buildObjectPath, validateFile, type MediaKind } from "./media";
 
 export interface UploadHandle {
