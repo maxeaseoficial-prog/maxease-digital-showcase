@@ -449,6 +449,7 @@ interface UploadSlot {
 }
 
 function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, onDelete, onGenerated }: { clientId: string; date: string; events: CalItem[]; editing?: CalItem | null; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onUpdate: (id: string, patch: Partial<CalItem>) => void; onDelete: (id: string) => void; onGenerated: (link: string) => void }) {
+  const [previewScript, setPreviewScript] = useState<{ name: string; fileDataUrl: string } | null>(null);
   const isEditing = !!editing;
   const [showForm, setShowForm] = useState(events.length === 0 || isEditing);
   const [kind, setKind] = useState<CalendarKind>(editing?.kind ?? "Postagem");
