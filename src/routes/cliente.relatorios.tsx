@@ -182,7 +182,11 @@ function PdfViewer({ report, company, onClose }: { report: Report; company: stri
       <div className="flex-1 overflow-y-auto p-4 sm:p-8">
         {report.fileDataUrl ? (
           <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mx-auto max-w-5xl h-[calc(100vh-140px)] bg-white rounded-sm shadow-2xl overflow-hidden">
-            <iframe src={report.fileDataUrl} title={filename} className="w-full h-full" />
+            <iframe 
+              src={`${report.fileDataUrl}#toolbar=0`} 
+              title={filename} 
+              className="w-full h-full border-none" 
+            />
           </motion.div>
         ) : (
           <motion.div

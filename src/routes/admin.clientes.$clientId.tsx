@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, Upload, Folder, Link2, Video, Image as ImageIcon, Pencil } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, FileText, Bell, Save, ChevronLeft, ChevronRight, Upload, Folder, Link2, Video, Image as ImageIcon, Pencil, Download, X } from "lucide-react";
 import { toast } from "sonner";
 import { AdminShell, AdminPageHeader } from "@/components/admin/AdminShell";
 import { UIButton, Field, SelectField, Segmented, Chip, Panel, FormBlock, Modal, SuccessModal, UploadField, EmptyState, FieldLabel } from "@/components/admin/ui";
@@ -449,6 +449,7 @@ interface UploadSlot {
 }
 
 function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, onDelete, onGenerated }: { clientId: string; date: string; events: CalItem[]; editing?: CalItem | null; onClose: () => void; onAdd: (item: Omit<CalItem, "id" | "date">) => void; onUpdate: (id: string, patch: Partial<CalItem>) => void; onDelete: (id: string) => void; onGenerated: (link: string) => void }) {
+  const [previewScript, setPreviewScript] = useState<{ name: string; fileDataUrl: string } | null>(null);
   const isEditing = !!editing;
   const [showForm, setShowForm] = useState(events.length === 0 || isEditing);
   const [kind, setKind] = useState<CalendarKind>(editing?.kind ?? "Postagem");
@@ -699,9 +700,13 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
                           </button>
                         )}
                         {ev.scriptFile && (
-                          <a href={ev.scriptFile.dataUrl} download={ev.scriptFile.name} className="inline-flex items-center gap-1.5 text-[12px] font-medium text-slate-500 transition-colors hover:text-slate-900">
+                          <button 
+                            type="button" 
+                            onClick={() => ev.scriptFile && setPreviewScript({ name: ev.scriptFile.name, fileDataUrl: ev.scriptFile.dataUrl })}
+                            className="inline-flex items-center gap-1.5 text-[12px] font-medium text-slate-500 transition-colors hover:text-slate-900"
+                          >
                             <FileText className="h-3.5 w-3.5" /> Roteiro
-                          </a>
+                          </button>
                         )}
                       </div>
                     </div>
@@ -813,6 +818,15 @@ function DayModal({ clientId, date, events, editing, onClose, onAdd, onUpdate, o
           </form>
         )}
       </div>
+
+      <AnimatePresence>
+        {previewScript && (
+          <PdfViewerModal
+            report={previewScript}
+            onClose={() => setPreviewScript(null)}
+          />
+        )}
+      </AnimatePresence>
     </Modal>
   );
 }
@@ -832,6 +846,7 @@ function ReportsManager({ clientId, items, onAdd, onDelete }: { clientId: string
   const [folderSelect, setFolderSelect] = useState(existingFolders[0] ?? "");
   const [folderNew, setFolderNew] = useState("");
   const [pdfUpload, setPdfUpload] = useState<UploadSlot | undefined>();
+  const [previewReport, setPreviewReport] = useState<{ name: string; fileDataUrl: string } | null>(null);
 
   useEffect(() => {
     return () => {
@@ -922,13 +937,17 @@ function ReportsManager({ clientId, items, onAdd, onDelete }: { clientId: string
                 <ul className="space-y-1">
                   {reports.map((r) => (
                     <li key={r.id} className="group flex items-center justify-between gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-slate-50">
-                      <div className="flex min-w-0 items-center gap-3">
-                        <FileText className="h-4 w-4 shrink-0 text-slate-300" />
+                      <button 
+                        type="button"
+                        onClick={() => r.fileDataUrl && setPreviewReport({ name: r.name, fileDataUrl: r.fileDataUrl })}
+                        className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none"
+                      >
+                        <FileText className="h-4 w-4 shrink-0 text-slate-300 group-hover:text-brand-light" />
                         <div className="min-w-0">
-                          <div className="truncate text-[13.5px] font-medium text-slate-900">{r.name}</div>
+                          <div className="truncate text-[13.5px] font-medium text-slate-900 group-hover:text-brand-light">{r.name}</div>
                           <div className="truncate text-[12px] text-slate-400">{r.fileName ?? "Sem arquivo"} · {r.date}</div>
                         </div>
-                      </div>
+                      </button>
                       <button type="button" onClick={() => onDelete(r.id)} aria-label="Excluir"
                         className="shrink-0 rounded-md p-1.5 text-slate-300 opacity-0 transition-all hover:bg-red-50 hover:text-red-500 group-hover:opacity-100">
                         <Trash2 className="h-4 w-4" />
@@ -941,6 +960,15 @@ function ReportsManager({ clientId, items, onAdd, onDelete }: { clientId: string
           </div>
         )}
       </Panel>
+
+      <AnimatePresence>
+        {previewReport && (
+          <PdfViewerModal
+            report={previewReport}
+            onClose={() => setPreviewReport(null)}
+          />
+        )}
+      </AnimatePresence>
 
       <Panel className="h-fit">
         <form onSubmit={submit}>
@@ -1044,6 +1072,63 @@ function NoticesManager({ items, onAdd, onDelete }: { items: { id: string; title
         </form>
       </Panel>
     </div>
+  );
+}
+
+
+function PdfViewerModal({ report, onClose }: { report: { name: string; fileDataUrl: string }; onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-5xl h-full max-h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden ring-1 ring-slate-900/10"
+      >
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+              <FileText className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold text-slate-900 truncate">{report.name}</h3>
+              <p className="text-[11px] text-slate-500">Visualização de PDF</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <a 
+              href={report.fileDataUrl} 
+              download 
+              className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
+            >
+              <Download className="h-4 w-4" /> 
+              <span className="hidden sm:inline">Baixar</span>
+            </a>
+            <button 
+              type="button" 
+              onClick={onClose}
+              className="h-9 w-9 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+        <div className="flex-1 bg-slate-100/50 p-4 sm:p-6 overflow-hidden">
+          <iframe 
+            src={`${report.fileDataUrl}#toolbar=0`} 
+            title={report.name}
+            className="w-full h-full rounded-lg border border-slate-200 bg-white shadow-sm"
+          />
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
