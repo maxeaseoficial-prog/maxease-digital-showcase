@@ -1062,6 +1062,63 @@ function NoticesManager({ items, onAdd, onDelete }: { items: { id: string; title
 }
 
 
+function PdfViewerModal({ report, onClose }: { report: { name: string; fileDataUrl: string }; onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-5xl h-full max-h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden ring-1 ring-slate-900/10"
+      >
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+              <FileText className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold text-slate-900 truncate">{report.name}</h3>
+              <p className="text-[11px] text-slate-500">Visualização de PDF</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <a 
+              href={report.fileDataUrl} 
+              download 
+              className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
+            >
+              <Download className="h-4 w-4" /> 
+              <span className="hidden sm:inline">Baixar</span>
+            </a>
+            <button 
+              type="button" 
+              onClick={onClose}
+              className="h-9 w-9 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+        <div className="flex-1 bg-slate-100/50 p-4 sm:p-6 overflow-hidden">
+          <iframe 
+            src={`${report.fileDataUrl}#toolbar=0`} 
+            title={report.name}
+            className="w-full h-full rounded-lg border border-slate-200 bg-white shadow-sm"
+          />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+
 function TextField({ label, value, onChange, placeholder, type = "text", multiline }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string; multiline?: boolean }) {
   return (
     <Field label={label} value={value} onChange={onChange} placeholder={placeholder} type={type} multiline={multiline} />
