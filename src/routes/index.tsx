@@ -215,62 +215,85 @@ function Hero() {
 
 
   return (
-    <section id="inicio" ref={ref} className="relative min-h-screen w-full overflow-hidden bg-hero-gradient">
-      <div className="absolute inset-0 bg-grid opacity-40" />
+    <section id="inicio" ref={ref} className="relative min-h-screen w-full overflow-hidden bg-[#08111F] flex items-center">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(21,94,239,0.08),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(21,94,239,0.05),transparent_40%)]" />
       <GradientOrb className="left-[-10%] top-[10%]" size={600} />
       <GradientOrb className="right-[-10%] bottom-[10%]" size={700} />
-      <Particles />
+      
+      {/* connecting lines - removed as they look like "AI decor" */}
 
-      {/* connecting lines */}
-      <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-30" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="line" x1="0" x2="1">
-            <stop offset="0%" stopColor="#4F7CFF" stopOpacity="0" />
-            <stop offset="50%" stopColor="#4F7CFF" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#4F7CFF" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <line x1="10%" y1="20%" x2="45%" y2="60%" stroke="url(#line)" strokeWidth="1" />
-        <line x1="60%" y1="15%" x2="90%" y2="50%" stroke="url(#line)" strokeWidth="1" />
-        <line x1="20%" y1="80%" x2="70%" y2="90%" stroke="url(#line)" strokeWidth="1" />
-      </svg>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-20 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="lg:col-span-7">
+            <motion.div style={{ opacity }}>
+              <Reveal delay={0.1}>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/10 border border-brand-blue/20 mb-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse" />
+                  <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-brand-blue">
+                    Estúdio Digital · Tecnologia + Criação
+                  </span>
+                </div>
+              </Reveal>
+              <Reveal delay={0.2}>
+                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] text-white tracking-tight">
+                  Criamos experiências <span className="text-brand-blue">digitais</span> que fazem sua empresa crescer.
+                </h1>
+              </Reveal>
+              <Reveal delay={0.3}>
+                <p className="mt-8 text-lg sm:text-xl text-slate-400 leading-relaxed max-w-2xl">
+                  Sites profissionais, sistemas personalizados e produções audiovisuais desenvolvidas para posicionar marcas e gerar resultados reais.
+                </p>
+              </Reveal>
+              <Reveal delay={0.4}>
+                <div className="mt-10 flex flex-wrap gap-4">
+                  <button
+                    type="button"
+                    onClick={openQuote}
+                    className="group relative inline-flex items-center gap-2 rounded-lg bg-brand-blue px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-brand-bright hover:scale-[1.02] shadow-lg shadow-brand-blue/20"
+                  >
+                    Solicitar orçamento
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
 
-      <motion.div style={{ opacity }} className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 sm:px-6 pt-32 pb-16">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div style={{ y: y2 }}>
-            <Reveal delay={0.1}>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] text-white">
-                Criamos experiências <span className="text-brand-gradient">digitais</span> que fazem sua empresa crescer.
-              </h1>
-            </Reveal>
-            <Reveal delay={0.25}>
-              <p className="mt-6 max-w-xl mx-auto text-base sm:text-lg text-white/70 leading-relaxed">
-                Sites profissionais, sistemas personalizados e produções audiovisuais desenvolvidas para posicionar marcas e gerar resultados.
-              </p>
-            </Reveal>
-            <Reveal delay={0.4}>
-              <div className="mt-9 flex flex-wrap gap-4 justify-center">
-                <button
-                  type="button"
-                  onClick={openQuote}
-                  className="group relative inline-flex items-center gap-2 rounded-full bg-brand-gradient px-7 py-3.5 text-sm font-semibold text-white shadow-[0_20px_50px_-15px_rgba(30,64,255,0.8)] transition-transform hover:scale-[1.03] overflow-hidden"
-                >
-                  <span className="relative z-10">Solicitar orçamento</span>
-                  <ArrowRight className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                  <span className="absolute inset-0 -translate-x-full bg-white/20 blur-xl transition-transform duration-700 group-hover:translate-x-full" />
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const el = document.getElementById('trabalhos-selecionados');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-8 py-4 text-sm font-semibold text-white hover:bg-white/10 transition-all"
+                  >
+                    Conhecer projetos
+                  </button>
+                </div>
+              </Reveal>
+            </motion.div>
+          </div>
 
-                <button
-                  type="button"
-                  onClick={() => setProjectsOpen(true)}
-                  className="inline-flex items-center gap-2 rounded-full glass px-7 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
-                >
-                  Ver projetos
-                </button>
+          <div className="lg:col-span-5 relative hidden lg:block">
+            <Reveal delay={0.5}>
+              <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900 aspect-[4/3]">
+                <img src={heroMockup} alt="Projetos MaxEase" className="w-full h-full object-cover opacity-90" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
+                
+                {/* Editorial overlays */}
+                <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+                  <div className="glass px-4 py-2 rounded-lg">
+                    <span className="text-[10px] text-white/50 uppercase block mb-0.5">Selected Work</span>
+                    <span className="text-xs font-semibold text-white">Digital Interface Design</span>
+                  </div>
+                  <div className="h-8 w-8 rounded-full border border-white/20 flex items-center justify-center">
+                    <ArrowUpRight className="h-3 w-3 text-white" />
+                  </div>
+                </div>
               </div>
             </Reveal>
-          </motion.div>
+            
+            {/* Small offset floating element for editorial feel */}
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 glass rounded-2xl border border-white/10 hidden xl:block" />
+          </div>
         </div>
+      </div>
 
 
       </motion.div>
@@ -428,30 +451,52 @@ function HeroComposition() {
 /* ---------------- Services ---------------- */
 function Services() {
   const services = [
-    { icon: Video, title: "Produção Audiovisual", desc: "Vídeos institucionais, comerciais, Reels e campanhas com direção criativa e edição cinematográfica." },
-    { icon: Globe, title: "Sites Profissionais", desc: "Sites modernos, rápidos e desenvolvidos para converter visitantes em clientes." },
-    { icon: Cpu, title: "Sistemas Personalizados", desc: "Desenvolvimento de sistemas sob medida para automatizar e escalar o seu negócio." },
-    { icon: Megaphone, title: "Criativos para campanhas", desc: "Vídeos para tráfego pago, vídeos de divulgação e edição de vídeos que geram resultado." },
+    { num: "01", icon: Video, title: "Produção Audiovisual", desc: "Vídeos institucionais e comerciais com edição cinematográfica." },
+    { num: "02", icon: Globe, title: "Sites Profissionais", desc: "Plataformas modernas desenvolvidas para alta performance e conversão." },
+    { num: "03", icon: Cpu, title: "Sistemas Personalizados", desc: "Soluções robustas sob medida para automatizar e escalar operações." },
+    { num: "04", icon: Megaphone, title: "Criativos para Campanhas", desc: "Conteúdo focado em tráfego pago que gera resultados mensuráveis." },
   ];
   return (
-    <section id="servicos" className="relative py-28 sm:py-36 overflow-hidden">
-      <GradientOrb className="right-[-15%] top-1/4" size={500} />
+    <section id="servicos" className="relative py-32 sm:py-48 bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
-        <Reveal>
-          <div className="max-w-2xl">
-            <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">O que fazemos</div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-              Soluções digitais completas <br /> para marcas de <span className="text-brand-gradient">alto padrão</span>.
-            </h2>
-          </div>
-        </Reveal>
-
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
-          {services.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.08}>
-              <ServiceCard {...s} />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          <div className="lg:col-span-5">
+            <Reveal>
+              <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Expertise</div>
+              <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+                Soluções digitais completas para marcas de alto padrão.
+              </h2>
+              <p className="mt-8 text-lg text-slate-600 leading-relaxed max-w-md">
+                Unimos engenharia, design e estratégia para construir produtos que impulsionam o valor do seu negócio.
+              </p>
+              <div className="mt-12 hidden lg:block">
+                <button
+                  onClick={() => document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center gap-2 text-brand-blue font-semibold hover:gap-3 transition-all"
+                >
+                  Falar com um especialista <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </Reveal>
-          ))}
+          </div>
+
+          <div className="lg:col-span-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
+              {services.map((s, i) => (
+                <Reveal key={s.title} delay={i * 0.1}>
+                  <div className="group">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="text-xs font-bold text-slate-300 group-hover:text-brand-blue transition-colors">{s.num}</div>
+                      <s.icon className="h-6 w-6 text-slate-400 group-hover:text-brand-blue transition-colors" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-3">{s.title}</h3>
+                    <p className="text-slate-600 text-sm leading-relaxed">{s.desc}</p>
+                    <div className="mt-6 w-8 h-[1px] bg-slate-200 group-hover:w-full group-hover:bg-brand-blue transition-all duration-500" />
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
