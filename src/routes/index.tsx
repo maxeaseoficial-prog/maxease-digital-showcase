@@ -631,21 +631,21 @@ function WebsiteShowcase({
               
               <div className="relative rounded-[2rem] p-3 sm:p-4 bg-[#1A1F2C] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/5 ring-1 ring-white/10 group overflow-hidden">
                 <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#08111F]">
-                  <div className="absolute inset-0 w-full h-full bg-[#08111F]" />
                   <iframe 
                     src={project.url}
                     title={`Visualização desktop do site ${project.name}`}
                     loading="lazy"
-                    className="absolute inset-0 border-0 origin-top-left"
+                    className="absolute border-0 top-0 left-0"
                     style={{ 
                       width: '1440px',
                       height: '900px',
-                      transform: 'scale(calc(100% / 1440))',
+                      transform: 'scale(0.1)',
+                      transformOrigin: 'top left',
                       zIndex: 1
                     }}
                   />
                   {/* Subtle hover overlay */}
-                  <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors z-10" />
+                  <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors z-20" />
                 </div>
                 {/* Monitor Stand Detail */}
                 <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-6 bg-[#1A1F2C] rounded-b-3xl border-x border-b border-white/5 z-0" />
