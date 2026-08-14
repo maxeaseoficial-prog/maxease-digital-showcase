@@ -101,7 +101,7 @@ export function Navbar() {
   ];
 
   const linkClass =
-    "text-sm text-white/75 hover:text-white transition-colors relative group";
+    "text-sm font-medium text-slate-600 hover:text-brand-blue transition-colors relative group";
   const underline = (
     <span className="absolute -bottom-1 left-0 h-px w-0 bg-brand-gradient transition-all duration-300 group-hover:w-full" />
   );
@@ -111,14 +111,14 @@ export function Navbar() {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "py-4 bg-brand-deep/80 backdrop-blur-md border-b border-white/5" : "py-6 bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled ? "py-4 bg-white/80 backdrop-blur-xl border-b border-black/5 shadow-sm" : "py-8 bg-transparent"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex items-center justify-between gap-4">
           <Link to="/" hash="inicio" className="flex items-center gap-2 shrink-0 min-w-0">
-            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-9 sm:h-16 w-auto" />
+            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-9 sm:h-12 w-auto brightness-0" />
           </Link>
           <nav className="hidden lg:flex items-center gap-8">
             {links.map((l) =>
@@ -215,77 +215,85 @@ function Hero() {
 
 
   return (
-    <section id="inicio" ref={ref} className="relative min-h-screen w-full overflow-hidden bg-[#08111F] flex items-center">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(21,94,239,0.08),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(21,94,239,0.05),transparent_40%)]" />
-      <GradientOrb className="left-[-10%] top-[10%]" size={600} />
-      <GradientOrb className="right-[-10%] bottom-[10%]" size={700} />
-      
-      {/* connecting lines - removed as they look like "AI decor" */}
+    <section id="inicio" ref={ref} className="relative min-h-[90vh] w-full overflow-hidden bg-off-white flex items-center pt-20">
+      {/* Background large text watermark */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
+        <span className="text-[25vw] font-black text-black/[0.02] leading-none tracking-tighter">MAXEASE</span>
+      </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-20 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-7">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[70vh]">
+          {/* Text Content */}
+          <div className="lg:col-span-6 flex flex-col justify-center py-12 lg:pr-12">
             <motion.div style={{ opacity }}>
               <Reveal delay={0.2}>
-                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] text-white tracking-tight">
-                  Criamos experiências <span className="text-brand-blue">digitais</span> que fazem sua empresa crescer.
+                <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black leading-[0.9] text-slate-900 tracking-tighter uppercase">
+                  Digital <br />
+                  <span className="text-brand-blue">Excellence</span>
                 </h1>
               </Reveal>
               <Reveal delay={0.3}>
-                <p className="mt-8 text-lg sm:text-xl text-slate-400 leading-relaxed max-w-2xl">
-                  Sites profissionais, sistemas personalizados e produções audiovisuais desenvolvidas para posicionar marcas e gerar resultados reais.
+                <p className="mt-8 text-lg sm:text-xl text-slate-500 leading-tight max-w-lg font-medium">
+                  Criamos experiências digitais que fazem sua empresa crescer através de design editorial e tecnologia de ponta.
                 </p>
               </Reveal>
               <Reveal delay={0.4}>
-                <div className="mt-10 flex flex-wrap gap-4">
+                <div className="mt-12 flex flex-wrap gap-4">
                   <button
                     type="button"
                     onClick={openQuote}
-                    className="group relative inline-flex items-center gap-2 rounded-lg bg-brand-blue px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-brand-bright hover:scale-[1.02] shadow-lg shadow-brand-blue/20"
+                    className="group relative inline-flex items-center gap-3 rounded-full bg-brand-blue px-10 py-5 text-sm font-bold text-white transition-all hover:bg-brand-bright hover:shadow-xl hover:shadow-brand-blue/20"
                   >
-                    Solicitar orçamento
+                    INICIAR PROJETO
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const el = document.getElementById('trabalhos-selecionados');
-                      el?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-8 py-4 text-sm font-semibold text-white hover:bg-white/10 transition-all"
-                  >
-                    Conhecer projetos
                   </button>
                 </div>
               </Reveal>
             </motion.div>
           </div>
 
-          <div className="lg:col-span-5 relative hidden lg:block">
-            <Reveal delay={0.5}>
-              <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900 aspect-[4/3]">
-                <img src={heroMockup} alt="Projetos MaxEase" className="w-full h-full object-cover opacity-90" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
+          {/* Right Visual Mass (Blue) */}
+          <div className="lg:col-span-6 relative mt-12 lg:mt-0">
+            <Reveal delay={0.5} y={40}>
+              <div className="relative h-full w-full min-h-[500px] lg:min-h-0 bg-brand-blue rounded-3xl overflow-hidden shadow-2xl flex flex-col">
+                <img 
+                  src={heroMockup} 
+                  alt="Portfolio" 
+                  className="w-full h-full object-cover mix-blend-multiply opacity-80" 
+                />
                 
-                {/* Editorial overlays */}
-                <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
-                  <div className="glass px-4 py-2 rounded-lg">
-                    <span className="text-[10px] text-white/50 uppercase block mb-0.5">Selected Work</span>
-                    <span className="text-xs font-semibold text-white">Digital Interface Design</span>
+                {/* Overlay info */}
+                <div className="absolute top-0 left-0 w-full h-full p-8 flex flex-col justify-between">
+                  <div className="flex justify-between items-start">
+                    <div className="text-white">
+                      <div className="text-[10px] font-bold uppercase tracking-widest opacity-70 mb-1">Status</div>
+                      <div className="text-sm font-bold flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                        DISPONÍVEL PARA PROJETOS
+                      </div>
+                    </div>
                   </div>
-                  <div className="h-8 w-8 rounded-full border border-white/20 flex items-center justify-center">
-                    <ArrowUpRight className="h-3 w-3 text-white" />
+
+                  <div className="mt-auto">
+                    <div className="h-px w-full bg-white/20 mb-6" />
+                    <div className="flex justify-between items-end">
+                      <div>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-white/70 mb-2">Expertise</div>
+                        <div className="text-2xl font-bold text-white">ESTRATÉGIA · DESIGN <br />TECNOLOGIA</div>
+                      </div>
+                      <div className="h-16 w-16 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white transition-colors cursor-pointer">
+                        <ArrowUpRight className="h-6 w-6 text-white group-hover:text-brand-blue" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </Reveal>
-            
-            {/* Small offset floating element for editorial feel */}
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 glass rounded-2xl border border-white/10 hidden xl:block" />
           </div>
         </div>
       </div>
+    </section>
+  );
 
       <AnimatePresence>
         {projectsOpen && (
