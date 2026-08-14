@@ -374,59 +374,6 @@ function Hero() {
 function HeroComposition() {
   return null;
 }
-          <div className="absolute inset-0 bg-gradient-to-tr from-brand-blue/20 via-transparent to-transparent" />
-        </motion.div>
-      </motion.div>
-
-      {/* floating card top-right */}
-      <motion.div
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.8, duration: 0.7 }}
-        className="absolute top-4 right-0 hidden sm:block"
-      >
-        <motion.div
-          animate={{ y: [0, 12, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="glass-strong rounded-xl p-4 w-52 shadow-elegant"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs text-white/70">Conversão</span>
-          </div>
-          <div className="text-2xl font-bold text-white">+184%</div>
-          <div className="text-[11px] text-brand-light mt-1">↑ vs. mês anterior</div>
-        </motion.div>
-      </motion.div>
-
-      {/* floating card bottom-left */}
-      <motion.div
-        initial={{ opacity: 0, x: -40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1, duration: 0.7 }}
-        className="absolute bottom-6 -left-2 hidden sm:block"
-      >
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-          className="glass-strong rounded-xl p-4 w-56 shadow-elegant"
-        >
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-brand-gradient flex items-center justify-center">
-              <Globe className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-white">Site publicado</div>
-              <div className="text-[11px] text-white/60">Performance 98/100</div>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* small orb */}
-      <div className="absolute top-1/2 -left-8 h-32 w-32 rounded-full bg-brand-blue/40 blur-3xl animate-pulse-glow" />
-      <div className="absolute bottom-8 right-8 h-40 w-40 rounded-full bg-brand-light/30 blur-3xl animate-pulse-glow" />
-    </div>
   );
 }
 
