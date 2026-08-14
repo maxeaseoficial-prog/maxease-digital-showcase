@@ -1,74 +1,58 @@
-# Redesign Visual Profissional — MAXEASE Digital
+# Redesign Phase 2: Premium Editorial Studio
 
-Este plano detalha o redesign visual completo da MAXEASE Digital, transformando a estética atual (genérica de IA/SaaS) em uma linguagem de estúdio digital premium, autoral e sofisticada, preservando todas as funcionalidades e conteúdos reais.
+Transition the MAXEASE Digital website into a high-end digital studio aesthetic, inspired by the "LinkedInPro" reference, focusing on strong graphic masses, integrated photography, and editorial composition.
 
-## Auditoria do Estado Atual
+## Phase 1: Style & Tokens Refinement
+- Update `src/styles.css` to include `--color-off-white` and refine `--brand-blue` / `--brand-deep` saturation.
+- Standardize spacing and radius tokens.
+- Add utility for large brand typography ("MAXEASE" watermark).
 
-- **Tecnologias:** React 19, TanStack Start/Router, Tailwind CSS 4, Framer Motion, Lucide, Supabase.
-- **Estrutura:** Rotas `/`, `/sites`, `/audiovisual` ativas. Componentes principais concentrados em `src/routes/index.tsx`.
-- **Estética:** Excesso de glows azuis, partículas, glassmorphism carregado, botões "pill" e gradientes de IA.
-- **Assets:** Logo, fotos reais (Henrique Castro), cases de sites e vídeos reais.
+## Phase 2: Navbar & Hero (Light Direction)
+- Modify `Navbar` for clear background:
+    - Logo: Switch to dark version or use filter for legibility on white.
+    - Links: Navy/Slate.
+    - CTA: Solid blue button.
+- Redesign `Hero` in `src/routes/index.tsx`:
+    - Background: Off-white with a large "MAXEASE" watermark or brand symbol.
+    - Layout: 45% text (left), 55% visual (right).
+    - Composition: Integrate Henrique's photo with system interfaces and geometric blue shapes (not floating cards).
+    - Asymmetric and editorial feel.
 
-## Design System & Identidade Visual
+## Phase 3: Transition & Services (Blue Block)
+- Insert a **Navy Faixa** between Hero and Services:
+    - Text: "ESTRATÉGIA · DESIGN · TECNOLOGIA · AUDIOVISUAL".
+    - Overlapping the transition.
+- Redesign `Services` section:
+    - Background: Solid `brand-blue`.
+    - Content: White text for contrast.
+    - Cards: Grid with numbers, real assets (screenshots/frames), and clean typography.
+    - Remove glassmorphism in favor of solid/subtle borders.
 
-### Paleta de Cores
-- **Navy/Deep:** `#0B1220` (Fundo principal/contraste).
-- **Brand Blue:** `#155EEF` (Azul corporativo maduro).
-- **Light:** `#F8FAFC` (Para seções claras e superfícies).
-- **Text:** `#101828` (Escuro) / `#667085` (Muted).
-- **Borders:** `#E4E7EC` (Light) / `rgba(255,255,255,0.06)` (Dark).
+## Phase 4: Intermediate CTA & Social Proof
+- Add an **Overlapping CTA card** (Off-white) between Services and the next section.
+- Compact the `Clients` (Confiança) section:
+    - Metrics row (compact).
+    - Grid of logos (larger presence, monochrome with hover color).
 
-### Tipografia
-- Escala editorial usando as fontes já configuradas (Space Grotesk e Inter).
-- Hierarquia baseada em peso e espaçamento, não apenas tamanho.
-- H1 editorial com line-height controlado.
+## Phase 5: About (Integrated Composition)
+- Redesign `About` section:
+    - Asymmetric split: Photo (left) integrated/touching a large blue block (right).
+    - Editorial text placement within the blue block.
 
-### Componentes Primitivos
-- **Radius:** Padronizado em 12px para cards e 8px para botões/inputs (removendo rounded-full).
-- **Sombras:** Neutras e suaves (evitando brilhos azuis).
-- **Whitespace:** Aumento significativo do respiro entre seções.
+## Phase 6: Final CTA & Footer (Navy Finish)
+- Refine `CTA` section: Large headline, navy/blue composition.
+- Redesign `Footer`:
+    - Background: `brand-deep` (Navy).
+    - White/Silver text and icons.
+    - Compact vertical layout.
 
-## Implementação por Seção
+## Phase 7: Subpages & QA
+- Apply the same visual language to `/sites` and `/audiovisual` routes.
+- Thorough responsive testing across all viewports (Mobile first).
+- Verify all animations (Reveal, Stagger) are subtle and controlled.
 
-### 1. Header & Navegação
-- Refatorar Navbar para ser mais sóbria.
-- Remover o "card flutuante" do nav; usar fundo sólido ou transparente com borda inferior sutil ao rolar.
-- Redesenhar menu mobile usando uma abordagem mais limpa.
-
-### 2. Hero (Redesign Total)
-- Composição assimétrica editorial.
-- **Lado Esquerdo:** Texto central preservado com tipografia refinada.
-- **Lado Direito:** Substituir mockup 3D flutuante por uma composição de trabalhos REAIS (sites/interfaces) em frames de browser ou recortes limpos.
-- Remover partículas, cursor glow e linhas decorativas.
-
-### 3. Serviços
-- Layout editorial (lista premium ou grid 2x2 com números e ícones Lucide discretos).
-- Foco em clareza e whitespace, reduzindo backgrounds carregados.
-
-### 4. Portfólio (Sites & Audiovisual)
-- **Sites:** Grid editorial com imagens grandes e tipografia lateral.
-- **Audiovisual:** Thumbnails em proporção cinematográfica, mantendo a sobriedade.
-- Simplificar o fluxo de "Ver Projetos" removendo o modal intermediário se possível (ou tornando-o muito mais discreto).
-
-### 5. Clientes & Sobre
-- **Clientes:** Grid de logos monocromáticos e neutros para transmitir confiança.
-- **Sobre:** Destaque para a fotografia real de Henrique Castro em layout de revista/agência.
-
-### 6. Quote Modal
-- Redesign visual completo mantendo 100% da lógica de negócio e integração com WhatsApp.
-- Inputs refinados e progressão de etapas mais elegante.
-
-### 7. Footer
-- Design minimalista, focado em ícones e links essenciais.
-
-## Detalhes Técnicos
-- **Framer Motion:** Animações de revelação sutis (reveal/fade), removendo loops infinitos.
-- **Performance:** Redução de complexidade visual resultará em melhor LCP/FID.
-- **Responsividade:** Ajuste criterioso em todos os breakpoints (Mobile a Desktop 4K).
-
-## Etapas de Entrega
-1. Atualização de `src/styles.css` com novos tokens.
-2. Refatoração da Navbar e Footer.
-3. Reimplementação das seções na `src/routes/index.tsx`.
-4. Atualização das páginas `/sites` e `/audiovisual`.
-5. Ajustes finais de responsividade e QA.
+## Technical Details
+- Use `framer-motion` for reveal and layout transitions.
+- Ensure `QuoteModal` UI matches the new clean editorial look.
+- Maintain all existing business logic and Supabase integration.
+- Strictly avoid: particles, glow effects, neon, and AI-generated avatars.
