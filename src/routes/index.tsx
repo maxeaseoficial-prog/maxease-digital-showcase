@@ -774,7 +774,6 @@ function About() {
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="h-px w-12 bg-brand-blue" />
                   <div className="text-xs uppercase tracking-[0.3em] text-brand-blue font-bold">Nossa História</div>
                 </div>
                 
