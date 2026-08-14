@@ -662,22 +662,12 @@ function WebsiteShowcase({
                 <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/10 rounded-full z-30" />
                 
                 <div className="relative aspect-[9/19.5] overflow-hidden rounded-[1.8rem] bg-[#08111F]">
-                  {isEmbeddable ? (
-                    <iframe 
-                      src={project.url}
-                      title={`Visualização mobile do site ${project.name}`}
-                      loading="lazy"
-                      className="w-full h-full border-0"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 w-full h-full">
-                      <img 
-                        src={project.fallbackImg || project1} 
-                        alt={`${project.name} mobile`} 
-                        className="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-1000" 
-                      />
-                    </div>
-                  )}
+                  <iframe 
+                    src={project.url}
+                    title={`Visualização mobile do site ${project.name}`}
+                    loading="lazy"
+                    className="w-full h-full border-0"
+                  />
                   {/* Subtle hover overlay */}
                   <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors" />
                 </div>
