@@ -642,7 +642,7 @@ function WebsiteShowcase({
 
         {/* Visual Showcase */}
         <div className="lg:col-span-8 relative">
-          <div className="relative flex flex-col md:flex-row items-end lg:items-center justify-end">
+          <div className="relative flex flex-col lg:flex-row items-end lg:items-center justify-between gap-12 lg:gap-8">
             
             {/* Desktop Mockup */}
             <motion.div 
