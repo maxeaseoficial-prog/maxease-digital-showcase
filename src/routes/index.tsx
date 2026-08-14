@@ -640,7 +640,7 @@ function WebsiteShowcase({
                     style={{ 
                       width: '1440px',
                       height: '900px',
-                      transform: 'scale(calc(678.4 / 1440))',
+                      transform: 'scale(calc(100% / 1440))',
                       zIndex: 1
                     }}
                   />
