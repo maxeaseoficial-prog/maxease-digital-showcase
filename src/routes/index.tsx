@@ -292,8 +292,7 @@ function Hero() {
           </div>
         </div>
       </div>
-    </section>
-  );
+      </div>
 
       <AnimatePresence>
         {projectsOpen && (
