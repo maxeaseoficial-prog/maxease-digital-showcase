@@ -681,7 +681,7 @@ function WebsiteShowcase({
               initial={{ opacity: 0, x: 30, y: 30 }}
               animate={isInView ? { opacity: 1, x: 0, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="relative w-[240px] sm:w-[280px] -mt-20 md:mt-0 md:absolute md:-right-8 md:-bottom-12 z-20"
+              className="relative w-[240px] sm:w-[280px] -mt-20 lg:mt-0 z-20"
             >
               <div className="absolute -top-8 left-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
                 <Smartphone className="h-3 w-3" /> Mobile
