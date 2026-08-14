@@ -652,7 +652,7 @@ function About() {
           <div className="lg:col-span-5">
             <Reveal>
               <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-100">
-                <img src={aboutImg.url} alt="Henrique Castro" loading="lazy" className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-1000" />
+                <img src={aboutImg.url} alt="Henrique Castro" loading="lazy" className="w-full h-auto transition-all duration-1000" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1 font-bold">Fundador</div>
