@@ -10,6 +10,7 @@ import { useQuoteModal } from "@/components/QuoteModal";
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
 import heroBgAsset from "@/assets/hero-bg.png.asset.json";
+import heroBgMobileAsset from "@/assets/hero-bg-mobile.png.asset.json";
 import heroMockup from "@/assets/hero-mockup.jpg";
 import aboutImg from "@/assets/henrique-castro.jpg.asset.json";
 import client1 from "@/assets/clients/client-1.png.asset.json";
@@ -218,7 +219,14 @@ function Hero() {
   return (
     <section id="inicio" ref={ref} className="relative min-h-screen w-full overflow-hidden bg-[#08111F] flex items-center">
       <div className="absolute inset-0 z-0">
-        <img src={heroBgAsset.url} alt="" className="w-full h-full object-cover opacity-60" />
+        <picture>
+          <source media="(max-width: 640px)" srcSet={heroBgMobileAsset.url} />
+          <img 
+            src={heroBgAsset.url} 
+            alt="" 
+            className="w-full h-full object-cover opacity-60" 
+          />
+        </picture>
         <div className="absolute inset-0 bg-gradient-to-b from-[#08111F]/20 via-[#08111F]/60 to-[#08111F]" />
       </div>
       <GradientOrb className="left-[-10%] top-[10%]" size={600} />
