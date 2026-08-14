@@ -688,7 +688,7 @@ function Clients() {
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32 border-b border-slate-100 pb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Reveal delay={0.2}>
             <Counter to={1000} label="Conteúdos entregues" />
           </Reveal>
@@ -696,7 +696,7 @@ function Clients() {
             <Counter to={10} label="Empresas atendidas" />
           </Reveal>
         </div>
-
+      </div>
     </section>
   );
 }
