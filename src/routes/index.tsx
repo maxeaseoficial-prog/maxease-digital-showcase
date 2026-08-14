@@ -649,7 +649,7 @@ function WebsiteShowcase({
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="relative w-full md:w-[90%] z-10"
+              className="relative w-full lg:w-[70%] z-10"
             >
               <div className="absolute -top-8 left-6 hidden sm:flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
                 <Monitor className="h-3 w-3" /> Desktop View
