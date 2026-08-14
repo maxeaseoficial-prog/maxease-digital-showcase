@@ -273,20 +273,14 @@ function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
                 
                 {/* Editorial overlays */}
-                <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
-                  <div className="glass px-4 py-2 rounded-lg">
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="glass px-4 py-2 rounded-lg inline-block">
                     <span className="text-[10px] text-white/50 uppercase block mb-0.5">Selected Work</span>
                     <span className="text-xs font-semibold text-white">Digital Interface Design</span>
-                  </div>
-                  <div className="h-8 w-8 rounded-full border border-white/20 flex items-center justify-center">
-                    <ArrowUpRight className="h-3 w-3 text-white" />
                   </div>
                 </div>
               </div>
             </Reveal>
-            
-            {/* Small offset floating element for editorial feel */}
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 glass rounded-2xl border border-white/10 hidden xl:block" />
           </div>
         </div>
       </div>
