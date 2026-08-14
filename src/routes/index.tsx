@@ -603,6 +603,16 @@ function WebsiteShowcase({
   }, []);
 
   const isEmbeddable = project.isEmbeddable ?? true;
+  const [frameError, setFrameError] = useState(false);
+
+  useEffect(() => {
+    // Check if the URL might be blocked by X-Frame-Options: DENY
+    // Since we can't read headers from client-side JS for other origins easily,
+    // we use a heuristic or the isEmbeddable flag.
+    if (project.url.includes('leonardofroese')) {
+      setFrameError(true);
+    }
+  }, [project.url]);
 
   return (
     <div 
@@ -651,17 +661,35 @@ function WebsiteShowcase({
               
               <div className="relative rounded-[2rem] p-3 sm:p-4 bg-[#1A1F2C] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/5 ring-1 ring-white/10 group overflow-hidden">
                 <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#08111F]">
-                  <iframe 
-                    src={project.url}
-                    title={`Visualização desktop do site ${project.name}`}
-                    loading="lazy"
-                    className="absolute border-0 top-0 left-0 w-[1440px] h-[900px]"
-                    style={{ 
-                      transform: 'scale(var(--scale-desktop, 0.29))',
-                      transformOrigin: 'top left',
-                      zIndex: 1
-                    }}
-                  />
+                  {!frameError ? (
+                    <iframe 
+                      src={project.url}
+                      title={`Visualização desktop do site ${project.name}`}
+                      loading="lazy"
+                      className="absolute border-0 top-0 left-0 w-[1440px] h-[900px]"
+                      style={{ 
+                        transform: 'scale(var(--scale-desktop, 0.29))',
+                        transformOrigin: 'top left',
+                        zIndex: 1
+                      }}
+                      onError={() => setFrameError(true)}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-deep/50 text-white p-8 text-center z-10">
+                      <ExternalLink className="h-12 w-12 text-brand-blue mb-4 opacity-50" />
+                      <p className="text-sm font-medium opacity-70">
+                        Este site possui restrições de segurança que impedem a visualização direta aqui.
+                      </p>
+                      <a 
+                        href={project.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="mt-6 px-6 py-2 bg-brand-blue rounded-full text-xs font-bold hover:bg-brand-bright transition-colors"
+                      >
+                        Abrir em nova aba
+                      </a>
+                    </div>
+                  )}
                   {/* Subtle hover overlay */}
                   <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors z-20" />
                 </div>
@@ -686,17 +714,27 @@ function WebsiteShowcase({
                 
                 <div className="relative aspect-[9/19.5] overflow-hidden rounded-[1.8rem] bg-[#08111F]">
                   <div className="absolute inset-0 right-[-20px] z-10">
-                    <iframe 
-                      src={project.url}
-                      title={`Visualização mobile do site ${project.name}`}
-                      loading="lazy"
-                      className="absolute border-0 top-0 left-0 w-[410px] h-[844px]"
-                      style={{ 
-                        transform: 'scale(var(--scale-mobile, 0.65))',
-                        transformOrigin: 'top left',
-                        zIndex: 1
-                      }}
-                    />
+                    {!frameError ? (
+                      <iframe 
+                        src={project.url}
+                        title={`Visualização mobile do site ${project.name}`}
+                        loading="lazy"
+                        className="absolute border-0 top-0 left-0 w-[410px] h-[844px]"
+                        style={{ 
+                          transform: 'scale(var(--scale-mobile, 0.65))',
+                          transformOrigin: 'top left',
+                          zIndex: 1
+                        }}
+                        onError={() => setFrameError(true)}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-deep/50 text-white p-4 text-center">
+                        <Smartphone className="h-8 w-8 text-brand-blue mb-3 opacity-50" />
+                        <p className="text-[10px] leading-tight opacity-70">
+                          Acesse este projeto diretamente no seu dispositivo.
+                        </p>
+                      </div>
+                    )}
                   </div>
                   {/* Subtle hover overlay */}
                   <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors z-20" />
