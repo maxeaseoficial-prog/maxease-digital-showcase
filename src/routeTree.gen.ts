@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitesRouteImport } from './routes/sites'
 import { Route as AudiovisualRouteImport } from './routes/audiovisual'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiPublicHooksPurgeMediaRouteImport } from './routes/api/public/hooks/purge-media'
 
 const SitesRoute = SitesRouteImport.update({
   id: '/sites',
@@ -29,50 +28,35 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicHooksPurgeMediaRoute =
-  ApiPublicHooksPurgeMediaRouteImport.update({
-    id: '/api/public/hooks/purge-media',
-    path: '/api/public/hooks/purge-media',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/audiovisual': typeof AudiovisualRoute
   '/sites': typeof SitesRoute
-  '/api/public/hooks/purge-media': typeof ApiPublicHooksPurgeMediaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/audiovisual': typeof AudiovisualRoute
   '/sites': typeof SitesRoute
-  '/api/public/hooks/purge-media': typeof ApiPublicHooksPurgeMediaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/audiovisual': typeof AudiovisualRoute
   '/sites': typeof SitesRoute
-  '/api/public/hooks/purge-media': typeof ApiPublicHooksPurgeMediaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/audiovisual' | '/sites' | '/api/public/hooks/purge-media'
+  fullPaths: '/' | '/audiovisual' | '/sites'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/audiovisual' | '/sites' | '/api/public/hooks/purge-media'
-  id:
-    | '__root__'
-    | '/'
-    | '/audiovisual'
-    | '/sites'
-    | '/api/public/hooks/purge-media'
+  to: '/' | '/audiovisual' | '/sites'
+  id: '__root__' | '/' | '/audiovisual' | '/sites'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AudiovisualRoute: typeof AudiovisualRoute
   SitesRoute: typeof SitesRoute
-  ApiPublicHooksPurgeMediaRoute: typeof ApiPublicHooksPurgeMediaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -98,13 +82,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/purge-media': {
-      id: '/api/public/hooks/purge-media'
-      path: '/api/public/hooks/purge-media'
-      fullPath: '/api/public/hooks/purge-media'
-      preLoaderRoute: typeof ApiPublicHooksPurgeMediaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -112,7 +89,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AudiovisualRoute: AudiovisualRoute,
   SitesRoute: SitesRoute,
-  ApiPublicHooksPurgeMediaRoute: ApiPublicHooksPurgeMediaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
