@@ -10,6 +10,7 @@ import { useQuoteModal } from "@/components/QuoteModal";
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
 import heroBgAsset from "@/assets/hero-bg.png.asset.json";
+import heroBgMobileAsset from "@/assets/hero-bg-mobile.png.asset.json";
 import heroMockup from "@/assets/hero-mockup.jpg";
 import aboutImg from "@/assets/henrique-castro.jpg.asset.json";
 import client1 from "@/assets/clients/client-1.png.asset.json";
