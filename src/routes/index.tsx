@@ -98,7 +98,7 @@ export function Navbar() {
     { label: "Início", kind: "hash", hash: "inicio" },
     { label: "Produção Audiovisual", kind: "route", to: "/audiovisual" },
     { label: "Sites", kind: "route", to: "/sites" },
-    { label: "Clientes", kind: "hash", hash: "clientes" },
+    // { label: "Clientes", kind: "hash", hash: "clientes" },
     { label: "Sobre", kind: "hash", hash: "sobre" },
   ];
 
@@ -688,45 +688,13 @@ function Clients() {
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32 border-b border-slate-100 pb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Reveal delay={0.2}>
             <Counter to={1000} label="Conteúdos entregues" />
           </Reveal>
           <Reveal delay={0.3}>
             <Counter to={10} label="Empresas atendidas" />
           </Reveal>
-        </div>
-
-        <Reveal delay={0.4}>
-          <div className="mb-12">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
-              Marcas que já confiaram no nosso trabalho
-            </span>
-          </div>
-        </Reveal>
-      </div>
-
-      {/* Infinite Marquee */}
-      <div className="relative w-full">
-        {/* Fades */}
-        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-
-        <div className="flex overflow-hidden group">
-          <div className="flex py-4 animate-marquee group-hover:[animation-play-state:paused] whitespace-nowrap">
-            {[...clientLogos, ...clientLogos, ...clientLogos].map((c, i) => (
-              <div key={i} className="flex-shrink-0 mx-4">
-                <div className="w-48 h-24 sm:w-56 sm:h-28 bg-white border border-slate-100 rounded-[20px] shadow-sm flex items-center justify-center p-6 transition-all duration-300 hover:translate-y-[-4px] hover:border-brand-blue/30 hover:shadow-md group/card">
-                  <img
-                    src={c.src}
-                    alt={c.name}
-                    loading="lazy"
-                    className="max-h-10 sm:max-h-12 w-auto object-contain transition-transform duration-300 group-hover/card:scale-105"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
