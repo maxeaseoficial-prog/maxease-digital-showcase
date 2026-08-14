@@ -612,18 +612,6 @@ function WebsiteShowcase({
               {project.description}
             </p>
           )}
-
-          <div className="pt-4">
-            <a 
-              href={project.url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-[#071426] text-white text-sm font-bold hover:bg-brand-blue transition-all duration-300 shadow-xl shadow-brand-deep/10"
-            >
-              Visitar site
-              <ExternalLink className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
-          </div>
         </motion.div>
 
         {/* Visual Showcase */}
@@ -643,31 +631,14 @@ function WebsiteShowcase({
               
               <div className="relative rounded-[2rem] p-3 sm:p-4 bg-[#1A1F2C] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/5 ring-1 ring-white/10 group overflow-hidden">
                 <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#08111F]">
-                  {isEmbeddable ? (
-                    <div className="absolute inset-0 w-[1440px] h-[900px] origin-top-left" style={{ transform: 'scale(calc(100% / 1440))', width: '1440px', height: '900px' }}>
-                      <iframe 
-                        src={project.url}
-                        title={`Visualização desktop do site ${project.name}`}
-                        loading="lazy"
-                        className="w-full h-full border-0"
-                      />
-                    </div>
-                  ) : (
-                    <div className="absolute inset-0 w-full h-full group">
-                      <img 
-                        src={project.fallbackImg || heroMockup} 
-                        alt={project.name} 
-                        className="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-1000" 
-                      />
-                      <div className="absolute inset-0 bg-brand-deep/40 flex flex-col items-center justify-center p-8 text-center backdrop-blur-[2px]">
-                        <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 transform rotate-12">
-                          <ExternalLink className="h-8 w-8 text-brand-blue -rotate-12" />
-                        </div>
-                        <p className="text-white font-bold mb-2 uppercase tracking-[0.3em] text-[10px]">Preview Interativo Restrito</p>
-                        <p className="text-white/60 text-xs max-w-[240px] leading-relaxed">Proteções de segurança impedem o carregamento direto. Clique para abrir a experiência completa.</p>
-                      </div>
-                    </div>
-                  )}
+                  <div className="absolute inset-0 w-[1440px] h-[900px] origin-top-left" style={{ transform: 'scale(calc(100% / 1440))', width: '1440px', height: '900px' }}>
+                    <iframe 
+                      src={project.url}
+                      title={`Visualização desktop do site ${project.name}`}
+                      loading="lazy"
+                      className="w-full h-full border-0"
+                    />
+                  </div>
                   {/* Subtle hover overlay */}
                   <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors" />
                 </div>
@@ -691,22 +662,12 @@ function WebsiteShowcase({
                 <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/10 rounded-full z-30" />
                 
                 <div className="relative aspect-[9/19.5] overflow-hidden rounded-[1.8rem] bg-[#08111F]">
-                  {isEmbeddable ? (
-                    <iframe 
-                      src={project.url}
-                      title={`Visualização mobile do site ${project.name}`}
-                      loading="lazy"
-                      className="w-full h-full border-0"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 w-full h-full">
-                      <img 
-                        src={project.fallbackImg || project1} 
-                        alt={`${project.name} mobile`} 
-                        className="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition-all duration-1000" 
-                      />
-                    </div>
-                  )}
+                  <iframe 
+                    src={project.url}
+                    title={`Visualização mobile do site ${project.name}`}
+                    loading="lazy"
+                    className="w-full h-full border-0"
+                  />
                   {/* Subtle hover overlay */}
                   <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors" />
                 </div>
@@ -755,8 +716,7 @@ const websiteProjects = [
     url: "https://www.koragestaointeligente.com.br/",
     category: "SaaS / Tecnologia",
     description: "Interface moderna para sistema de gestão inteligente, priorizando clareza e funcionalidade.",
-    isEmbeddable: false,
-    fallbackImg: project2
+    isEmbeddable: true
   }
 ];
 
