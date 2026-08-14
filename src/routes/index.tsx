@@ -622,12 +622,6 @@ function WebsiteShowcase({
           className={`lg:col-span-12 mb-12`}
         >
           <div>
-            <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-brand-blue/5 border border-brand-blue/10 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse" />
-              <span className="text-[10px] uppercase tracking-[0.3em] text-brand-blue font-bold leading-none">
-                {project.category}
-              </span>
-            </div>
             <h3 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-[1.1] tracking-tight">
               {project.name}
             </h3>
@@ -711,14 +705,7 @@ function WebsiteShowcase({
             </motion.div>
           </div>
           
-          <div className={`mt-20 md:mt-28 flex flex-col items-center lg:items-start gap-4`}>
-            <div className="flex items-center gap-3 px-4 py-2 rounded-full glass border border-white/5">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
-              <span className="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-bold">
-                Portfólio Interativo / Explorar
-              </span>
-            </div>
-          </div>
+          {/* Status badge removed per request */}
         </div>
       </div>
     </div>
@@ -742,7 +729,7 @@ const websiteProjects = [
   },
   {
     name: "Leonardo Froese",
-    url: "https://leonardofroese.lovable.app",
+    url: "https://leonardofroese.lovable.app/",
     category: "Portfólio Profissional",
     description: "Presença digital sofisticada para profissional liberal, destacando expertise e projetos.",
     isEmbeddable: true
