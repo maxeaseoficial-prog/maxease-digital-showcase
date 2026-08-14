@@ -670,11 +670,9 @@ function WebsiteShowcase({
                       src={project.url}
                       title={`Visualização mobile do site ${project.name}`}
                       loading="lazy"
-                      className="absolute border-0 top-0 left-0"
+                      className="absolute border-0 top-0 left-0 w-[410px] h-[844px]"
                       style={{ 
-                        width: '410px', // 390 + 20 for scrollbar hidden area
-                        height: '844px',
-                        transform: 'scale(calc(100% / 390))',
+                        transform: 'scale(var(--scale-mobile, 0.65))',
                         transformOrigin: 'top left',
                         zIndex: 1
                       }}
