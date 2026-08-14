@@ -766,10 +766,10 @@ const websiteProjects = [
     isEmbeddable: true
   },
   {
-    name: "Leonardo Froese",
-    url: "https://leonardofroese.lovable.app/",
-    category: "Portfólio Profissional",
-    description: "Presença digital sofisticada para profissional liberal, destacando expertise e projetos.",
+    name: "Estofados do Porto",
+    url: "https://estofadosdoporto.com.br/",
+    category: "E-commerce / Estofados",
+    description: "Experiência de compra premium para móveis de alto padrão, focada em visual e conversão.",
     isEmbeddable: true
   },
   {

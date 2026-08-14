@@ -43,7 +43,7 @@ const SECURITY_HEADERS: Record<string, string> = {
     "connect-src 'self' https: wss:",
     "media-src 'self' https: data: blob:",
     "worker-src 'self' blob:",
-    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://jonathanveiculos.lovable.app https://kaylane-sales-method.lovable.app https://leonardofroese.lovable.app https://www.koragestaointeligente.com.br https://jonathanveiculos.lovable.app/ https://kaylane-sales-method.lovable.app/ https://leonardofroese.lovable.app/ https://www.koragestaointeligente.com.br/",
+    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://jonathanveiculos.lovable.app https://kaylane-sales-method.lovable.app https://estofadosdoporto.com.br https://www.koragestaointeligente.com.br https://jonathanveiculos.lovable.app/ https://kaylane-sales-method.lovable.app/ https://estofadosdoporto.com.br/ https://www.koragestaointeligente.com.br/",
     "manifest-src 'self'",
     "upgrade-insecure-requests",
   ].join("; "),
