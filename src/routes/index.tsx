@@ -586,8 +586,8 @@ function WebsiteShowcase({
 
   useEffect(() => {
     const updateScales = () => {
-      const desktopWrapper = containerRef.current?.querySelector('.lg\\:col-span-8 .aspect-\\[16\\/10\\]');
-      const mobileWrapper = containerRef.current?.querySelector('.lg\\:col-span-8 .aspect-\\[9\\/19\\.5\\]');
+      const desktopWrapper = containerRef.current?.querySelector('.lg\\:col-span-12 .aspect-\\[16\\/10\\]');
+      const mobileWrapper = containerRef.current?.querySelector('.lg\\:col-span-12 .aspect-\\[9\\/19\\.5\\]');
       
       if (desktopWrapper && mobileWrapper) {
         setScales({
@@ -619,7 +619,7 @@ function WebsiteShowcase({
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className={`lg:col-span-4 space-y-8 ${index % 2 === 1 ? 'lg:order-last' : ''}`}
+          className={`lg:col-span-12 mb-12`}
         >
           <div>
             <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-brand-blue/5 border border-brand-blue/10 mb-6">
@@ -641,15 +641,15 @@ function WebsiteShowcase({
         </motion.div>
 
         {/* Visual Showcase */}
-        <div className="lg:col-span-8 relative">
-          <div className="relative flex flex-col md:flex-row items-end lg:items-center justify-end">
+        <div className="lg:col-span-12 relative">
+          <div className="relative flex flex-col lg:flex-row items-end lg:items-center justify-between gap-12 lg:gap-8">
             
             {/* Desktop Mockup */}
             <motion.div 
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="relative w-full md:w-[90%] z-10"
+              className="relative w-full lg:w-[70%] z-10"
             >
               <div className="absolute -top-8 left-6 hidden sm:flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
                 <Monitor className="h-3 w-3" /> Desktop View
@@ -681,7 +681,7 @@ function WebsiteShowcase({
               initial={{ opacity: 0, x: 30, y: 30 }}
               animate={isInView ? { opacity: 1, x: 0, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="relative w-[240px] sm:w-[280px] -mt-20 md:mt-0 md:absolute md:-right-8 md:-bottom-12 z-20"
+              className="relative w-[240px] sm:w-[280px] -mt-20 lg:mt-0 z-20"
             >
               <div className="absolute -top-8 left-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
                 <Smartphone className="h-3 w-3" /> Mobile
@@ -711,7 +711,7 @@ function WebsiteShowcase({
             </motion.div>
           </div>
           
-          <div className={`mt-20 md:mt-28 flex flex-col items-center lg:items-start gap-4 ${index % 2 === 1 ? 'lg:items-end' : ''}`}>
+          <div className={`mt-20 md:mt-28 flex flex-col items-center lg:items-start gap-4`}>
             <div className="flex items-center gap-3 px-4 py-2 rounded-full glass border border-white/5">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
               <span className="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-bold">
