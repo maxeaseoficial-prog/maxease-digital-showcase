@@ -101,7 +101,7 @@ export function Navbar() {
   ];
 
   const linkClass =
-    "text-sm font-medium text-slate-600 hover:text-brand-blue transition-colors relative group";
+    "text-sm text-white/75 hover:text-white transition-colors relative group";
   const underline = (
     <span className="absolute -bottom-1 left-0 h-px w-0 bg-brand-gradient transition-all duration-300 group-hover:w-full" />
   );
@@ -111,14 +111,14 @@ export function Navbar() {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "py-4 bg-white/80 backdrop-blur-xl border-b border-black/5 shadow-sm" : "py-8 bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? "py-4 bg-brand-deep/80 backdrop-blur-md border-b border-white/5" : "py-6 bg-transparent"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex items-center justify-between gap-4">
           <Link to="/" hash="inicio" className="flex items-center gap-2 shrink-0 min-w-0">
-            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-9 sm:h-12 w-auto brightness-0" />
+            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-9 sm:h-16 w-auto" />
           </Link>
           <nav className="hidden lg:flex items-center gap-8">
             {links.map((l) =>
@@ -215,80 +215,74 @@ function Hero() {
 
 
   return (
-    <section id="inicio" ref={ref} className="relative min-h-[90vh] w-full overflow-hidden bg-off-white flex items-center pt-20">
-      {/* Background large text watermark */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
-        <span className="text-[25vw] font-black text-black/[0.02] leading-none tracking-tighter">MAXEASE</span>
-      </div>
+    <section id="inicio" ref={ref} className="relative min-h-screen w-full overflow-hidden bg-[#08111F] flex items-center">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(21,94,239,0.08),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(21,94,239,0.05),transparent_40%)]" />
+      <GradientOrb className="left-[-10%] top-[10%]" size={600} />
+      <GradientOrb className="right-[-10%] bottom-[10%]" size={700} />
+      
+      {/* connecting lines - removed as they look like "AI decor" */}
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full h-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[70vh]">
-          {/* Text Content */}
-          <div className="lg:col-span-6 flex flex-col justify-center py-12 lg:pr-12">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-20 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="lg:col-span-7">
             <motion.div style={{ opacity }}>
               <Reveal delay={0.2}>
-                <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black leading-[0.9] text-slate-900 tracking-tighter uppercase">
-                  Digital <br />
-                  <span className="text-brand-blue">Excellence</span>
+                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] text-white tracking-tight">
+                  Criamos experiências <span className="text-brand-blue">digitais</span> que fazem sua empresa crescer.
                 </h1>
               </Reveal>
               <Reveal delay={0.3}>
-                <p className="mt-8 text-lg sm:text-xl text-slate-500 leading-tight max-w-lg font-medium">
-                  Criamos experiências digitais que fazem sua empresa crescer através de design editorial e tecnologia de ponta.
+                <p className="mt-8 text-lg sm:text-xl text-slate-400 leading-relaxed max-w-2xl">
+                  Sites profissionais, sistemas personalizados e produções audiovisuais desenvolvidas para posicionar marcas e gerar resultados reais.
                 </p>
               </Reveal>
               <Reveal delay={0.4}>
-                <div className="mt-12 flex flex-wrap gap-4">
+                <div className="mt-10 flex flex-wrap gap-4">
                   <button
                     type="button"
                     onClick={openQuote}
-                    className="group relative inline-flex items-center gap-3 rounded-full bg-brand-blue px-10 py-5 text-sm font-bold text-white transition-all hover:bg-brand-bright hover:shadow-xl hover:shadow-brand-blue/20"
+                    className="group relative inline-flex items-center gap-2 rounded-lg bg-brand-blue px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-brand-bright hover:scale-[1.02] shadow-lg shadow-brand-blue/20"
                   >
-                    INICIAR PROJETO
+                    Solicitar orçamento
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const el = document.getElementById('trabalhos-selecionados');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-8 py-4 text-sm font-semibold text-white hover:bg-white/10 transition-all"
+                  >
+                    Conhecer projetos
                   </button>
                 </div>
               </Reveal>
             </motion.div>
           </div>
 
-          {/* Right Visual Mass (Blue) */}
-          <div className="lg:col-span-6 relative mt-12 lg:mt-0">
-            <Reveal delay={0.5} y={40}>
-              <div className="relative h-full w-full min-h-[500px] lg:min-h-0 bg-brand-blue rounded-3xl overflow-hidden shadow-2xl flex flex-col">
-                <img 
-                  src={heroMockup} 
-                  alt="Portfolio" 
-                  className="w-full h-full object-cover mix-blend-multiply opacity-80" 
-                />
+          <div className="lg:col-span-5 relative hidden lg:block">
+            <Reveal delay={0.5}>
+              <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900 aspect-[4/3]">
+                <img src={heroMockup} alt="Projetos MaxEase" className="w-full h-full object-cover opacity-90" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
                 
-                {/* Overlay info */}
-                <div className="absolute top-0 left-0 w-full h-full p-8 flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="text-white">
-                      <div className="text-[10px] font-bold uppercase tracking-widest opacity-70 mb-1">Status</div>
-                      <div className="text-sm font-bold flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                        DISPONÍVEL PARA PROJETOS
-                      </div>
-                    </div>
+                {/* Editorial overlays */}
+                <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+                  <div className="glass px-4 py-2 rounded-lg">
+                    <span className="text-[10px] text-white/50 uppercase block mb-0.5">Selected Work</span>
+                    <span className="text-xs font-semibold text-white">Digital Interface Design</span>
                   </div>
-
-                  <div className="mt-auto">
-                    <div className="h-px w-full bg-white/20 mb-6" />
-                    <div className="flex justify-between items-end">
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-widest text-white/70 mb-2">Expertise</div>
-                        <div className="text-2xl font-bold text-white">ESTRATÉGIA · DESIGN <br />TECNOLOGIA</div>
-                      </div>
-                      <div className="h-16 w-16 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white transition-colors cursor-pointer">
-                        <ArrowUpRight className="h-6 w-6 text-white group-hover:text-brand-blue" />
-                      </div>
-                    </div>
+                  <div className="h-8 w-8 rounded-full border border-white/20 flex items-center justify-center">
+                    <ArrowUpRight className="h-3 w-3 text-white" />
                   </div>
                 </div>
               </div>
             </Reveal>
+            
+            {/* Small offset floating element for editorial feel */}
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 glass rounded-2xl border border-white/10 hidden xl:block" />
           </div>
         </div>
       </div>
@@ -376,40 +370,47 @@ function HeroComposition() {
 /* ---------------- Services ---------------- */
 function Services() {
   const services = [
-    { num: "01", icon: Video, title: "Audiovisual", desc: "Produção cinematográfica de alto impacto para marcas líderes." },
-    { num: "02", icon: Globe, title: "Software", desc: "Sistemas robustos e escaláveis desenvolvidos sob medida." },
-    { num: "03", icon: Palette, title: "Design", desc: "Interfaces autorais com foco em usabilidade e conversão." },
-    { num: "04", icon: Megaphone, title: "Marketing", desc: "Estratégias digitais orientadas a dados e crescimento." },
+    { num: "01", icon: Video, title: "Produção Audiovisual", desc: "Vídeos institucionais e comerciais com edição cinematográfica." },
+    { num: "02", icon: Globe, title: "Sites Profissionais", desc: "Plataformas modernas desenvolvidas para alta performance e conversão." },
+    { num: "03", icon: Cpu, title: "Sistemas Personalizados", desc: "Soluções robustas sob medida para automatizar e escalar operações." },
+    { num: "04", icon: Megaphone, title: "Criativos para Campanhas", desc: "Conteúdo focado em tráfego pago que gera resultados mensuráveis." },
   ];
   return (
-    <section id="servicos" className="relative py-32 sm:py-48 bg-slate-900 overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+    <section id="servicos" className="relative py-32 sm:py-48 bg-white overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           <div className="lg:col-span-5">
             <Reveal>
-              <div className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold mb-8">Capabilities</div>
-              <h2 className="text-5xl sm:text-6xl font-black text-white leading-[0.9] tracking-tighter uppercase">
-                Digital <br /><span className="text-brand-blue">Solutions</span>
+              <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Expertise</div>
+              <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+                Soluções digitais completas para marcas de alto padrão.
               </h2>
-              <p className="mt-10 text-xl text-white/50 leading-tight max-w-md font-medium">
+              <p className="mt-8 text-lg text-slate-600 leading-relaxed max-w-md">
                 Unimos engenharia, design e estratégia para construir produtos que impulsionam o valor do seu negócio.
               </p>
+              <div className="mt-12 hidden lg:block">
+                <button
+                  onClick={() => document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center gap-2 text-brand-blue font-semibold hover:gap-3 transition-all"
+                >
+                  Falar com um especialista <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </Reveal>
           </div>
 
           <div className="lg:col-span-7">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/10 border border-white/10 overflow-hidden rounded-3xl shadow-2xl shadow-black/50">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
               {services.map((s, i) => (
-                <Reveal key={s.title} delay={i * 0.1} y={20}>
-                  <div className="group relative p-12 bg-slate-900 hover:bg-brand-blue transition-all duration-700 min-h-[320px] flex flex-col">
-                    <div className="flex justify-between items-start mb-auto">
-                      <div className="text-sm font-bold text-white/20 group-hover:text-white/40 transition-colors uppercase tracking-widest">{s.num}</div>
-                      <s.icon className="h-8 w-8 text-brand-blue group-hover:text-white transition-colors" />
+                <Reveal key={s.title} delay={i * 0.1}>
+                  <div className="group">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="text-xs font-bold text-slate-300 group-hover:text-brand-blue transition-colors">{s.num}</div>
+                      <s.icon className="h-6 w-6 text-slate-400 group-hover:text-brand-blue transition-colors" />
                     </div>
-                    <div>
-                      <h3 className="text-3xl font-black text-white mb-4 uppercase tracking-tighter leading-none">{s.title}</h3>
-                      <p className="text-white/40 group-hover:text-white/80 text-sm leading-snug transition-colors">{s.desc}</p>
-                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-3">{s.title}</h3>
+                    <p className="text-slate-600 text-sm leading-relaxed">{s.desc}</p>
+                    <div className="mt-6 w-8 h-[1px] bg-slate-200 group-hover:w-full group-hover:bg-brand-blue transition-all duration-500" />
                   </div>
                 </Reveal>
               ))}
@@ -605,18 +606,18 @@ function Clients() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 py-0 mb-24 border border-slate-200 rounded-3xl overflow-hidden bg-white shadow-xl">
-            <div className="text-center py-16 border-b sm:border-b-0 sm:border-r border-slate-100 hover:bg-slate-50 transition-colors">
-              <div className="text-6xl sm:text-7xl font-black text-slate-900 tracking-tighter uppercase">+1000</div>
-              <div className="mt-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Conteúdos</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-16 mb-24 border-y border-slate-200">
+            <div className="text-center">
+              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+1000</div>
+              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Conteúdos entregues</div>
             </div>
-            <div className="text-center py-16 border-b sm:border-b-0 sm:border-r border-slate-100 hover:bg-slate-50 transition-colors">
-              <div className="text-6xl sm:text-7xl font-black text-slate-900 tracking-tighter uppercase">+10</div>
-              <div className="mt-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Marcas</div>
+            <div className="text-center">
+              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+10</div>
+              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Empresas atendidas</div>
             </div>
-            <div className="text-center py-16 hover:bg-slate-50 transition-colors">
-              <div className="text-6xl sm:text-7xl font-black text-slate-900 tracking-tighter uppercase">+2</div>
-              <div className="mt-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Anos</div>
+            <div className="text-center">
+              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+2</div>
+              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Anos de experiência</div>
             </div>
           </div>
         </Reveal>
@@ -647,37 +648,37 @@ function About() {
   return (
     <section id="sobre" className="relative py-32 sm:py-48 bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch border border-slate-100 rounded-[2.5rem] overflow-hidden bg-slate-50 shadow-2xl">
-          <div className="lg:col-span-5 relative min-h-[500px]">
-            <img 
-              src={aboutImg.url} 
-              alt="Henrique Castro" 
-              loading="lazy" 
-              className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" 
-            />
-            <div className="absolute inset-0 bg-brand-blue/10 mix-blend-multiply" />
-            <div className="absolute bottom-10 left-10 text-white">
-              <div className="text-[10px] uppercase tracking-[0.4em] font-black mb-2 opacity-70">Fundador</div>
-              <div className="text-4xl font-black uppercase tracking-tighter">Henrique <br />Castro</div>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+          <div className="lg:col-span-5">
+            <Reveal>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-100">
+                <img src={aboutImg.url} alt="Henrique Castro" loading="lazy" className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1 font-bold">Fundador</div>
+                  <div className="text-lg font-bold text-white tracking-tight">Henrique Castro</div>
+                </div>
+              </div>
+            </Reveal>
           </div>
-          
-          <div className="lg:col-span-7 flex flex-col justify-center p-12 sm:p-20 bg-white">
+          <div className="lg:col-span-7">
             <Reveal delay={0.2}>
-              <div className="text-[10px] uppercase tracking-[0.4em] text-brand-blue font-bold mb-10">Manifesto</div>
-              <h2 className="text-5xl sm:text-6xl font-black text-slate-900 leading-[0.9] tracking-tighter uppercase mb-12">
-                Estratégia <br />que gera <br /><span className="text-brand-blue">Valor</span>
-              </h2>
-              <div className="space-y-6 text-xl text-slate-500 font-medium leading-tight">
-                <p>
-                  A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
-                </p>
-                <p>
-                  Unimos estratégia e design para desenvolver sites de alto padrão e produções audiovisuais que fortalecem marcas globais.
-                </p>
-                <p>
-                  Cada pixel e cada frame são pensados para transmitir credibilidade e contribuir para o crescimento exponencial do seu negócio.
-                </p>
+              <div className="max-w-2xl">
+                <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Nossa História</div>
+                <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+                  Unimos criatividade, tecnologia e estratégia em cada entrega.
+                </h2>
+                <div className="mt-8 space-y-6 text-lg text-slate-600 leading-relaxed">
+                  <p>
+                    A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
+                  </p>
+                  <p>
+                    Fundada por <span className="text-slate-900 font-bold">Henrique Castro</span>, a empresa une estratégia e design para desenvolver sites de alto padrão e produções audiovisuais que fortalecem marcas.
+                  </p>
+                  <p>
+                    Acreditamos que cada detalhe deve ter um objetivo claro: transmitir credibilidade e contribuir para o crescimento das empresas que confiam no nosso trabalho.
+                  </p>
+                </div>
               </div>
             </Reveal>
           </div>
@@ -728,52 +729,41 @@ function CTA() {
 /* ---------------- Footer ---------------- */
 export function Footer() {
   return (
-    <footer className="relative bg-slate-900 pt-32 pb-16 overflow-hidden">
-      {/* Background watermark */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden select-none opacity-5">
-        <span className="text-[20vw] font-black text-white leading-none tracking-tighter absolute -bottom-10 left-0">MAXEASE</span>
-      </div>
-
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-24">
-          <div className="md:col-span-6">
-            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-10 w-auto invert brightness-0" />
-            <p className="mt-10 text-xl text-white/40 max-w-md font-medium leading-tight">
-              Estúdio de design e tecnologia especializado em interfaces de alto desempenho e produções audiovisuais estratégicas.
+    <footer className="relative border-t border-slate-200 bg-white py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+          <div className="md:col-span-5">
+            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-10 w-auto brightness-0" />
+            <p className="mt-8 text-base text-slate-500 max-w-sm leading-relaxed">
+              Estúdio criativo e tecnológico especializado em interfaces digitais de alto desempenho e produções audiovisuais estratégicas.
             </p>
-            <div className="mt-12 flex items-center gap-6">
-              <a href="https://www.instagram.com/max.ease/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white transition-all"><Instagram className="h-5 w-5" /></a>
-              <a href="https://wa.me/5542988377640" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white transition-all"><MessageCircle className="h-5 w-5" /></a>
-              <a href="https://www.youtube.com/@MaxEase" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white transition-all"><Youtube className="h-5 w-5" /></a>
-              <a href="mailto:maxeaseoficial@gmail.com" aria-label="Email" className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white transition-all"><Mail className="h-5 w-5" /></a>
+          </div>
+          <div className="md:col-span-3">
+            <div className="text-xs uppercase tracking-widest text-slate-900 font-bold mb-8">Navegação</div>
+            <ul className="space-y-4 text-sm font-semibold text-slate-500">
+              <li><Link to="/" hash="inicio" className="hover:text-brand-blue transition-colors">Início</Link></li>
+              <li><Link to="/audiovisual" className="hover:text-brand-blue transition-colors">Audiovisual</Link></li>
+              <li><Link to="/sites" className="hover:text-brand-blue transition-colors">Sites</Link></li>
+              <li><Link to="/" hash="sobre" className="hover:text-brand-blue transition-colors">Sobre</Link></li>
+            </ul>
+          </div>
+          <div className="md:col-span-4">
+            <div className="text-xs uppercase tracking-widest text-slate-900 font-bold mb-8">Redes Sociais</div>
+            <div className="flex items-center gap-6">
+              <a href="https://www.instagram.com/max.ease/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-slate-400 hover:text-brand-blue transition-colors"><Instagram className="h-6 w-6" /></a>
+              <a href="https://wa.me/5542988377640" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-slate-400 hover:text-brand-blue transition-colors">
+                <svg role="img" viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.15-.174.2-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              </a>
+              <a href="https://www.youtube.com/@MaxEase" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-slate-400 hover:text-brand-blue transition-colors"><Youtube className="h-6 w-6" /></a>
+              <a href="mailto:maxeaseoficial@gmail.com" aria-label="Email" className="text-slate-400 hover:text-brand-blue transition-colors"><Mail className="h-6 w-6" /></a>
             </div>
           </div>
-          
-          <div className="md:col-span-3">
-            <div className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-bold mb-10">Navegação</div>
-            <ul className="space-y-4 text-sm font-bold text-white/60">
-              <li><Link to="/" hash="inicio" className="hover:text-white transition-colors">INÍCIO</Link></li>
-              <li><Link to="/audiovisual" className="hover:text-white transition-colors">AUDIOVISUAL</Link></li>
-              <li><Link to="/sites" className="hover:text-white transition-colors">SITES</Link></li>
-              <li><Link to="/" hash="sobre" className="hover:text-white transition-colors">SOBRE</Link></li>
-            </ul>
-          </div>
-
-          <div className="md:col-span-3">
-            <div className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-bold mb-10">Legal</div>
-            <ul className="space-y-4 text-sm font-bold text-white/60">
-              <li><span className="cursor-not-allowed opacity-50">PRIVACIDADE</span></li>
-              <li><span className="cursor-not-allowed opacity-50">TERMOS</span></li>
-            </ul>
-          </div>
         </div>
-
-        <div className="pt-16 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
-          <div className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">
-            © {new Date().getFullYear()} MAXEASE DIGITAL. TODOS OS DIREITOS RESERVADOS.
-          </div>
-          <div className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">
-            DESIGNED BY MAXEASE
+        <div className="mt-20 pt-10 border-t border-slate-100 flex flex-col sm:flex-row justify-between gap-4 text-xs font-bold uppercase tracking-widest text-slate-400">
+          <div>© {new Date().getFullYear()} MAXEASE Digital.</div>
+          <div className="flex gap-8">
+            <span>Tecnologia & Design</span>
+            <span>Curitiba, BR</span>
           </div>
         </div>
       </div>
@@ -784,7 +774,7 @@ export function Footer() {
 /* ---------------- Page ---------------- */
 function Index() {
   return (
-    <div className="relative min-h-screen bg-off-white selection:bg-brand-blue selection:text-white">
+    <div className="relative min-h-screen bg-white selection:bg-brand-blue/10 selection:text-brand-blue">
       <Navbar />
       <main>
         <Hero />
