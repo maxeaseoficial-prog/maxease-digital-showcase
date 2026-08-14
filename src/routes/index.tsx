@@ -295,9 +295,6 @@ function Hero() {
         </div>
       </div>
 
-
-      </motion.div>
-
       <AnimatePresence>
         {projectsOpen && (
           <motion.div
@@ -321,7 +318,7 @@ function Hero() {
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.95, y: 10, opacity: 0 }}
               transition={{ type: "spring", stiffness: 260, damping: 24 }}
-              className="relative w-full max-w-lg glass-strong rounded-3xl p-6 sm:p-8 border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
+              className="relative w-full max-w-lg glass-strong rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl"
             >
               <button
                 type="button"
@@ -345,7 +342,7 @@ function Hero() {
                   onClick={() => setProjectsOpen(false)}
                   className="group relative flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.07] transition-colors"
                 >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue">
                     <Globe className="h-5 w-5 text-white" />
                   </span>
                   <span className="text-base font-semibold text-white">Sites</span>
@@ -358,7 +355,7 @@ function Hero() {
                   onClick={() => setProjectsOpen(false)}
                   className="group relative flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.07] transition-colors"
                 >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue">
                     <Video className="h-5 w-5 text-white" />
                   </span>
                   <span className="text-base font-semibold text-white">Produção Audiovisual</span>
@@ -375,23 +372,8 @@ function Hero() {
 }
 
 function HeroComposition() {
-  return (
-    <div className="relative h-full w-full">
-      {/* main mockup */}
-      <motion.div
-        initial={{ opacity: 0, y: 30, rotateY: -8 }}
-        animate={{ opacity: 1, y: 0, rotateY: -6 }}
-        transition={{ duration: 1, delay: 0.3 }}
-        className="absolute inset-0 flex items-center justify-center"
-        style={{ perspective: 1200 }}
-      >
-        <motion.div
-          animate={{ y: [0, -14, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="relative w-[92%] rounded-2xl overflow-hidden shadow-elegant ring-1 ring-white/10"
-          style={{ transform: "rotateY(-6deg) rotateX(4deg)" }}
-        >
-          <img src={heroMockup} alt="Dashboard mockup" className="w-full h-auto" />
+  return null;
+}
           <div className="absolute inset-0 bg-gradient-to-tr from-brand-blue/20 via-transparent to-transparent" />
         </motion.div>
       </motion.div>
