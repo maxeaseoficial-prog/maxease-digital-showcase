@@ -1,58 +1,39 @@
-# Redesign Phase 2: Premium Editorial Studio
+# Redesign da Seção Confiança - MaxEase Digital
 
-Transition the MAXEASE Digital website into a high-end digital studio aesthetic, inspired by the "LinkedInPro" reference, focusing on strong graphic masses, integrated photography, and editorial composition.
+Redesenhar a seção de prova social (Confiança) para uma estética editorial premium, minimalista e tecnológica, focando em tipografia forte, métricas impactantes e um marquee infinito de clientes.
 
-## Phase 1: Style & Tokens Refinement
-- Update `src/styles.css` to include `--color-off-white` and refine `--brand-blue` / `--brand-deep` saturation.
-- Standardize spacing and radius tokens.
-- Add utility for large brand typography ("MAXEASE" watermark).
+## Alterações Propostas
 
-## Phase 2: Navbar & Hero (Light Direction)
-- Modify `Navbar` for clear background:
-    - Logo: Switch to dark version or use filter for legibility on white.
-    - Links: Navy/Slate.
-    - CTA: Solid blue button.
-- Redesign `Hero` in `src/routes/index.tsx`:
-    - Background: Off-white with a large "MAXEASE" watermark or brand symbol.
-    - Layout: 45% text (left), 55% visual (right).
-    - Composition: Integrate Henrique's photo with system interfaces and geometric blue shapes (not floating cards).
-    - Asymmetric and editorial feel.
+### 1. Estrutura e Estilo Visual
+- **Fundo:** Manterá o branco puro conforme solicitado.
+- **Identidade:** Uso do azul MaxEase (`#155EEF`) para destaques e métricas.
+- **Hierarquia:** Eyebrow "CONFIANÇA" -> Título Editorial -> Métricas Tipográficas -> Marquee de Clientes.
 
-## Phase 3: Transition & Services (Blue Block)
-- Insert a **Navy Faixa** between Hero and Services:
-    - Text: "ESTRATÉGIA · DESIGN · TECNOLOGIA · AUDIOVISUAL".
-    - Overlapping the transition.
-- Redesign `Services` section:
-    - Background: Solid `brand-blue`.
-    - Content: White text for contrast.
-    - Cards: Grid with numbers, real assets (screenshots/frames), and clean typography.
-    - Remove glassmorphism in favor of solid/subtle borders.
+### 2. Componente de Métricas (Redesenho Completo)
+- **Remoção:** Retirada total da métrica "+2 Anos de Experiência".
+- **Foco:** "+1000 Conteúdos Entregues" e "+10 Empresas Atendidas".
+- **Sombra Tipográfica:** Implementação de um efeito de profundidade usando o próprio número em escala gigante (1.5x-2x), com opacidade extremamente baixa, parcialmente cortado dentro do container da métrica.
+- **Count-up:** Animação de contagem de 0 ao valor final (1.5s) ao entrar no viewport, mantendo o símbolo "+" estático.
 
-## Phase 4: Intermediate CTA & Social Proof
-- Add an **Overlapping CTA card** (Off-white) between Services and the next section.
-- Compact the `Clients` (Confiança) section:
-    - Metrics row (compact).
-    - Grid of logos (larger presence, monochrome with hover color).
+### 3. Área de Clientes (Marquee Infinito)
+- **Movimento:** Transição de grade estática para marquee contínuo (Direita para Esquerda).
+- **Seamless Loop:** Duplicação dos itens para garantir que o reinício seja imperceptível.
+- **Visual dos Cards:** Logos em suas cores originais dentro de containers brancos/off-white com bordas suaves e arredondadas (16-20px).
+- **Interação:** Pausa suave no hover (desktop) e movimento automático no mobile.
+- **Fade:** Efeito de máscara nas extremidades para desaparecimento suave das logos.
 
-## Phase 5: About (Integrated Composition)
-- Redesign `About` section:
-    - Asymmetric split: Photo (left) integrated/touching a large blue block (right).
-    - Editorial text placement within the blue block.
+### 4. Animações e Motion
+- **Entrada:** Revelação sequencial (stagger) dos elementos da seção com `translateY` e `opacity` suaves usando Framer Motion.
+- **Reduced Motion:** Respeito à preferência do sistema, simplificando ou removendo animações se solicitado.
 
-## Phase 6: Final CTA & Footer (Navy Finish)
-- Refine `CTA` section: Large headline, navy/blue composition.
-- Redesign `Footer`:
-    - Background: `brand-deep` (Navy).
-    - White/Silver text and icons.
-    - Compact vertical layout.
+## Detalhes Técnicos
+- **Arquivo:** `src/routes/index.tsx` (modificação da função `Clients` e componentes auxiliares).
+- **Bibliotecas:** Framer Motion (já em uso).
+- **CSS:** Tailwind CSS v4 para estilização e máscaras de gradiente.
 
-## Phase 7: Subpages & QA
-- Apply the same visual language to `/sites` and `/audiovisual` routes.
-- Thorough responsive testing across all viewports (Mobile first).
-- Verify all animations (Reveal, Stagger) are subtle and controlled.
-
-## Technical Details
-- Use `framer-motion` for reveal and layout transitions.
-- Ensure `QuoteModal` UI matches the new clean editorial look.
-- Maintain all existing business logic and Supabase integration.
-- Strictly avoid: particles, glow effects, neon, and AI-generated avatars.
+## Testes e Validação
+- Verificação de ausência de scroll horizontal.
+- Validação do loop infinito sem saltos.
+- Testes em Mobile, Tablet e Desktop.
+- Verificação da remoção da métrica de anos de experiência.
+- Garantia de que as logos mantêm cores originais e proporções corretas.
