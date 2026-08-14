@@ -15,9 +15,9 @@ export const Route = createFileRoute("/sites")({
 
 function SitesPage() {
   return (
-    <div className="relative min-h-screen bg-brand-deep text-white">
+    <div className="relative min-h-screen bg-white selection:bg-brand-blue/10 selection:text-brand-blue">
       <Navbar />
-      <main className="pt-24">
+      <main className="pt-24 pb-20">
         <Sites />
       </main>
       <Footer />
