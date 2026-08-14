@@ -635,11 +635,9 @@ function WebsiteShowcase({
                     src={project.url}
                     title={`Visualização desktop do site ${project.name}`}
                     loading="lazy"
-                    className="absolute border-0 top-0 left-0"
+                    className="absolute border-0 top-0 left-0 w-[1440px] h-[900px]"
                     style={{ 
-                      width: '1440px',
-                      height: '900px',
-                      transform: 'scale(calc(100% / 1440))',
+                      transform: 'scale(var(--scale-desktop, 0.29))',
                       transformOrigin: 'top left',
                       zIndex: 1
                     }}
