@@ -361,58 +361,132 @@ function HeroComposition() {
 
 /* ---------------- Services ---------------- */
 function Services() {
+  const { open: openQuote } = useQuoteModal();
   const services = [
-    { num: "01", icon: Video, title: "Produção Audiovisual", desc: "Vídeos institucionais e comerciais com edição cinematográfica." },
-    { num: "02", icon: Globe, title: "Sites Profissionais", desc: "Plataformas modernas desenvolvidas para alta performance e conversão." },
-    { num: "03", icon: Cpu, title: "Sistemas Personalizados", desc: "Soluções robustas sob medida para automatizar e escalar operações." },
-    { num: "04", icon: Megaphone, title: "Criativos para Campanhas", desc: "Conteúdo focado em tráfego pago que gera resultados mensuráveis." },
+    { 
+      num: "01", 
+      icon: Video, 
+      title: "Produção Audiovisual", 
+      desc: "Vídeos institucionais e comerciais com edição cinematográfica.",
+      to: "/audiovisual",
+      rotation: -2
+    },
+    { 
+      num: "02", 
+      icon: Globe, 
+      title: "Sites Profissionais", 
+      desc: "Plataformas modernas desenvolvidas para alta performance e conversão.",
+      to: "/sites",
+      rotation: 1
+    },
+    { 
+      num: "03", 
+      icon: Cpu, 
+      title: "Sistemas Personalizados", 
+      desc: "Soluções robustas sob medida para automatizar e escalar operações.",
+      rotation: -1
+    },
+    { 
+      num: "04", 
+      icon: Megaphone, 
+      title: "Criativos para Campanhas", 
+      desc: "Conteúdo focado em tráfego pago que gera resultados mensuráveis.",
+      rotation: 2
+    },
   ];
-  return (
-    <section id="servicos" className="relative py-32 sm:py-48 bg-white overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          <div className="lg:col-span-5">
-            <Reveal>
-              <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Expertise</div>
-              <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
-                Soluções digitais completas para marcas de alto padrão.
-              </h2>
-              <p className="mt-8 text-lg text-slate-600 leading-relaxed max-w-md">
-                Unimos engenharia, design e estratégia para construir produtos que impulsionam o valor do seu negócio.
-              </p>
-              <div className="mt-12 hidden lg:block">
-                <button
-                  onClick={() => document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="inline-flex items-center gap-2 text-brand-blue font-semibold hover:gap-3 transition-all"
-                >
-                  Falar com um especialista <ArrowRight className="h-4 w-4" />
-                </button>
-              </div>
-            </Reveal>
-          </div>
 
-          <div className="lg:col-span-7">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
-              {services.map((s, i) => (
-                <Reveal key={s.title} delay={i * 0.1}>
-                  <div className="group">
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="text-xs font-bold text-slate-300 group-hover:text-brand-blue transition-colors">{s.num}</div>
-                      <s.icon className="h-6 w-6 text-slate-400 group-hover:text-brand-blue transition-colors" />
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-3">{s.title}</h3>
-                    <p className="text-slate-600 text-sm leading-relaxed">{s.desc}</p>
-                    <div className="mt-6 w-8 h-[1px] bg-slate-200 group-hover:w-full group-hover:bg-brand-blue transition-all duration-500" />
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
+  return (
+    <section id="servicos" className="relative py-32 sm:py-48 bg-[#071426] overflow-hidden">
+      {/* Background Graphic Element */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+        <span className="text-[20vw] font-bold text-white/[0.03] leading-none tracking-tighter">
+          MAXEASE
+        </span>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
+        <div className="text-center mb-20">
+          <Reveal>
+            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Expertise</div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-4xl mx-auto">
+              Soluções digitais completas para marcas de alto padrão.
+            </h2>
+            <p className="mt-8 text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
+              Unimos engenharia, design e estratégia para construir produtos que impulsionam o valor do seu negócio.
+            </p>
+          </Reveal>
         </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-2 items-stretch max-w-[1250px] mx-auto">
+          {services.map((s, i) => {
+            const Content = (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ 
+                  opacity: 1, 
+                  y: 0,
+                  rotate: s.rotation
+                }}
+                whileHover={{ 
+                  rotate: 0, 
+                  y: -6,
+                  backgroundColor: "rgba(11, 29, 51, 0.95)",
+                  borderColor: "rgba(21, 94, 239, 0.4)"
+                }}
+                viewport={{ once: true }}
+                transition={{ 
+                  duration: 0.4, 
+                  delay: i * 0.1,
+                  ease: [0.21, 0.45, 0.32, 0.9]
+                }}
+                className="group relative flex flex-col items-center text-center p-8 sm:p-10 h-full min-h-[320px] bg-[#0B1D33] border border-white/10 rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.15)] transition-all cursor-pointer overflow-hidden"
+              >
+                {/* Detail Bar */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[3px] bg-brand-blue" />
+                
+                <div className="w-full flex justify-between items-start mb-8">
+                  <span className="text-xs font-bold text-white/20 tracking-widest">{s.num}</span>
+                </div>
+
+                <div className="mb-6 transform transition-transform duration-300 group-hover:translate-y-[-2px]">
+                  <s.icon className="h-10 w-10 text-brand-blue" strokeWidth={1.5} />
+                </div>
+
+                <h3 className="text-xl font-bold text-white mb-4">{s.title}</h3>
+                <p className="text-sm text-slate-400 leading-relaxed line-clamp-3">
+                  {s.desc}
+                </p>
+              </motion.div>
+            );
+
+            return s.to ? (
+              <Link key={s.title} to={s.to as any} className="block h-full">
+                {Content}
+              </Link>
+            ) : (
+              <button key={s.title} onClick={openQuote} className="block w-full text-left h-full">
+                {Content}
+              </button>
+            );
+          })}
+        </div>
+
+        <Reveal delay={0.6}>
+          <div className="mt-20 text-center">
+            <button
+              onClick={() => document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' })}
+              className="inline-flex items-center gap-2 text-white/80 hover:text-brand-blue font-medium transition-all group"
+            >
+              Falar com um especialista 
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
 }
+
 
 function ServiceCard({ icon: Icon, title, desc }: { icon: typeof Video; title: string; desc: string }) {
   const ref = useRef<HTMLDivElement>(null);
