@@ -449,7 +449,7 @@ function Services() {
                 </div>
 
                 <div className="mb-6 transform transition-transform duration-300 group-hover:translate-y-[-2px]">
-                  <s.icon className="h-10 w-10 text-brand-blue" strokeWidth={1.5} />
+                  <s.icon className="h-10 w-10 text-white" strokeWidth={1.5} />
                 </div>
 
                 <h3 className="text-xl font-bold text-white mb-4">{s.title}</h3>
