@@ -639,7 +639,7 @@ function WebsiteShowcase({
                     style={{ 
                       width: '1440px',
                       height: '900px',
-                      transform: 'scale(0.1)',
+                      transform: 'scale(calc(100% / 1440))',
                       transformOrigin: 'top left',
                       zIndex: 1
                     }}
