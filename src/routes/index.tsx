@@ -370,40 +370,47 @@ function HeroComposition() {
 /* ---------------- Services ---------------- */
 function Services() {
   const services = [
-    { num: "01", icon: Video, title: "Audiovisual", desc: "Produção cinematográfica de alto impacto para marcas líderes." },
-    { num: "02", icon: Globe, title: "Software", desc: "Sistemas robustos e escaláveis desenvolvidos sob medida." },
-    { num: "03", icon: Palette, title: "Design", desc: "Interfaces autorais com foco em usabilidade e conversão." },
-    { num: "04", icon: Megaphone, title: "Marketing", desc: "Estratégias digitais orientadas a dados e crescimento." },
+    { num: "01", icon: Video, title: "Produção Audiovisual", desc: "Vídeos institucionais e comerciais com edição cinematográfica." },
+    { num: "02", icon: Globe, title: "Sites Profissionais", desc: "Plataformas modernas desenvolvidas para alta performance e conversão." },
+    { num: "03", icon: Cpu, title: "Sistemas Personalizados", desc: "Soluções robustas sob medida para automatizar e escalar operações." },
+    { num: "04", icon: Megaphone, title: "Criativos para Campanhas", desc: "Conteúdo focado em tráfego pago que gera resultados mensuráveis." },
   ];
   return (
-    <section id="servicos" className="relative py-32 sm:py-48 bg-slate-900 overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+    <section id="servicos" className="relative py-32 sm:py-48 bg-white overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           <div className="lg:col-span-5">
             <Reveal>
-              <div className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold mb-8">Capabilities</div>
-              <h2 className="text-5xl sm:text-6xl font-black text-white leading-[0.9] tracking-tighter uppercase">
-                Digital <br /><span className="text-brand-blue">Solutions</span>
+              <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Expertise</div>
+              <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+                Soluções digitais completas para marcas de alto padrão.
               </h2>
-              <p className="mt-10 text-xl text-white/50 leading-tight max-w-md font-medium">
+              <p className="mt-8 text-lg text-slate-600 leading-relaxed max-w-md">
                 Unimos engenharia, design e estratégia para construir produtos que impulsionam o valor do seu negócio.
               </p>
+              <div className="mt-12 hidden lg:block">
+                <button
+                  onClick={() => document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center gap-2 text-brand-blue font-semibold hover:gap-3 transition-all"
+                >
+                  Falar com um especialista <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </Reveal>
           </div>
 
           <div className="lg:col-span-7">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/10 border border-white/10 overflow-hidden rounded-3xl shadow-2xl shadow-black/50">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
               {services.map((s, i) => (
-                <Reveal key={s.title} delay={i * 0.1} y={20}>
-                  <div className="group relative p-12 bg-slate-900 hover:bg-brand-blue transition-all duration-700 min-h-[320px] flex flex-col">
-                    <div className="flex justify-between items-start mb-auto">
-                      <div className="text-sm font-bold text-white/20 group-hover:text-white/40 transition-colors uppercase tracking-widest">{s.num}</div>
-                      <s.icon className="h-8 w-8 text-brand-blue group-hover:text-white transition-colors" />
+                <Reveal key={s.title} delay={i * 0.1}>
+                  <div className="group">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="text-xs font-bold text-slate-300 group-hover:text-brand-blue transition-colors">{s.num}</div>
+                      <s.icon className="h-6 w-6 text-slate-400 group-hover:text-brand-blue transition-colors" />
                     </div>
-                    <div>
-                      <h3 className="text-3xl font-black text-white mb-4 uppercase tracking-tighter leading-none">{s.title}</h3>
-                      <p className="text-white/40 group-hover:text-white/80 text-sm leading-snug transition-colors">{s.desc}</p>
-                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-3">{s.title}</h3>
+                    <p className="text-slate-600 text-sm leading-relaxed">{s.desc}</p>
+                    <div className="mt-6 w-8 h-[1px] bg-slate-200 group-hover:w-full group-hover:bg-brand-blue transition-all duration-500" />
                   </div>
                 </Reveal>
               ))}
