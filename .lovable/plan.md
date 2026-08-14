@@ -1,38 +1,47 @@
-# Redesign da Seção "Nossa História" - MAXEASE Digital
+# Plan: Redesign Portfolio/Projects Area for `/sites`
 
-Este plano detalha o redesenho editorial da seção "Sobre" (Nossa História) para transformá-la em uma peça de apresentação premium, integrando a fotografia real do fundador com elementos geométricos e tipografia refinada.
+The goal is to replace the current YouTube video-based showcase in the `/sites` route with a premium, interactive "WebsiteShowcase" component. This component will feature built-in (HTML/CSS) mockups for Desktop and Mobile, hosting interactive iframes of the real sites.
 
-## Mudanças
+## Proposed Changes
 
-### Visual e Estrutura
-- **Composição Editorial:** Transição do layout simples "foto/texto" para uma grade assimétrica (aprox. 55% visual, 45% conteúdo) com sobreposição controlada.
-- **Protagonismo da Fotografia:** A imagem do fundador (Henrique Castro) será ampliada, verticalizada e integrada a um bloco geométrico azul MaxEase deslocado para criar profundidade.
-- **Placa do Fundador:** Substituição da identificação simples por uma placa editorial em Navy profundo sobreposta à foto.
-- **Hierarquia de Texto:** 
-    - Headline grande com quebra de linha estratégica e destaque em uma palavra.
-    - Introdução com peso maior.
-    - Manifesto final com borda lateral azul, separando-o do corpo de texto comum.
-- **Textura de Fundo:** Adição do elemento tipográfico "MAXEASE" em escala monumental com opacidade ultrabaixa (2-4%).
-- **Fundo:** Mantido branco/off-white para contraste e alternância de ritmo na página.
+### 1. Identify Data and Remove Legacy Content
+- Identify the existing projects data in `src/routes/index.tsx`.
+- Remove the YouTube-based showcase logic from the `Sites` component in `src/routes/index.tsx`.
+- Clean up unused imports and arrays related to the old YouTube videos in `/sites`.
 
-### Animações (Framer Motion)
-- **Entrada da Foto:** Efeito de reveal vertical com máscara e translação suave (translateY).
-- **Entrada do Bloco Azul:** Escalonamento e translação lateral sutis, criando profundidade.
-- **Stagger de Conteúdo:** Sequência coordenada: Bloco Azul -> Foto -> Eyebrow -> Headline -> Parágrafos -> Manifesto.
-- **Microinteração:** Zoom sutil (1.015x) na foto ao passar o mouse, mantendo o container estático.
+### 2. Create Reusable Showcase Component
+- Create a new component `WebsiteShowcase` (or similar) within `src/routes/index.tsx` (or a separate file if it grows too large, but keeping it in `index.tsx` for now to match current patterns).
+- **Mockup Construction:** Build minimalist, premium frames for Desktop (Monitor) and Mobile (Smartphone) using Tailwind CSS.
+- **Iframe Logic:**
+  - **Desktop:** Viewport scale strategy (e.g., simulate 1440px width scaled down to fit the mockup) to avoid mobile breakpoints.
+  - **Mobile:** Viewport simulation (e.g., 390px width).
+  - **Interactivity:** Ensure iframes are interactive (scroll, clicks) while providing a "Explore Project" hint.
+- **Performance:** Implement `loading="lazy"` and an `IntersectionObserver` (or `framer-motion` viewport detection) to only mount iframes when in view.
 
-### Responsividade
-- **Mobile:** Reorganização para fluxo vertical garantindo legibilidade da placa do fundador e preservando o elemento azul sem gerar overflow lateral.
-- **Tablet:** Ajuste automático para coluna única se a largura comprimir excessivamente os textos.
+### 3. Implement Fallback Strategy
+- Detect if a site allows embedding (or define a list of projects with fallback assets).
+- If blocked by CSP/X-Frame-Options, show a high-quality static preview (if available) or a styled placeholder with an "Open Project" link.
 
-## Detalhes Técnicos
-- **Cores:** Navy profundo (#071426), Azul MaxEase (#155EEF), Branco/Off-white (#FFFFFF / #F8FAFC).
-- **Tipografia:** Space Grotesk (Headings), Inter (Corpo).
-- **Componentes:** Atualização da função `About` em `src/routes/index.tsx`.
-- **Assets:** Reutilização de `aboutImg` (`src/assets/henrique-castro.jpg.asset.json`).
-- **Acessibilidade:** Suporte a `prefers-reduced-motion` para desativar transformações e máscaras de reveal.
+### 4. Layout & Motion
+- **Composition:** 70-75% Monitor, 25-30% Smartphone with slight overlap for depth.
+- **Motion:** Staggered entry animation using Framer Motion (opacity + translate).
+- **Responsive Design:** 
+  - Desktop: Side-by-side/Overlapping.
+  - Tablet/Mobile: Stacked vertically or toggle-able views to avoid horizontal overflow and "scroll traps".
 
----
+### 5. Update `/sites` Route
+- Pass the actual project data (URLs, titles, descriptions) to the new `WebsiteShowcase` component.
 
-**Arquivos afetados:**
-- `src/routes/index.tsx`
+## Technical Details
+
+- **Visual Style:** Navy deep background, graphite/navy frames, subtle blue MaxEase accents.
+- **Interactivity:** `pointer-events-auto` on iframes with a clear "Visit Site" link.
+- **Accessibility:** Proper `title` tags for iframes and accessible links.
+
+## Success Criteria
+- [ ] No more YouTube videos on `/sites`.
+- [ ] Real, interactive sites visible inside custom mockups.
+- [ ] Desktop and Mobile versions of the same URL shown simultaneously.
+- [ ] Smooth entry animations and no performance lag.
+- [ ] Fallback working for restricted domains.
+- [ ] `/audiovisual` remains unchanged.
