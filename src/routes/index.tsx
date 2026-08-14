@@ -609,8 +609,8 @@ function WebsiteShowcase({
       ref={containerRef} 
       className="py-24 first:pt-0"
       style={{
-        '--scale-desktop': 'var(--desktop-scale, 0.29)',
-        '--scale-mobile': 'var(--mobile-scale, 0.65)'
+        '--scale-desktop': scales.desktop,
+        '--scale-mobile': scales.mobile
       } as any}
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
