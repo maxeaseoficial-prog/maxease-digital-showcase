@@ -619,7 +619,7 @@ function WebsiteShowcase({
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className={`lg:col-span-4 space-y-8 ${index % 2 === 1 ? 'lg:order-last' : ''}`}
+          className={`lg:col-span-12 mb-12`}
         >
           <div>
             <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-brand-blue/5 border border-brand-blue/10 mb-6">
