@@ -704,42 +704,118 @@ function Clients() {
 
 /* ---------------- About ---------------- */
 function About() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+
   return (
-    <section id="sobre" className="relative py-32 sm:py-48 bg-white overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          <div className="lg:col-span-5">
-            <Reveal>
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-100">
-                <img src={aboutImg.url} alt="Henrique Castro" loading="lazy" className="w-full h-auto transition-all duration-1000" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1 font-bold">Fundador</div>
-                  <div className="text-lg font-bold text-white tracking-tight">Henrique Castro</div>
-                </div>
-              </div>
-            </Reveal>
+    <section id="sobre" ref={containerRef} className="relative py-32 sm:py-48 bg-white overflow-hidden">
+      {/* Background Typographic Element */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+        <motion.span
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={isInView ? { opacity: 0.03, scale: 1 } : {}}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="text-[30vw] font-bold text-brand-blue leading-none tracking-tighter whitespace-nowrap"
+        >
+          MAXEASE
+        </motion.span>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+          {/* Visual Side (55% on Desktop) */}
+          <div className="lg:col-span-6 relative">
+            <div className="relative aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4.5] w-full max-w-[580px] mx-auto">
+              {/* Blue Geometric Block */}
+              <motion.div
+                initial={{ opacity: 0, scaleY: 0.92, x: -20 }}
+                animate={isInView ? { opacity: 1, scaleY: 1, x: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                className="absolute -left-6 -top-6 w-full h-full bg-brand-blue rounded-[32px] opacity-100 hidden sm:block"
+                style={{ zIndex: 0 }}
+              />
+
+              {/* Photo Container */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: 0.3, ease: [0.21, 0.45, 0.32, 0.9] }}
+                className="relative h-full w-full rounded-[32px] overflow-hidden shadow-2xl z-10 group bg-slate-100"
+              >
+                <motion.img
+                  src={aboutImg.url}
+                  alt="Henrique Castro"
+                  loading="lazy"
+                  whileHover={{ scale: 1.015 }}
+                  transition={{ duration: 0.6 }}
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Founder Plaque */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                  className="absolute bottom-8 -right-4 sm:-right-8 bg-[#071426] p-6 sm:p-8 rounded-2xl shadow-xl min-w-[200px] border-l-4 border-brand-blue"
+                >
+                  <div className="text-[10px] uppercase tracking-[0.3em] text-brand-blue font-bold mb-2">Fundador</div>
+                  <div className="text-xl sm:text-2xl font-bold text-white tracking-tight">Henrique Castro</div>
+                </motion.div>
+              </motion.div>
+            </div>
           </div>
-          <div className="lg:col-span-7">
-            <Reveal delay={0.2}>
-              <div className="max-w-2xl">
-                <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Nossa História</div>
-                <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
-                  Unimos criatividade, tecnologia e estratégia em cada entrega.
+
+          {/* Content Side (45% on Desktop) */}
+          <div className="lg:col-span-6">
+            <div className="flex flex-col gap-8">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="h-px w-12 bg-brand-blue" />
+                  <div className="text-xs uppercase tracking-[0.3em] text-brand-blue font-bold">Nossa História</div>
+                </div>
+                
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#071426] leading-[1.1] tracking-tight">
+                  Unimos <span className="text-brand-blue">criatividade</span>, tecnologia e estratégia em cada entrega.
                 </h2>
-                <div className="mt-8 space-y-6 text-lg text-slate-600 leading-relaxed">
-                  <p>
-                    A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
-                  </p>
-                  <p>
-                    Fundada por <span className="text-slate-900 font-bold">Henrique Castro</span>, a empresa une estratégia e design para desenvolver sites de alto padrão e produções audiovisuais que fortalecem marcas.
-                  </p>
-                  <p>
+              </motion.div>
+
+              <div className="space-y-8">
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  className="text-xl sm:text-2xl text-slate-700 leading-relaxed font-medium"
+                >
+                  A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
+                </motion.p>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  className="text-lg text-slate-600 leading-relaxed"
+                >
+                  Fundada por Henrique Castro, a empresa une estratégia e design para desenvolver sites de alto padrão e produções audiovisuais que fortalecem marcas.
+                </motion.p>
+
+                {/* Manifesto Block */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.7 }}
+                  className="relative pl-8 border-l-2 border-brand-blue/30 py-2"
+                >
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-blue" />
+                  <p className="text-lg text-slate-800 font-semibold italic leading-relaxed">
                     Acreditamos que cada detalhe deve ter um objetivo claro: transmitir credibilidade e contribuir para o crescimento das empresas que confiam no nosso trabalho.
                   </p>
-                </div>
+                </motion.div>
               </div>
-            </Reveal>
+            </div>
           </div>
         </div>
       </div>
