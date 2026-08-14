@@ -6,6 +6,7 @@ import {
   Instagram, Mail, MessageCircle, Star, ArrowUpRight, Sparkles, Youtube, Menu, X,
 } from "lucide-react";
 import { useQuoteModal } from "@/components/QuoteModal";
+import { Monitor, Smartphone, ExternalLink } from "lucide-react";
 
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
