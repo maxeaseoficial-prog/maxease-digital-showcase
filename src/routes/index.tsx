@@ -729,7 +729,7 @@ const websiteProjects = [
   },
   {
     name: "Leonardo Froese",
-    url: "https://leonardofroese.lovable.app",
+    url: "https://leonardofroese.lovable.app/",
     category: "Portfólio Profissional",
     description: "Presença digital sofisticada para profissional liberal, destacando expertise e projetos.",
     isEmbeddable: true
