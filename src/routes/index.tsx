@@ -582,11 +582,37 @@ function WebsiteShowcase({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const [scales, setScales] = useState({ desktop: 0.29, mobile: 0.65 });
+
+  useEffect(() => {
+    const updateScales = () => {
+      const desktopWrapper = containerRef.current?.querySelector('.lg\\:col-span-8 .aspect-\\[16\\/10\\]');
+      const mobileWrapper = containerRef.current?.querySelector('.lg\\:col-span-8 .aspect-\\[9\\/19\\.5\\]');
+      
+      if (desktopWrapper && mobileWrapper) {
+        setScales({
+          desktop: desktopWrapper.clientWidth / 1440,
+          mobile: mobileWrapper.clientWidth / 390
+        });
+      }
+    };
+
+    updateScales();
+    window.addEventListener('resize', updateScales);
+    return () => window.removeEventListener('resize', updateScales);
+  }, []);
 
   const isEmbeddable = project.isEmbeddable ?? true;
 
   return (
-    <div ref={containerRef} className="py-24 first:pt-0">
+    <div 
+      ref={containerRef} 
+      className="py-24 first:pt-0"
+      style={{
+        '--scale-desktop': scales.desktop,
+        '--scale-mobile': scales.mobile
+      } as any}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
         {/* Project Info */}
         <motion.div 
@@ -631,21 +657,19 @@ function WebsiteShowcase({
               
               <div className="relative rounded-[2rem] p-3 sm:p-4 bg-[#1A1F2C] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/5 ring-1 ring-white/10 group overflow-hidden">
                 <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#08111F]">
-                  <div className="absolute inset-0 w-full h-full bg-[#08111F]" />
                   <iframe 
                     src={project.url}
                     title={`Visualização desktop do site ${project.name}`}
                     loading="lazy"
-                    className="absolute inset-0 border-0 origin-top-left"
+                    className="absolute border-0 top-0 left-0 w-[1440px] h-[900px]"
                     style={{ 
-                      width: '1440px',
-                      height: '900px',
-                      transform: 'scale(calc(100% / 1440))',
+                      transform: 'scale(var(--scale-desktop, 0.29))',
+                      transformOrigin: 'top left',
                       zIndex: 1
                     }}
                   />
                   {/* Subtle hover overlay */}
-                  <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors z-10" />
+                  <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors z-20" />
                 </div>
                 {/* Monitor Stand Detail */}
                 <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-6 bg-[#1A1F2C] rounded-b-3xl border-x border-b border-white/5 z-0" />
@@ -667,16 +691,21 @@ function WebsiteShowcase({
                 <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/10 rounded-full z-30" />
                 
                 <div className="relative aspect-[9/19.5] overflow-hidden rounded-[1.8rem] bg-[#08111F]">
-                  <div className="absolute inset-0 w-full h-full bg-[#08111F]" />
-                  <iframe 
-                    src={project.url}
-                    title={`Visualização mobile do site ${project.name}`}
-                    loading="lazy"
-                    className="absolute inset-0 w-full h-full border-0"
-                    style={{ zIndex: 1 }}
-                  />
+                  <div className="absolute inset-0 right-[-20px] z-10">
+                    <iframe 
+                      src={project.url}
+                      title={`Visualização mobile do site ${project.name}`}
+                      loading="lazy"
+                      className="absolute border-0 top-0 left-0 w-[410px] h-[844px]"
+                      style={{ 
+                        transform: 'scale(var(--scale-mobile, 0.65))',
+                        transformOrigin: 'top left',
+                        zIndex: 1
+                      }}
+                    />
+                  </div>
                   {/* Subtle hover overlay */}
-                  <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors z-10" />
+                  <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors z-20" />
                 </div>
               </div>
             </motion.div>
