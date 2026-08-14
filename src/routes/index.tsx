@@ -267,20 +267,6 @@ function Hero() {
           </div>
 
           <div className="lg:col-span-5 relative hidden lg:block">
-            <Reveal delay={0.5}>
-              <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900 aspect-[4/3]">
-                <img src={heroMockup} alt="Projetos MaxEase" className="w-full h-full object-cover opacity-90" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
-                
-                {/* Editorial overlays */}
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="glass px-4 py-2 rounded-lg inline-block">
-                    <span className="text-[10px] text-white/50 uppercase block mb-0.5">Selected Work</span>
-                    <span className="text-xs font-semibold text-white">Digital Interface Design</span>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
           </div>
         </div>
       </div>
