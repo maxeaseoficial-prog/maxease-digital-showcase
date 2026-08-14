@@ -374,8 +374,6 @@ function Hero() {
 function HeroComposition() {
   return null;
 }
-  );
-}
 
 /* ---------------- Services ---------------- */
 function Services() {
