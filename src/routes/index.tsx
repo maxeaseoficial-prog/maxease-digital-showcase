@@ -483,25 +483,21 @@ const shorts: ShortItem[] = [
 
 export function Audiovisual() {
   return (
-    <section id="audiovisual" className="relative py-28 sm:py-36 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-blue/5 to-transparent" />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
+    <section id="audiovisual" className="relative py-20 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
-          <div className="flex flex-col items-center text-center gap-6 mb-14">
-            <div className="max-w-2xl">
-              <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Produção Audiovisual</div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                Projetos que <span className="text-brand-gradient">transformaram</span> marcas
-              </h2>
-            </div>
-            
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Audiovisual</div>
+            <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+              Projetos que transformaram marcas.
+            </h2>
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {shorts.map((v, i) => (
             <Reveal key={v.id} delay={i * 0.08}>
-              <div className="group relative w-full aspect-[9/16] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-elegant bg-black">
+              <div className="group relative w-full aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl bg-slate-100 ring-1 ring-slate-200 transition-transform duration-500 hover:scale-[1.02]">
                 <iframe
                   src={`https://www.youtube.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1`}
                   title={v.title}
@@ -530,24 +526,24 @@ const projects = [
 
 export function Sites() {
   return (
-    <section id="sites" className="relative py-28 sm:py-36 overflow-hidden">
-      <GradientOrb className="left-[-10%] top-1/3" size={500} />
+    <section id="sites" className="relative py-20 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
         <Reveal>
-          <div className="max-w-2xl mx-auto mb-14 text-center">
-            <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Sites Desenvolvidos</div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-              Projetos que <span className="text-brand-gradient">performam</span> tão bem quanto parecem.
+          <div className="max-w-2xl mx-auto mb-20 text-center">
+            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Desenvolvimento Web</div>
+            <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+              Sites Desenvolvidos
             </h2>
+            <p className="mt-6 text-lg text-slate-500">Projetos que performam tão bem quanto parecem.</p>
           </div>
         </Reveal>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {[
             { id: "gXNVFlzfNd4", title: "Site desenvolvido pela MAXEASE — Projeto 1" },
             { id: "IH9RYsiYAd4", title: "Site desenvolvido pela MAXEASE — Projeto 2" },
           ].map((v, i) => (
             <Reveal key={v.id} delay={i * 0.08}>
-              <div className="relative rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-elegant aspect-video bg-black">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-100 ring-1 ring-slate-200 aspect-video transition-transform duration-500 hover:scale-[1.01]">
                 <iframe
                   className="absolute inset-0 h-full w-full"
                   src={`https://www.youtube.com/embed/${v.id}`}
@@ -560,7 +556,6 @@ export function Sites() {
             </Reveal>
           ))}
         </div>
-
       </div>
     </section>
   );
