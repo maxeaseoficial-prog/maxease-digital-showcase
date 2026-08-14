@@ -605,18 +605,18 @@ function Clients() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-16 mb-24 border-y border-slate-200">
-            <div className="text-center">
-              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+1000</div>
-              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Conteúdos entregues</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 py-0 mb-24 border border-slate-200 rounded-3xl overflow-hidden bg-white shadow-xl">
+            <div className="text-center py-16 border-b sm:border-b-0 sm:border-r border-slate-100 hover:bg-slate-50 transition-colors">
+              <div className="text-6xl sm:text-7xl font-black text-slate-900 tracking-tighter uppercase">+1000</div>
+              <div className="mt-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Conteúdos</div>
             </div>
-            <div className="text-center">
-              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+10</div>
-              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Empresas atendidas</div>
+            <div className="text-center py-16 border-b sm:border-b-0 sm:border-r border-slate-100 hover:bg-slate-50 transition-colors">
+              <div className="text-6xl sm:text-7xl font-black text-slate-900 tracking-tighter uppercase">+10</div>
+              <div className="mt-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Marcas</div>
             </div>
-            <div className="text-center">
-              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+2</div>
-              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Anos de experiência</div>
+            <div className="text-center py-16 hover:bg-slate-50 transition-colors">
+              <div className="text-6xl sm:text-7xl font-black text-slate-900 tracking-tighter uppercase">+2</div>
+              <div className="mt-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Anos</div>
             </div>
           </div>
         </Reveal>
