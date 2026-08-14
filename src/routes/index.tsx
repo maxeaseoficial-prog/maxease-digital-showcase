@@ -98,7 +98,7 @@ export function Navbar() {
     { label: "Início", kind: "hash", hash: "inicio" },
     { label: "Produção Audiovisual", kind: "route", to: "/audiovisual" },
     { label: "Sites", kind: "route", to: "/sites" },
-    { label: "Clientes", kind: "hash", hash: "clientes" },
+    // { label: "Clientes", kind: "hash", hash: "clientes" },
     { label: "Sobre", kind: "hash", hash: "sobre" },
   ];
 
