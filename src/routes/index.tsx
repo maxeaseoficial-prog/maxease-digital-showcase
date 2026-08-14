@@ -607,39 +607,44 @@ function Counter({ to, suffix = "", label }: { to: number; suffix?: string; labe
 
 function Clients() {
   return (
-    <section id="clientes" className="relative py-28 sm:py-36 overflow-hidden">
+    <section id="clientes" className="relative py-32 sm:py-48 bg-slate-50 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Clientes &amp; Números</div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-              A confiança de marcas que <span className="text-brand-gradient">buscam resultado.</span>
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Confiança</div>
+            <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+              A confiança de marcas que buscam resultados reais.
             </h2>
           </div>
         </Reveal>
 
-        <Reveal delay={0.15}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-10 mb-16 rounded-2xl glass">
-            <Counter to={1000} label="Conteúdos entregues" />
-            <Counter to={10} label="Empresas atendidas" />
-            <Counter to={2} label="Anos de experiência" />
+        <Reveal delay={0.1}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-16 mb-24 border-y border-slate-200">
+            <div className="text-center">
+              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+1000</div>
+              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Conteúdos entregues</div>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+10</div>
+              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Empresas atendidas</div>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+2</div>
+              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Anos de experiência</div>
+            </div>
           </div>
         </Reveal>
       </div>
 
-      {/* logos das empresas atendidas */}
-      <div className="relative overflow-hidden py-8 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
-        <div className="flex gap-6 items-center animate-marquee-reverse w-max">
-          {[...clientLogos, ...clientLogos].map((c, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 h-28 w-28 flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-sm p-4 ring-1 ring-white/10"
-            >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-60">
+          {clientLogos.map((c, i) => (
+            <div key={i} className="flex justify-center grayscale hover:grayscale-0 transition-all duration-500">
               <img
                 src={c.src}
                 alt={c.name}
                 loading="lazy"
-                className="max-h-full max-w-full object-contain opacity-80"
+                className="max-h-12 w-auto object-contain"
               />
             </div>
           ))}
@@ -654,41 +659,42 @@ function Clients() {
 /* ---------------- About ---------------- */
 function About() {
   return (
-    <section id="sobre" className="relative py-28 sm:py-36 overflow-hidden">
+    <section id="sobre" className="relative py-32 sm:py-48 bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-          <Reveal>
-            <div className="relative rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-elegant max-w-md mx-auto lg:mx-0">
-              <img src={aboutImg.url} alt="Henrique Castro, fundador da MAXEASE Digital" loading="lazy" className="w-full h-auto" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-brand-deep/40 via-transparent to-brand-blue/20" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-brand-deep via-brand-deep/70 to-transparent">
-                <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-1">Fundador</div>
-                <div className="text-xl font-semibold text-white">Henrique Castro</div>
-                <div className="text-sm text-white/70">CEO & Fundador · MAXEASE Digital</div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+          <div className="lg:col-span-5">
+            <Reveal>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-100">
+                <img src={aboutImg.url} alt="Henrique Castro" loading="lazy" className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1 font-bold">Fundador</div>
+                  <div className="text-lg font-bold text-white tracking-tight">Henrique Castro</div>
+                </div>
               </div>
-            </div>
-          </Reveal>
-          <Reveal delay={0.15}>
-            <div>
-
-              <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Sobre a MAXEASE</div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-                Unimos <span className="text-brand-gradient">criatividade, tecnologia e estratégia</span> em cada entrega.
-              </h2>
-              <p className="mt-6 text-white/70 leading-relaxed">
-                A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
-              </p>
-              <p className="mt-4 text-white/70 leading-relaxed">
-                Fundada por <span className="text-white font-medium">Henrique Castro</span>, a empresa une estratégia, design e tecnologia para desenvolver sites de alto padrão, sistemas personalizados e produções audiovisuais que fortalecem marcas e impulsionam negócios.
-              </p>
-              <p className="mt-4 text-white/70 leading-relaxed">
-                Mais do que entregar projetos bonitos, acreditamos que cada detalhe deve ter um objetivo: transmitir credibilidade, melhorar a experiência do usuário e contribuir para o crescimento das empresas que confiam no nosso trabalho.
-              </p>
-              <p className="mt-4 text-white/70 leading-relaxed">
-                Hoje, a MAXEASE Digital reúne criatividade, inovação e tecnologia para criar experiências digitais modernas, funcionais e memoráveis, sempre com foco em qualidade, performance e resultados reais.
-              </p>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
+          <div className="lg:col-span-7">
+            <Reveal delay={0.2}>
+              <div className="max-w-2xl">
+                <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Nossa História</div>
+                <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+                  Unimos criatividade, tecnologia e estratégia em cada entrega.
+                </h2>
+                <div className="mt-8 space-y-6 text-lg text-slate-600 leading-relaxed">
+                  <p>
+                    A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
+                  </p>
+                  <p>
+                    Fundada por <span className="text-slate-900 font-bold">Henrique Castro</span>, a empresa une estratégia e design para desenvolver sites de alto padrão e produções audiovisuais que fortalecem marcas.
+                  </p>
+                  <p>
+                    Acreditamos que cada detalhe deve ter um objetivo claro: transmitir credibilidade e contribuir para o crescimento das empresas que confiam no nosso trabalho.
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+          </div>
 
 
         </div>
