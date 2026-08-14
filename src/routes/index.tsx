@@ -226,14 +226,6 @@ function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-7">
             <motion.div style={{ opacity }}>
-              <Reveal delay={0.1}>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/10 border border-brand-blue/20 mb-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse" />
-                  <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-brand-blue">
-                    Estúdio Digital · Tecnologia + Criação
-                  </span>
-                </div>
-              </Reveal>
               <Reveal delay={0.2}>
                 <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] text-white tracking-tight">
                   Criamos experiências <span className="text-brand-blue">digitais</span> que fazem sua empresa crescer.
