@@ -705,14 +705,7 @@ function WebsiteShowcase({
             </motion.div>
           </div>
           
-          <div className={`mt-20 md:mt-28 flex flex-col items-center lg:items-start gap-4`}>
-            <div className="flex items-center gap-3 px-4 py-2 rounded-full glass border border-white/5">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
-              <span className="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-bold">
-                Portfólio Interativo / Explorar
-              </span>
-            </div>
-          </div>
+          {/* Status badge removed per request */}
         </div>
       </div>
     </div>
