@@ -636,11 +636,11 @@ function WebsiteShowcase({
                     src={project.url}
                     title={`Visualização desktop do site ${project.name}`}
                     loading="lazy"
-                    className="absolute inset-0 w-[1440px] h-[900px] border-0 origin-top-left"
+                    className="absolute inset-0 border-0 origin-top-left"
                     style={{ 
-                      transform: 'scale(calc(678.4 / 1440))',
                       width: '1440px',
                       height: '900px',
+                      transform: 'scale(calc(678.4 / 1440))',
                       zIndex: 1
                     }}
                   />
