@@ -582,6 +582,25 @@ function WebsiteShowcase({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const [scales, setScales] = useState({ desktop: 0.29, mobile: 0.65 });
+
+  useEffect(() => {
+    const updateScales = () => {
+      const desktopWrapper = containerRef.current?.querySelector('.lg\\:col-span-8 .aspect-\\[16\\/10\\]');
+      const mobileWrapper = containerRef.current?.querySelector('.lg\\:col-span-8 .aspect-\\[9\\/19\\.5\\]');
+      
+      if (desktopWrapper && mobileWrapper) {
+        setScales({
+          desktop: desktopWrapper.clientWidth / 1440,
+          mobile: mobileWrapper.clientWidth / 390
+        });
+      }
+    };
+
+    updateScales();
+    window.addEventListener('resize', updateScales);
+    return () => window.removeEventListener('resize', updateScales);
+  }, []);
 
   const isEmbeddable = project.isEmbeddable ?? true;
 
