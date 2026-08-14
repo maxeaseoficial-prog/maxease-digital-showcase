@@ -217,7 +217,10 @@ function Hero() {
 
   return (
     <section id="inicio" ref={ref} className="relative min-h-screen w-full overflow-hidden bg-[#08111F] flex items-center">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(21,94,239,0.08),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(21,94,239,0.05),transparent_40%)]" />
+      <div className="absolute inset-0 z-0">
+        <img src={heroBgAsset.url} alt="" className="w-full h-full object-cover opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#08111F]/20 via-[#08111F]/60 to-[#08111F]" />
+      </div>
       <GradientOrb className="left-[-10%] top-[10%]" size={600} />
       <GradientOrb className="right-[-10%] bottom-[10%]" size={700} />
       
