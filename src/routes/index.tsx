@@ -292,7 +292,6 @@ function Hero() {
           </div>
         </div>
       </div>
-      </div>
 
       <AnimatePresence>
         {projectsOpen && (
