@@ -779,8 +779,6 @@ function Index() {
       <main>
         <Hero />
         <Services />
-        <Audiovisual />
-        <Sites />
         <Clients />
         <About />
         <CTA />
