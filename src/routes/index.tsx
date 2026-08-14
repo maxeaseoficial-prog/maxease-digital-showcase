@@ -633,77 +633,102 @@ const clientLogos = [
   { src: client10.url, name: "Perdun Investimentos Imobiliários" },
 ];
 
-function Counter({ to, suffix = "", label }: { to: number; suffix?: string; label: string }) {
+function Counter({ to, label }: { to: number; label: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true });
-  const [n, setN] = useState(0);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [count, setCount] = useState(0);
+
   useEffect(() => {
     if (!inView) return;
-    const start = performance.now();
-    const dur = 1600;
-    let raf = 0;
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - start) / dur);
-      setN(Math.floor(to * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    const duration = 1500;
+    const steps = 60;
+    const stepDuration = duration / steps;
+    let current = 0;
+    const timer = setInterval(() => {
+      current += 1;
+      const progress = current / steps;
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(easedProgress * to));
+      if (current >= steps) clearInterval(timer);
+    }, stepDuration);
+    return () => clearInterval(timer);
   }, [inView, to]);
+
   return (
-    <div ref={ref} className="text-center">
-      <div className="text-5xl sm:text-6xl font-bold text-brand-gradient">+{n}{suffix}</div>
-      <div className="mt-2 text-sm text-white/60">{label}</div>
+    <div ref={ref} className="relative group flex flex-col items-center justify-center p-8 overflow-hidden bg-white rounded-3xl transition-all duration-500">
+      {/* Ghost Number Shadow */}
+      <span className="absolute -bottom-8 -right-4 text-[12rem] font-bold text-brand-blue/5 leading-none select-none pointer-events-none transform translate-y-4 group-hover:translate-y-0 transition-transform duration-1000">
+        +{to}
+      </span>
+      
+      <div className="relative z-10 text-center">
+        <div className="text-6xl sm:text-7xl lg:text-8xl font-bold text-brand-blue tracking-tighter mb-4">
+          +{count}
+        </div>
+        <div className="text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">
+          {label}
+        </div>
+      </div>
     </div>
   );
 }
 
 function Clients() {
+  const marqueeRef = useRef<HTMLDivElement>(null);
+
   return (
-    <section id="clientes" className="relative py-32 sm:py-48 bg-slate-50 overflow-hidden">
+    <section id="clientes" className="relative py-32 sm:py-48 bg-white overflow-hidden border-t border-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
-          <div className="text-center max-w-2xl mx-auto mb-20">
-            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Confiança</div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+          <div className="mb-24">
+            <div className="text-[10px] uppercase tracking-[0.4em] text-brand-blue font-bold mb-8">Confiança</div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-[1.1] max-w-3xl">
               A confiança de marcas que buscam resultados reais.
             </h2>
           </div>
         </Reveal>
 
-        <Reveal delay={0.1}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-16 mb-24 border-y border-slate-200">
-            <div className="text-center">
-              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+1000</div>
-              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Conteúdos entregues</div>
-            </div>
-            <div className="text-center">
-              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+10</div>
-              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Empresas atendidas</div>
-            </div>
-            <div className="text-center">
-              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+2</div>
-              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Anos de experiência</div>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32 border-b border-slate-100 pb-32">
+          <Reveal delay={0.2}>
+            <Counter to={1000} label="Conteúdos entregues" />
+          </Reveal>
+          <Reveal delay={0.3}>
+            <Counter to={10} label="Empresas atendidas" />
+          </Reveal>
+        </div>
+
+        <Reveal delay={0.4}>
+          <div className="mb-12">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
+              Marcas que já confiaram no nosso trabalho
+            </span>
           </div>
         </Reveal>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-60">
-          {clientLogos.map((c, i) => (
-            <div key={i} className="flex justify-center grayscale hover:grayscale-0 transition-all duration-500">
-              <img
-                src={c.src}
-                alt={c.name}
-                loading="lazy"
-                className="max-h-12 w-auto object-contain"
-              />
-            </div>
-          ))}
+      {/* Infinite Marquee */}
+      <div className="relative w-full">
+        {/* Fades */}
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+        <div className="flex overflow-hidden group">
+          <div className="flex py-4 animate-marquee group-hover:[animation-play-state:paused] whitespace-nowrap">
+            {[...clientLogos, ...clientLogos, ...clientLogos].map((c, i) => (
+              <div key={i} className="flex-shrink-0 mx-4">
+                <div className="w-48 h-24 sm:w-56 sm:h-28 bg-white border border-slate-100 rounded-[20px] shadow-sm flex items-center justify-center p-6 transition-all duration-300 hover:translate-y-[-4px] hover:border-brand-blue/30 hover:shadow-md group/card">
+                  <img
+                    src={c.src}
+                    alt={c.name}
+                    loading="lazy"
+                    className="max-h-10 sm:max-h-12 w-auto object-contain transition-transform duration-300 group-hover/card:scale-105"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-
     </section>
   );
 }
