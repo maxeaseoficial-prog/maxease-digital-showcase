@@ -638,7 +638,7 @@ function WebsiteShowcase({
                     loading="lazy"
                     className="absolute inset-0 w-[1440px] h-[900px] border-0 origin-top-left"
                     style={{ 
-                      transform: 'scale(calc(100% / 1440))',
+                      transform: 'scale(calc(678.4 / 1440))',
                       width: '1440px',
                       height: '900px',
                       zIndex: 1
