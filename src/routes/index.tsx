@@ -743,8 +743,7 @@ const websiteProjects = [
     url: "https://www.koragestaointeligente.com.br/",
     category: "SaaS / Tecnologia",
     description: "Interface moderna para sistema de gestão inteligente, priorizando clareza e funcionalidade.",
-    isEmbeddable: false,
-    fallbackImg: project2
+    isEmbeddable: true
   }
 ];
 
