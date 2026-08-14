@@ -487,19 +487,6 @@ function Services() {
   );
 }
 
-                    <h3 className="text-xl font-bold text-slate-900 mb-3">{s.title}</h3>
-                    <p className="text-slate-600 text-sm leading-relaxed">{s.desc}</p>
-                    <div className="mt-6 w-8 h-[1px] bg-slate-200 group-hover:w-full group-hover:bg-brand-blue transition-all duration-500" />
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function ServiceCard({ icon: Icon, title, desc }: { icon: typeof Video; title: string; desc: string }) {
   const ref = useRef<HTMLDivElement>(null);
