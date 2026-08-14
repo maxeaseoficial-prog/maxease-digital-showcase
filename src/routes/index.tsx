@@ -586,8 +586,8 @@ function WebsiteShowcase({
 
   useEffect(() => {
     const updateScales = () => {
-      const desktopWrapper = containerRef.current?.querySelector('.lg\\:col-span-8 .aspect-\\[16\\/10\\]');
-      const mobileWrapper = containerRef.current?.querySelector('.lg\\:col-span-8 .aspect-\\[9\\/19\\.5\\]');
+      const desktopWrapper = containerRef.current?.querySelector('.lg\\:col-span-12 .aspect-\\[16\\/10\\]');
+      const mobileWrapper = containerRef.current?.querySelector('.lg\\:col-span-12 .aspect-\\[9\\/19\\.5\\]');
       
       if (desktopWrapper && mobileWrapper) {
         setScales({
