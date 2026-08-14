@@ -647,42 +647,40 @@ function About() {
   return (
     <section id="sobre" className="relative py-32 sm:py-48 bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          <div className="lg:col-span-5">
-            <Reveal>
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-100">
-                <img src={aboutImg.url} alt="Henrique Castro" loading="lazy" className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-1000" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1 font-bold">Fundador</div>
-                  <div className="text-lg font-bold text-white tracking-tight">Henrique Castro</div>
-                </div>
-              </div>
-            </Reveal>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch border border-slate-100 rounded-[2.5rem] overflow-hidden bg-slate-50 shadow-2xl">
+          <div className="lg:col-span-5 relative min-h-[500px]">
+            <img 
+              src={aboutImg.url} 
+              alt="Henrique Castro" 
+              loading="lazy" 
+              className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" 
+            />
+            <div className="absolute inset-0 bg-brand-blue/10 mix-blend-multiply" />
+            <div className="absolute bottom-10 left-10 text-white">
+              <div className="text-[10px] uppercase tracking-[0.4em] font-black mb-2 opacity-70">Fundador</div>
+              <div className="text-4xl font-black uppercase tracking-tighter">Henrique <br />Castro</div>
+            </div>
           </div>
-          <div className="lg:col-span-7">
+          
+          <div className="lg:col-span-7 flex flex-col justify-center p-12 sm:p-20 bg-white">
             <Reveal delay={0.2}>
-              <div className="max-w-2xl">
-                <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Nossa História</div>
-                <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
-                  Unimos criatividade, tecnologia e estratégia em cada entrega.
-                </h2>
-                <div className="mt-8 space-y-6 text-lg text-slate-600 leading-relaxed">
-                  <p>
-                    A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
-                  </p>
-                  <p>
-                    Fundada por <span className="text-slate-900 font-bold">Henrique Castro</span>, a empresa une estratégia e design para desenvolver sites de alto padrão e produções audiovisuais que fortalecem marcas.
-                  </p>
-                  <p>
-                    Acreditamos que cada detalhe deve ter um objetivo claro: transmitir credibilidade e contribuir para o crescimento das empresas que confiam no nosso trabalho.
-                  </p>
-                </div>
+              <div className="text-[10px] uppercase tracking-[0.4em] text-brand-blue font-bold mb-10">Manifesto</div>
+              <h2 className="text-5xl sm:text-6xl font-black text-slate-900 leading-[0.9] tracking-tighter uppercase mb-12">
+                Estratégia <br />que gera <br /><span className="text-brand-blue">Valor</span>
+              </h2>
+              <div className="space-y-6 text-xl text-slate-500 font-medium leading-tight">
+                <p>
+                  A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
+                </p>
+                <p>
+                  Unimos estratégia e design para desenvolver sites de alto padrão e produções audiovisuais que fortalecem marcas globais.
+                </p>
+                <p>
+                  Cada pixel e cada frame são pensados para transmitir credibilidade e contribuir para o crescimento exponencial do seu negócio.
+                </p>
               </div>
             </Reveal>
           </div>
-
-
         </div>
       </div>
     </section>
