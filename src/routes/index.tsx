@@ -572,17 +572,138 @@ export function Audiovisual() {
 }
 
 
-/* ---------------- Sites showcase ---------------- */
-const projects = [
-  { img: project1, name: "Aurora Commerce", category: "E-commerce" },
-  { img: project2, name: "Nimbus SaaS", category: "Landing Page" },
-  { img: project3, name: "Bellavista", category: "Restaurante" },
-  { img: project4, name: "Frenit Fitness", category: "Marca esportiva" },
+/* ---------------- Website Showcase Component ---------------- */
+function WebsiteShowcase({ 
+  project 
+}: { 
+  project: { name: string; url: string; category: string; description?: string } 
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+
+  return (
+    <div ref={containerRef} className="py-20 first:pt-0">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        {/* Project Info */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={isInView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="lg:col-span-4 space-y-6"
+        >
+          <div>
+            <div className="text-xs uppercase tracking-[0.3em] text-brand-blue font-bold mb-3">
+              {project.category}
+            </div>
+            <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">
+              {project.name}
+            </h3>
+          </div>
+          
+          {project.description && (
+            <p className="text-lg text-slate-600 leading-relaxed">
+              {project.description}
+            </p>
+          )}
+
+          <a 
+            href={project.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-brand-blue font-bold hover:text-brand-bright transition-colors group"
+          >
+            Visitar site
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </a>
+        </motion.div>
+
+        {/* Visual Showcase */}
+        <div className="lg:col-span-8 relative">
+          <div className="relative flex flex-col md:flex-row items-end lg:items-center gap-8 md:gap-0">
+            
+            {/* Desktop Mockup */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative w-full md:w-[85%] z-10"
+            >
+              <div className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-2 flex items-center gap-1.5">
+                <Monitor className="h-3 w-3" /> Desktop
+              </div>
+              <div className="relative rounded-[2rem] p-3 bg-[#1A1F2C] shadow-2xl border border-white/5 ring-1 ring-white/10 group">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#08111F]">
+                  <div className="absolute inset-0 w-[1440px] h-[900px] origin-top-left scale-[var(--desktop-scale)]">
+                    <iframe 
+                      src={project.url}
+                      title={`Visualização desktop do site ${project.name}`}
+                      loading="lazy"
+                      className="w-full h-full border-0"
+                      style={{ 
+                        "--desktop-scale": "calc(100% / 1440)" 
+                      } as any}
+                    />
+                  </div>
+                  {/* Subtle overlay to indicate interaction */}
+                  <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors" />
+                </div>
+                {/* Monitor Stand Detail */}
+                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#1A1F2C] rounded-b-2xl border-x border-b border-white/5 z-0" />
+              </div>
+            </motion.div>
+
+            {/* Mobile Mockup */}
+            <motion.div 
+              initial={{ opacity: 0, x: 20, y: 20 }}
+              animate={isInView ? { opacity: 1, x: 0, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="relative w-[280px] md:absolute md:right-0 md:-bottom-10 z-20"
+            >
+              <div className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-2 flex items-center gap-1.5">
+                <Smartphone className="h-3 w-3" /> Mobile
+              </div>
+              <div className="relative rounded-[2.5rem] p-2.5 bg-[#1A1F2C] shadow-2xl border border-white/5 ring-1 ring-white/10 group">
+                {/* Speaker Notch */}
+                <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/10 rounded-full z-30" />
+                
+                <div className="relative aspect-[9/19.5] overflow-hidden rounded-[1.8rem] bg-[#08111F]">
+                  <iframe 
+                    src={project.url}
+                    title={`Visualização mobile do site ${project.name}`}
+                    loading="lazy"
+                    className="w-full h-full border-0"
+                  />
+                  {/* Subtle overlay */}
+                  <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors" />
+                </div>
+              </div>
+            </motion.div>
+          </div>
+          
+          <div className="mt-12 md:mt-16 text-center lg:text-left">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-bold flex items-center justify-center lg:justify-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              Navegue pelo projeto diretamente na tela
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const websiteProjects = [
+  {
+    name: "MAXEASE Digital",
+    url: "https://www.maxease.com.br",
+    category: "Website Institucional",
+    description: "Nossa própria plataforma, desenvolvida com foco em performance, experiência do usuário e design editorial premium."
+  }
 ];
 
 export function Sites() {
   return (
-    <section id="sites" className="relative py-20 bg-white">
+    <section id="sites" className="relative py-20 bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
         <Reveal>
           <div className="max-w-2xl mx-auto mb-20 text-center">
@@ -593,23 +714,10 @@ export function Sites() {
             <p className="mt-6 text-lg text-slate-500">Projetos que performam tão bem quanto parecem.</p>
           </div>
         </Reveal>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {[
-            { id: "gXNVFlzfNd4", title: "Site desenvolvido pela MAXEASE — Projeto 1" },
-            { id: "IH9RYsiYAd4", title: "Site desenvolvido pela MAXEASE — Projeto 2" },
-          ].map((v, i) => (
-            <Reveal key={v.id} delay={i * 0.08}>
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-100 ring-1 ring-slate-200 aspect-video transition-transform duration-500 hover:scale-[1.01]">
-                <iframe
-                  className="absolute inset-0 h-full w-full"
-                  src={`https://www.youtube.com/embed/${v.id}`}
-                  title={v.title}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
-            </Reveal>
+
+        <div className="space-y-32">
+          {websiteProjects.map((project) => (
+            <WebsiteShowcase key={project.url} project={project} />
           ))}
         </div>
       </div>
