@@ -32,80 +32,41 @@ export const Route = createFileRoute("/")({
 
 /* ---------------- Building blocks ---------------- */
 
-function Reveal({ children, delay = 0, y = 24 }: { children: ReactNode; delay?: number; y?: number }) {
+function Reveal({ children, delay = 0, y = 16 }: { children: ReactNode; delay?: number; y?: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-100px" });
   return (
     <motion.div
       ref={ref}
       initial={{ opacity: 0, y }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.8, delay, ease: [0.21, 0.45, 0.32, 0.9] }}
     >
       {children}
     </motion.div>
   );
 }
 
-function GradientOrb({ className = "", size = 500 }: { className?: string; size?: number }) {
+function GradientOrb({ className = "", size = 400 }: { className?: string; size?: number }) {
   return (
     <div
-      className={`pointer-events-none absolute rounded-full blur-3xl opacity-40 ${className}`}
+      className={`pointer-events-none absolute rounded-full blur-[100px] opacity-20 ${className}`}
       style={{
         width: size,
         height: size,
-        background: "radial-gradient(circle, rgba(30,64,255,0.55), transparent 65%)",
+        background: "radial-gradient(circle, var(--brand-blue), transparent 70%)",
       }}
     />
   );
 }
 
 function Particles() {
-  const dots = Array.from({ length: 40 });
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {dots.map((_, i) => {
-        const size = Math.random() * 3 + 1;
-        const left = Math.random() * 100;
-        const top = Math.random() * 100;
-        const dur = 6 + Math.random() * 8;
-        return (
-          <motion.span
-            key={i}
-            className="absolute rounded-full bg-brand-light"
-            style={{ width: size, height: size, left: `${left}%`, top: `${top}%`, opacity: 0.6 }}
-            animate={{ y: [0, -30, 0], opacity: [0.2, 0.8, 0.2] }}
-            transition={{ duration: dur, repeat: Infinity, ease: "easeInOut", delay: Math.random() * 4 }}
-          />
-        );
-      })}
-    </div>
-  );
+  return null;
 }
 
 /* ---------------- Cursor glow ---------------- */
 function CursorGlow() {
-  const x = useMotionValue(-200);
-  const y = useMotionValue(-200);
-  const sx = useSpring(x, { stiffness: 200, damping: 25 });
-  const sy = useSpring(y, { stiffness: 200, damping: 25 });
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      x.set(e.clientX);
-      y.set(e.clientY);
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, [x, y]);
-  return (
-    <motion.div
-      className="pointer-events-none fixed z-[100] h-[400px] w-[400px] rounded-full mix-blend-screen hidden md:block"
-      style={{
-        x: sx, y: sy, translateX: "-50%", translateY: "-50%",
-        background: "radial-gradient(circle, rgba(30,64,255,0.15), transparent 60%)",
-      }}
-    />
-  );
+  return null;
 }
 
 /* ---------------- Navbar ---------------- */
@@ -147,19 +108,15 @@ export function Navbar() {
 
   return (
     <motion.header
-      initial={{ y: -30, opacity: 0 }}
+      initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "py-3" : "py-5"
+      transition={{ duration: 0.5 }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? "py-4 bg-brand-deep/80 backdrop-blur-md border-b border-white/5" : "py-6 bg-transparent"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-3 sm:px-6">
-        <div
-          className={`flex items-center justify-between gap-2 rounded-2xl px-3 sm:px-6 py-3 transition-all duration-500 ${
-            scrolled ? "glass-strong shadow-elegant" : ""
-          }`}
-        >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="flex items-center justify-between gap-4">
           <Link to="/" hash="inicio" className="flex items-center gap-2 shrink-0 min-w-0">
             <img src={logoAsset.url} alt="MAXEASE Digital" className="h-9 sm:h-16 w-auto" />
           </Link>
