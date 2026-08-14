@@ -32,80 +32,41 @@ export const Route = createFileRoute("/")({
 
 /* ---------------- Building blocks ---------------- */
 
-function Reveal({ children, delay = 0, y = 24 }: { children: ReactNode; delay?: number; y?: number }) {
+function Reveal({ children, delay = 0, y = 16 }: { children: ReactNode; delay?: number; y?: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-100px" });
   return (
     <motion.div
       ref={ref}
       initial={{ opacity: 0, y }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.8, delay, ease: [0.21, 0.45, 0.32, 0.9] }}
     >
       {children}
     </motion.div>
   );
 }
 
-function GradientOrb({ className = "", size = 500 }: { className?: string; size?: number }) {
+function GradientOrb({ className = "", size = 400 }: { className?: string; size?: number }) {
   return (
     <div
-      className={`pointer-events-none absolute rounded-full blur-3xl opacity-40 ${className}`}
+      className={`pointer-events-none absolute rounded-full blur-[100px] opacity-20 ${className}`}
       style={{
         width: size,
         height: size,
-        background: "radial-gradient(circle, rgba(30,64,255,0.55), transparent 65%)",
+        background: "radial-gradient(circle, var(--brand-blue), transparent 70%)",
       }}
     />
   );
 }
 
 function Particles() {
-  const dots = Array.from({ length: 40 });
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {dots.map((_, i) => {
-        const size = Math.random() * 3 + 1;
-        const left = Math.random() * 100;
-        const top = Math.random() * 100;
-        const dur = 6 + Math.random() * 8;
-        return (
-          <motion.span
-            key={i}
-            className="absolute rounded-full bg-brand-light"
-            style={{ width: size, height: size, left: `${left}%`, top: `${top}%`, opacity: 0.6 }}
-            animate={{ y: [0, -30, 0], opacity: [0.2, 0.8, 0.2] }}
-            transition={{ duration: dur, repeat: Infinity, ease: "easeInOut", delay: Math.random() * 4 }}
-          />
-        );
-      })}
-    </div>
-  );
+  return null;
 }
 
 /* ---------------- Cursor glow ---------------- */
 function CursorGlow() {
-  const x = useMotionValue(-200);
-  const y = useMotionValue(-200);
-  const sx = useSpring(x, { stiffness: 200, damping: 25 });
-  const sy = useSpring(y, { stiffness: 200, damping: 25 });
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      x.set(e.clientX);
-      y.set(e.clientY);
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, [x, y]);
-  return (
-    <motion.div
-      className="pointer-events-none fixed z-[100] h-[400px] w-[400px] rounded-full mix-blend-screen hidden md:block"
-      style={{
-        x: sx, y: sy, translateX: "-50%", translateY: "-50%",
-        background: "radial-gradient(circle, rgba(30,64,255,0.15), transparent 60%)",
-      }}
-    />
-  );
+  return null;
 }
 
 /* ---------------- Navbar ---------------- */
@@ -147,19 +108,15 @@ export function Navbar() {
 
   return (
     <motion.header
-      initial={{ y: -30, opacity: 0 }}
+      initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "py-3" : "py-5"
+      transition={{ duration: 0.5 }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? "py-4 bg-brand-deep/80 backdrop-blur-md border-b border-white/5" : "py-6 bg-transparent"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-3 sm:px-6">
-        <div
-          className={`flex items-center justify-between gap-2 rounded-2xl px-3 sm:px-6 py-3 transition-all duration-500 ${
-            scrolled ? "glass-strong shadow-elegant" : ""
-          }`}
-        >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="flex items-center justify-between gap-4">
           <Link to="/" hash="inicio" className="flex items-center gap-2 shrink-0 min-w-0">
             <img src={logoAsset.url} alt="MAXEASE Digital" className="h-9 sm:h-16 w-auto" />
           </Link>
@@ -258,65 +215,85 @@ function Hero() {
 
 
   return (
-    <section id="inicio" ref={ref} className="relative min-h-screen w-full overflow-hidden bg-hero-gradient">
-      <div className="absolute inset-0 bg-grid opacity-40" />
+    <section id="inicio" ref={ref} className="relative min-h-screen w-full overflow-hidden bg-[#08111F] flex items-center">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(21,94,239,0.08),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(21,94,239,0.05),transparent_40%)]" />
       <GradientOrb className="left-[-10%] top-[10%]" size={600} />
       <GradientOrb className="right-[-10%] bottom-[10%]" size={700} />
-      <Particles />
+      
+      {/* connecting lines - removed as they look like "AI decor" */}
 
-      {/* connecting lines */}
-      <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-30" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="line" x1="0" x2="1">
-            <stop offset="0%" stopColor="#4F7CFF" stopOpacity="0" />
-            <stop offset="50%" stopColor="#4F7CFF" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#4F7CFF" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <line x1="10%" y1="20%" x2="45%" y2="60%" stroke="url(#line)" strokeWidth="1" />
-        <line x1="60%" y1="15%" x2="90%" y2="50%" stroke="url(#line)" strokeWidth="1" />
-        <line x1="20%" y1="80%" x2="70%" y2="90%" stroke="url(#line)" strokeWidth="1" />
-      </svg>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-20 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="lg:col-span-7">
+            <motion.div style={{ opacity }}>
+              <Reveal delay={0.1}>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/10 border border-brand-blue/20 mb-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse" />
+                  <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-brand-blue">
+                    Estúdio Digital · Tecnologia + Criação
+                  </span>
+                </div>
+              </Reveal>
+              <Reveal delay={0.2}>
+                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] text-white tracking-tight">
+                  Criamos experiências <span className="text-brand-blue">digitais</span> que fazem sua empresa crescer.
+                </h1>
+              </Reveal>
+              <Reveal delay={0.3}>
+                <p className="mt-8 text-lg sm:text-xl text-slate-400 leading-relaxed max-w-2xl">
+                  Sites profissionais, sistemas personalizados e produções audiovisuais desenvolvidas para posicionar marcas e gerar resultados reais.
+                </p>
+              </Reveal>
+              <Reveal delay={0.4}>
+                <div className="mt-10 flex flex-wrap gap-4">
+                  <button
+                    type="button"
+                    onClick={openQuote}
+                    className="group relative inline-flex items-center gap-2 rounded-lg bg-brand-blue px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-brand-bright hover:scale-[1.02] shadow-lg shadow-brand-blue/20"
+                  >
+                    Solicitar orçamento
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
 
-      <motion.div style={{ opacity }} className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 sm:px-6 pt-32 pb-16">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div style={{ y: y2 }}>
-            <Reveal delay={0.1}>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] text-white">
-                Criamos experiências <span className="text-brand-gradient">digitais</span> que fazem sua empresa crescer.
-              </h1>
-            </Reveal>
-            <Reveal delay={0.25}>
-              <p className="mt-6 max-w-xl mx-auto text-base sm:text-lg text-white/70 leading-relaxed">
-                Sites profissionais, sistemas personalizados e produções audiovisuais desenvolvidas para posicionar marcas e gerar resultados.
-              </p>
-            </Reveal>
-            <Reveal delay={0.4}>
-              <div className="mt-9 flex flex-wrap gap-4 justify-center">
-                <button
-                  type="button"
-                  onClick={openQuote}
-                  className="group relative inline-flex items-center gap-2 rounded-full bg-brand-gradient px-7 py-3.5 text-sm font-semibold text-white shadow-[0_20px_50px_-15px_rgba(30,64,255,0.8)] transition-transform hover:scale-[1.03] overflow-hidden"
-                >
-                  <span className="relative z-10">Solicitar orçamento</span>
-                  <ArrowRight className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                  <span className="absolute inset-0 -translate-x-full bg-white/20 blur-xl transition-transform duration-700 group-hover:translate-x-full" />
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const el = document.getElementById('trabalhos-selecionados');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-8 py-4 text-sm font-semibold text-white hover:bg-white/10 transition-all"
+                  >
+                    Conhecer projetos
+                  </button>
+                </div>
+              </Reveal>
+            </motion.div>
+          </div>
 
-                <button
-                  type="button"
-                  onClick={() => setProjectsOpen(true)}
-                  className="inline-flex items-center gap-2 rounded-full glass px-7 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
-                >
-                  Ver projetos
-                </button>
+          <div className="lg:col-span-5 relative hidden lg:block">
+            <Reveal delay={0.5}>
+              <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900 aspect-[4/3]">
+                <img src={heroMockup} alt="Projetos MaxEase" className="w-full h-full object-cover opacity-90" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
+                
+                {/* Editorial overlays */}
+                <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+                  <div className="glass px-4 py-2 rounded-lg">
+                    <span className="text-[10px] text-white/50 uppercase block mb-0.5">Selected Work</span>
+                    <span className="text-xs font-semibold text-white">Digital Interface Design</span>
+                  </div>
+                  <div className="h-8 w-8 rounded-full border border-white/20 flex items-center justify-center">
+                    <ArrowUpRight className="h-3 w-3 text-white" />
+                  </div>
+                </div>
               </div>
             </Reveal>
-          </motion.div>
+            
+            {/* Small offset floating element for editorial feel */}
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 glass rounded-2xl border border-white/10 hidden xl:block" />
+          </div>
         </div>
-
-
-      </motion.div>
+      </div>
 
       <AnimatePresence>
         {projectsOpen && (
@@ -341,7 +318,7 @@ function Hero() {
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.95, y: 10, opacity: 0 }}
               transition={{ type: "spring", stiffness: 260, damping: 24 }}
-              className="relative w-full max-w-lg glass-strong rounded-3xl p-6 sm:p-8 border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
+              className="relative w-full max-w-lg glass-strong rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl"
             >
               <button
                 type="button"
@@ -365,7 +342,7 @@ function Hero() {
                   onClick={() => setProjectsOpen(false)}
                   className="group relative flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.07] transition-colors"
                 >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue">
                     <Globe className="h-5 w-5 text-white" />
                   </span>
                   <span className="text-base font-semibold text-white">Sites</span>
@@ -378,7 +355,7 @@ function Hero() {
                   onClick={() => setProjectsOpen(false)}
                   className="group relative flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.07] transition-colors"
                 >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue">
                     <Video className="h-5 w-5 text-white" />
                   </span>
                   <span className="text-base font-semibold text-white">Produção Audiovisual</span>
@@ -395,106 +372,58 @@ function Hero() {
 }
 
 function HeroComposition() {
-  return (
-    <div className="relative h-full w-full">
-      {/* main mockup */}
-      <motion.div
-        initial={{ opacity: 0, y: 30, rotateY: -8 }}
-        animate={{ opacity: 1, y: 0, rotateY: -6 }}
-        transition={{ duration: 1, delay: 0.3 }}
-        className="absolute inset-0 flex items-center justify-center"
-        style={{ perspective: 1200 }}
-      >
-        <motion.div
-          animate={{ y: [0, -14, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="relative w-[92%] rounded-2xl overflow-hidden shadow-elegant ring-1 ring-white/10"
-          style={{ transform: "rotateY(-6deg) rotateX(4deg)" }}
-        >
-          <img src={heroMockup} alt="Dashboard mockup" className="w-full h-auto" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-brand-blue/20 via-transparent to-transparent" />
-        </motion.div>
-      </motion.div>
-
-      {/* floating card top-right */}
-      <motion.div
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.8, duration: 0.7 }}
-        className="absolute top-4 right-0 hidden sm:block"
-      >
-        <motion.div
-          animate={{ y: [0, 12, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="glass-strong rounded-xl p-4 w-52 shadow-elegant"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs text-white/70">Conversão</span>
-          </div>
-          <div className="text-2xl font-bold text-white">+184%</div>
-          <div className="text-[11px] text-brand-light mt-1">↑ vs. mês anterior</div>
-        </motion.div>
-      </motion.div>
-
-      {/* floating card bottom-left */}
-      <motion.div
-        initial={{ opacity: 0, x: -40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1, duration: 0.7 }}
-        className="absolute bottom-6 -left-2 hidden sm:block"
-      >
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-          className="glass-strong rounded-xl p-4 w-56 shadow-elegant"
-        >
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-brand-gradient flex items-center justify-center">
-              <Globe className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-white">Site publicado</div>
-              <div className="text-[11px] text-white/60">Performance 98/100</div>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* small orb */}
-      <div className="absolute top-1/2 -left-8 h-32 w-32 rounded-full bg-brand-blue/40 blur-3xl animate-pulse-glow" />
-      <div className="absolute bottom-8 right-8 h-40 w-40 rounded-full bg-brand-light/30 blur-3xl animate-pulse-glow" />
-    </div>
-  );
+  return null;
 }
 
 /* ---------------- Services ---------------- */
 function Services() {
   const services = [
-    { icon: Video, title: "Produção Audiovisual", desc: "Vídeos institucionais, comerciais, Reels e campanhas com direção criativa e edição cinematográfica." },
-    { icon: Globe, title: "Sites Profissionais", desc: "Sites modernos, rápidos e desenvolvidos para converter visitantes em clientes." },
-    { icon: Cpu, title: "Sistemas Personalizados", desc: "Desenvolvimento de sistemas sob medida para automatizar e escalar o seu negócio." },
-    { icon: Megaphone, title: "Criativos para campanhas", desc: "Vídeos para tráfego pago, vídeos de divulgação e edição de vídeos que geram resultado." },
+    { num: "01", icon: Video, title: "Produção Audiovisual", desc: "Vídeos institucionais e comerciais com edição cinematográfica." },
+    { num: "02", icon: Globe, title: "Sites Profissionais", desc: "Plataformas modernas desenvolvidas para alta performance e conversão." },
+    { num: "03", icon: Cpu, title: "Sistemas Personalizados", desc: "Soluções robustas sob medida para automatizar e escalar operações." },
+    { num: "04", icon: Megaphone, title: "Criativos para Campanhas", desc: "Conteúdo focado em tráfego pago que gera resultados mensuráveis." },
   ];
   return (
-    <section id="servicos" className="relative py-28 sm:py-36 overflow-hidden">
-      <GradientOrb className="right-[-15%] top-1/4" size={500} />
+    <section id="servicos" className="relative py-32 sm:py-48 bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
-        <Reveal>
-          <div className="max-w-2xl">
-            <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">O que fazemos</div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-              Soluções digitais completas <br /> para marcas de <span className="text-brand-gradient">alto padrão</span>.
-            </h2>
-          </div>
-        </Reveal>
-
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
-          {services.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.08}>
-              <ServiceCard {...s} />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          <div className="lg:col-span-5">
+            <Reveal>
+              <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Expertise</div>
+              <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+                Soluções digitais completas para marcas de alto padrão.
+              </h2>
+              <p className="mt-8 text-lg text-slate-600 leading-relaxed max-w-md">
+                Unimos engenharia, design e estratégia para construir produtos que impulsionam o valor do seu negócio.
+              </p>
+              <div className="mt-12 hidden lg:block">
+                <button
+                  onClick={() => document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center gap-2 text-brand-blue font-semibold hover:gap-3 transition-all"
+                >
+                  Falar com um especialista <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </Reveal>
-          ))}
+          </div>
+
+          <div className="lg:col-span-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
+              {services.map((s, i) => (
+                <Reveal key={s.title} delay={i * 0.1}>
+                  <div className="group">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="text-xs font-bold text-slate-300 group-hover:text-brand-blue transition-colors">{s.num}</div>
+                      <s.icon className="h-6 w-6 text-slate-400 group-hover:text-brand-blue transition-colors" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-3">{s.title}</h3>
+                    <p className="text-slate-600 text-sm leading-relaxed">{s.desc}</p>
+                    <div className="mt-6 w-8 h-[1px] bg-slate-200 group-hover:w-full group-hover:bg-brand-blue transition-all duration-500" />
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -554,25 +483,21 @@ const shorts: ShortItem[] = [
 
 export function Audiovisual() {
   return (
-    <section id="audiovisual" className="relative py-28 sm:py-36 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-blue/5 to-transparent" />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
+    <section id="audiovisual" className="relative py-20 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
-          <div className="flex flex-col items-center text-center gap-6 mb-14">
-            <div className="max-w-2xl">
-              <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Produção Audiovisual</div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                Projetos que <span className="text-brand-gradient">transformaram</span> marcas
-              </h2>
-            </div>
-            
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Audiovisual</div>
+            <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+              Projetos que transformaram marcas.
+            </h2>
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {shorts.map((v, i) => (
             <Reveal key={v.id} delay={i * 0.08}>
-              <div className="group relative w-full aspect-[9/16] rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-elegant bg-black">
+              <div className="group relative w-full aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl bg-slate-100 ring-1 ring-slate-200 transition-transform duration-500 hover:scale-[1.02]">
                 <iframe
                   src={`https://www.youtube.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1`}
                   title={v.title}
@@ -601,24 +526,24 @@ const projects = [
 
 export function Sites() {
   return (
-    <section id="sites" className="relative py-28 sm:py-36 overflow-hidden">
-      <GradientOrb className="left-[-10%] top-1/3" size={500} />
+    <section id="sites" className="relative py-20 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
         <Reveal>
-          <div className="max-w-2xl mx-auto mb-14 text-center">
-            <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Sites Desenvolvidos</div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-              Projetos que <span className="text-brand-gradient">performam</span> tão bem quanto parecem.
+          <div className="max-w-2xl mx-auto mb-20 text-center">
+            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Desenvolvimento Web</div>
+            <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+              Sites Desenvolvidos
             </h2>
+            <p className="mt-6 text-lg text-slate-500">Projetos que performam tão bem quanto parecem.</p>
           </div>
         </Reveal>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {[
             { id: "gXNVFlzfNd4", title: "Site desenvolvido pela MAXEASE — Projeto 1" },
             { id: "IH9RYsiYAd4", title: "Site desenvolvido pela MAXEASE — Projeto 2" },
           ].map((v, i) => (
             <Reveal key={v.id} delay={i * 0.08}>
-              <div className="relative rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-elegant aspect-video bg-black">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-100 ring-1 ring-slate-200 aspect-video transition-transform duration-500 hover:scale-[1.01]">
                 <iframe
                   className="absolute inset-0 h-full w-full"
                   src={`https://www.youtube.com/embed/${v.id}`}
@@ -631,7 +556,6 @@ export function Sites() {
             </Reveal>
           ))}
         </div>
-
       </div>
     </section>
   );
@@ -678,39 +602,44 @@ function Counter({ to, suffix = "", label }: { to: number; suffix?: string; labe
 
 function Clients() {
   return (
-    <section id="clientes" className="relative py-28 sm:py-36 overflow-hidden">
+    <section id="clientes" className="relative py-32 sm:py-48 bg-slate-50 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Clientes &amp; Números</div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-              A confiança de marcas que <span className="text-brand-gradient">buscam resultado.</span>
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Confiança</div>
+            <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+              A confiança de marcas que buscam resultados reais.
             </h2>
           </div>
         </Reveal>
 
-        <Reveal delay={0.15}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-10 mb-16 rounded-2xl glass">
-            <Counter to={1000} label="Conteúdos entregues" />
-            <Counter to={10} label="Empresas atendidas" />
-            <Counter to={2} label="Anos de experiência" />
+        <Reveal delay={0.1}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-16 mb-24 border-y border-slate-200">
+            <div className="text-center">
+              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+1000</div>
+              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Conteúdos entregues</div>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+10</div>
+              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Empresas atendidas</div>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl sm:text-6xl font-bold text-brand-blue tracking-tight">+2</div>
+              <div className="mt-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">Anos de experiência</div>
+            </div>
           </div>
         </Reveal>
       </div>
 
-      {/* logos das empresas atendidas */}
-      <div className="relative overflow-hidden py-8 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
-        <div className="flex gap-6 items-center animate-marquee-reverse w-max">
-          {[...clientLogos, ...clientLogos].map((c, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 h-28 w-28 flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-sm p-4 ring-1 ring-white/10"
-            >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center opacity-60">
+          {clientLogos.map((c, i) => (
+            <div key={i} className="flex justify-center grayscale hover:grayscale-0 transition-all duration-500">
               <img
                 src={c.src}
                 alt={c.name}
                 loading="lazy"
-                className="max-h-full max-w-full object-contain opacity-80"
+                className="max-h-12 w-auto object-contain"
               />
             </div>
           ))}
@@ -725,41 +654,42 @@ function Clients() {
 /* ---------------- About ---------------- */
 function About() {
   return (
-    <section id="sobre" className="relative py-28 sm:py-36 overflow-hidden">
+    <section id="sobre" className="relative py-32 sm:py-48 bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-          <Reveal>
-            <div className="relative rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-elegant max-w-md mx-auto lg:mx-0">
-              <img src={aboutImg.url} alt="Henrique Castro, fundador da MAXEASE Digital" loading="lazy" className="w-full h-auto" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-brand-deep/40 via-transparent to-brand-blue/20" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-brand-deep via-brand-deep/70 to-transparent">
-                <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-1">Fundador</div>
-                <div className="text-xl font-semibold text-white">Henrique Castro</div>
-                <div className="text-sm text-white/70">CEO & Fundador · MAXEASE Digital</div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+          <div className="lg:col-span-5">
+            <Reveal>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-100">
+                <img src={aboutImg.url} alt="Henrique Castro" loading="lazy" className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1 font-bold">Fundador</div>
+                  <div className="text-lg font-bold text-white tracking-tight">Henrique Castro</div>
+                </div>
               </div>
-            </div>
-          </Reveal>
-          <Reveal delay={0.15}>
-            <div>
-
-              <div className="text-xs uppercase tracking-[0.25em] text-brand-light mb-4">Sobre a MAXEASE</div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-                Unimos <span className="text-brand-gradient">criatividade, tecnologia e estratégia</span> em cada entrega.
-              </h2>
-              <p className="mt-6 text-white/70 leading-relaxed">
-                A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
-              </p>
-              <p className="mt-4 text-white/70 leading-relaxed">
-                Fundada por <span className="text-white font-medium">Henrique Castro</span>, a empresa une estratégia, design e tecnologia para desenvolver sites de alto padrão, sistemas personalizados e produções audiovisuais que fortalecem marcas e impulsionam negócios.
-              </p>
-              <p className="mt-4 text-white/70 leading-relaxed">
-                Mais do que entregar projetos bonitos, acreditamos que cada detalhe deve ter um objetivo: transmitir credibilidade, melhorar a experiência do usuário e contribuir para o crescimento das empresas que confiam no nosso trabalho.
-              </p>
-              <p className="mt-4 text-white/70 leading-relaxed">
-                Hoje, a MAXEASE Digital reúne criatividade, inovação e tecnologia para criar experiências digitais modernas, funcionais e memoráveis, sempre com foco em qualidade, performance e resultados reais.
-              </p>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
+          <div className="lg:col-span-7">
+            <Reveal delay={0.2}>
+              <div className="max-w-2xl">
+                <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Nossa História</div>
+                <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
+                  Unimos criatividade, tecnologia e estratégia em cada entrega.
+                </h2>
+                <div className="mt-8 space-y-6 text-lg text-slate-600 leading-relaxed">
+                  <p>
+                    A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
+                  </p>
+                  <p>
+                    Fundada por <span className="text-slate-900 font-bold">Henrique Castro</span>, a empresa une estratégia e design para desenvolver sites de alto padrão e produções audiovisuais que fortalecem marcas.
+                  </p>
+                  <p>
+                    Acreditamos que cada detalhe deve ter um objetivo claro: transmitir credibilidade e contribuir para o crescimento das empresas que confiam no nosso trabalho.
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+          </div>
 
 
         </div>
@@ -809,39 +739,42 @@ function CTA() {
 /* ---------------- Footer ---------------- */
 export function Footer() {
   return (
-    <footer className="relative border-t border-white/5 py-16">
+    <footer className="relative border-t border-slate-200 bg-white py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          <div className="md:col-span-2">
-            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-10 w-auto" />
-            <p className="mt-5 text-sm text-white/60 max-w-sm leading-relaxed">
-              Estúdio criativo e tecnológico. Sites, sistemas e produções audiovisuais para marcas que buscam crescer.
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+          <div className="md:col-span-5">
+            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-10 w-auto brightness-0" />
+            <p className="mt-8 text-base text-slate-500 max-w-sm leading-relaxed">
+              Estúdio criativo e tecnológico especializado em interfaces digitais de alto desempenho e produções audiovisuais estratégicas.
             </p>
           </div>
-          <div>
-            <div className="text-sm font-semibold text-white mb-4">Links rápidos</div>
-            <ul className="space-y-2 text-sm text-white/60">
-              <li><Link to="/" hash="inicio" className="hover:text-white transition-colors">Início</Link></li>
-              <li><Link to="/audiovisual" className="hover:text-white transition-colors">Audiovisual</Link></li>
-              <li><Link to="/sites" className="hover:text-white transition-colors">Sites</Link></li>
-              <li><Link to="/" hash="sobre" className="hover:text-white transition-colors">Sobre</Link></li>
+          <div className="md:col-span-3">
+            <div className="text-xs uppercase tracking-widest text-slate-900 font-bold mb-8">Navegação</div>
+            <ul className="space-y-4 text-sm font-semibold text-slate-500">
+              <li><Link to="/" hash="inicio" className="hover:text-brand-blue transition-colors">Início</Link></li>
+              <li><Link to="/audiovisual" className="hover:text-brand-blue transition-colors">Audiovisual</Link></li>
+              <li><Link to="/sites" className="hover:text-brand-blue transition-colors">Sites</Link></li>
+              <li><Link to="/" hash="sobre" className="hover:text-brand-blue transition-colors">Sobre</Link></li>
             </ul>
           </div>
-          <div>
-            <div className="text-sm font-semibold text-white mb-4">Contato</div>
-            <div className="flex items-center gap-4">
-              <a href="https://www.instagram.com/max.ease/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/60 hover:text-white transition-colors"><Instagram className="h-7 w-7" /></a>
-              <a href="https://wa.me/5542988377640" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white/60 hover:text-white transition-colors">
-                <svg role="img" viewBox="0 0 24 24" className="h-7 w-7" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.15-.174.2-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          <div className="md:col-span-4">
+            <div className="text-xs uppercase tracking-widest text-slate-900 font-bold mb-8">Redes Sociais</div>
+            <div className="flex items-center gap-6">
+              <a href="https://www.instagram.com/max.ease/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-slate-400 hover:text-brand-blue transition-colors"><Instagram className="h-6 w-6" /></a>
+              <a href="https://wa.me/5542988377640" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-slate-400 hover:text-brand-blue transition-colors">
+                <svg role="img" viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.15-.174.2-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
               </a>
-              <a href="https://www.youtube.com/@MaxEase" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-white/60 hover:text-white transition-colors"><Youtube className="h-7 w-7" /></a>
-              <a href="mailto:maxeaseoficial@gmail.com" aria-label="Email" className="text-white/60 hover:text-white transition-colors"><Mail className="h-7 w-7" /></a>
+              <a href="https://www.youtube.com/@MaxEase" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-slate-400 hover:text-brand-blue transition-colors"><Youtube className="h-6 w-6" /></a>
+              <a href="mailto:maxeaseoficial@gmail.com" aria-label="Email" className="text-slate-400 hover:text-brand-blue transition-colors"><Mail className="h-6 w-6" /></a>
             </div>
           </div>
         </div>
-        <div className="mt-14 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between gap-3 text-xs text-white/40">
-          <div>© {new Date().getFullYear()} MAXEASE Digital. Todos os direitos reservados.</div>
-          <div>Feito com precisão e cafeína.</div>
+        <div className="mt-20 pt-10 border-t border-slate-100 flex flex-col sm:flex-row justify-between gap-4 text-xs font-bold uppercase tracking-widest text-slate-400">
+          <div>© {new Date().getFullYear()} MAXEASE Digital.</div>
+          <div className="flex gap-8">
+            <span>Tecnologia & Design</span>
+            <span>Curitiba, BR</span>
+          </div>
         </div>
       </div>
     </footer>
@@ -851,14 +784,12 @@ export function Footer() {
 /* ---------------- Page ---------------- */
 function Index() {
   return (
-    <div className="relative min-h-screen bg-brand-deep text-white">
-      <CursorGlow />
+    <div className="relative min-h-screen bg-white selection:bg-brand-blue/10 selection:text-brand-blue">
       <Navbar />
       <main>
         <Hero />
         <Services />
         <Clients />
-        
         <About />
         <CTA />
       </main>

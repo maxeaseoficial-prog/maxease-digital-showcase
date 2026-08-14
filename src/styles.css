@@ -42,9 +42,9 @@
   --radius: 0.875rem;
 
   /* MAXEASE brand palette */
-  --brand-deep: #0A0F2D;
-  --brand-blue: #1428FF;
-  --brand-bright: #1E40FF;
+  --brand-deep: #08111F;
+  --brand-blue: #155EEF;
+  --brand-bright: #175CD3;
   --brand-light: #4F7CFF;
 
   --background: oklch(0.13 0.05 265);
@@ -135,15 +135,17 @@
 }
 
 @utility glass {
-  background: rgba(20, 30, 70, 0.35);
-  backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
 }
 
 @utility glass-strong {
-  background: rgba(10, 15, 45, 0.7);
-  backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
 }
 
 @utility glow-blue {
