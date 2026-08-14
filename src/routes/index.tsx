@@ -622,12 +622,6 @@ function WebsiteShowcase({
           className={`lg:col-span-12 mb-12`}
         >
           <div>
-            <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-brand-blue/5 border border-brand-blue/10 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse" />
-              <span className="text-[10px] uppercase tracking-[0.3em] text-brand-blue font-bold leading-none">
-                {project.category}
-              </span>
-            </div>
             <h3 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-[1.1] tracking-tight">
               {project.name}
             </h3>
