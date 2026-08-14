@@ -730,26 +730,31 @@ function WebsiteShowcase({
 
 const websiteProjects = [
   {
-    name: "MAXEASE Digital",
-    url: "https://www.maxease.com.br",
-    category: "Website Institucional",
-    description: "Nossa própria vitrine digital, projetada para unir sofisticação estética e engenharia de software de ponta.",
-    isEmbeddable: false,
-    fallbackImg: heroMockup
+    name: "Jonathan Veículos",
+    url: "https://jonathanveiculos.lovable.app/",
+    category: "Marketplace Automotivo",
+    description: "Plataforma otimizada para venda de veículos com interface intuitiva e alta conversão.",
+    isEmbeddable: true
   },
   {
-    name: "Chalés Solára",
-    url: "https://chalesolara.com.br",
-    category: "Reserva & Turismo",
-    description: "Um portal de hospitalidade que transforma a jornada do hóspede em uma experiência de imersão total na natureza.",
-    isEmbeddable: false,
-    fallbackImg: project1
+    name: "Kaylane Sales Method",
+    url: "https://kaylane-sales-method.lovable.app",
+    category: "Infoproduto / Educação",
+    description: "Landing page estratégica para métodos de vendas, focada em autoridade e captura de leads.",
+    isEmbeddable: true
   },
   {
-    name: "Aurora Commerce",
-    url: "https://aurora.example.com",
-    category: "E-commerce Premium",
-    description: "E-commerce de alto volume com foco em performance e conversão mobile-first para o mercado de luxo.",
+    name: "Leonardo Froese",
+    url: "https://leonardofroese.lovable.app",
+    category: "Portfólio Profissional",
+    description: "Presença digital sofisticada para profissional liberal, destacando expertise e projetos.",
+    isEmbeddable: true
+  },
+  {
+    name: "Kora Gestão Inteligente",
+    url: "https://www.koragestaointeligente.com.br/",
+    category: "SaaS / Tecnologia",
+    description: "Interface moderna para sistema de gestão inteligente, priorizando clareza e funcionalidade.",
     isEmbeddable: false,
     fallbackImg: project2
   }
