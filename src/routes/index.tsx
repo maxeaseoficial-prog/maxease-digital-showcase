@@ -179,12 +179,6 @@ export function Navbar() {
             )}
           </nav>
           <div className="flex items-center gap-2 shrink-0">
-            <Link
-              to="/login"
-              className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-xs sm:text-sm text-white/85 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap"
-            >
-              Área do Cliente
-            </Link>
             <button
               type="button"
               onClick={openQuote}
@@ -229,13 +223,6 @@ export function Navbar() {
                   </Link>
                 );
               })}
-              <Link
-                to="/login"
-                className="mt-1 px-4 py-3 rounded-xl text-sm text-white/85 hover:text-white hover:bg-white/10 transition-colors border-t border-white/10"
-                onClick={() => setMobileOpen(false)}
-              >
-                Área do Cliente
-              </Link>
             </nav>
           </motion.div>
         </div>
