@@ -667,19 +667,21 @@ function WebsiteShowcase({
                 <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/10 rounded-full z-30" />
                 
                 <div className="relative aspect-[9/19.5] overflow-hidden rounded-[1.8rem] bg-[#08111F]">
-                  <iframe 
-                    src={project.url}
-                    title={`Visualização mobile do site ${project.name}`}
-                    loading="lazy"
-                    className="absolute border-0 top-0 left-0"
-                    style={{ 
-                      width: '390px',
-                      height: '844px',
-                      transform: 'scale(calc(100% / 390))',
-                      transformOrigin: 'top left',
-                      zIndex: 1
-                    }}
-                  />
+                  <div className="absolute inset-0 right-[-20px] z-10">
+                    <iframe 
+                      src={project.url}
+                      title={`Visualização mobile do site ${project.name}`}
+                      loading="lazy"
+                      className="absolute border-0 top-0 left-0"
+                      style={{ 
+                        width: '410px', // 390 + 20 for scrollbar hidden area
+                        height: '844px',
+                        transform: 'scale(calc(100% / 390))',
+                        transformOrigin: 'top left',
+                        zIndex: 1
+                      }}
+                    />
+                  </div>
                   {/* Subtle hover overlay */}
                   <div className="absolute inset-0 pointer-events-none group-hover:bg-brand-blue/5 transition-colors z-20" />
                 </div>
