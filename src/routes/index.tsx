@@ -760,15 +760,38 @@ export function Sites() {
   return (
     <section id="sites" className="relative py-32 bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
-        <Reveal>
-          <div className="max-w-3xl mx-auto mb-32 text-center">
-            <div className="text-[10px] uppercase tracking-[0.4em] text-brand-blue font-bold mb-8">Showcase</div>
-            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.05] tracking-tight mb-8">
-              Projetos que performam tão bem quanto parecem.
-            </h2>
-            <div className="h-px w-24 bg-brand-blue/30 mx-auto" />
+        <div className="max-w-5xl mx-auto mb-32 text-center pt-24 sm:pt-32">
+          <div className="relative inline-block mb-12 sm:mb-16">
+            <motion.span
+              initial={{ opacity: 0, y: 15, scale: 0.98 }}
+              whileInView={{ opacity: 0.06, y: 0, scale: 1 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              aria-hidden="true"
+              className="absolute -top-4 -left-6 sm:-top-8 sm:-left-12 text-[clamp(4.5rem,12vw,11rem)] font-bold text-brand-blue leading-none tracking-tighter whitespace-nowrap select-none pointer-events-none"
+              style={{ transform: 'translate(14px, 14px)' }}
+            >
+              Showcase
+            </motion.span>
+            
+            <motion.h2
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              className="relative text-[clamp(4rem,10vw,9rem)] font-bold text-slate-900 leading-[0.95] tracking-tight"
+            >
+              Showcase
+            </motion.h2>
           </div>
-        </Reveal>
+
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+            className="mt-4 sm:mt-6 text-[clamp(1.25rem,3vw,1.625rem)] text-slate-500 leading-relaxed font-normal max-w-2xl mx-auto"
+          >
+            Projetos que performam tão bem quanto parecem.
+          </motion.p>
+        </div>
 
         <div className="space-y-48">
           {websiteProjects.map((project, idx) => (
