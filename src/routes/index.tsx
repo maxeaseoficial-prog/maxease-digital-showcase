@@ -687,7 +687,7 @@ const websiteProjects = [
   },
   {
     name: "Jonathan Veículos",
-    url: "https://jonathanveiculos.lovable.app/",
+    url: "https://lojajonathanveiculos.com.br/",
     category: "Marketplace Automotivo",
     description: "Plataforma otimizada para venda de veículos com interface intuitiva e alta conversão.",
     isEmbeddable: true
