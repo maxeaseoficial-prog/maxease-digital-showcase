@@ -242,7 +242,7 @@ function Hero() {
               </Reveal>
               <Reveal delay={0.3}>
                 <p className="mt-8 text-lg sm:text-xl text-slate-400 leading-relaxed max-w-2xl">
-                  Sites profissionais, sistemas personalizados e produções audiovisuais desenvolvidas para posicionar marcas e gerar resultados reais.
+                  Sites profissionais e sistemas personalizados desenvolvidos para posicionar marcas e gerar resultados reais.
                 </p>
               </Reveal>
               <Reveal delay={0.4}>
@@ -897,7 +897,7 @@ function About() {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="text-lg text-slate-600 leading-relaxed"
               >
-                Fundada por Henrique Castro, a empresa une estratégia e design para desenvolver sites de alto padrão e produções audiovisuais que fortalecem marcas.
+                Fundada por Henrique Castro, a empresa une estratégia e design para desenvolver sites de alto padrão que fortalecem marcas.
               </motion.p>
 
               <motion.div
@@ -971,7 +971,7 @@ export function Footer() {
           <div className="md:col-span-5">
             <img src={logoAsset.url} alt="MAXEASE Digital" className="h-10 w-auto brightness-0 invert" />
             <p className="mt-8 text-base text-white/60 max-w-sm leading-relaxed">
-              Estúdio criativo e tecnológico especializado em interfaces digitais de alto desempenho e produções audiovisuais estratégicas.
+              Estúdio criativo e tecnológico especializado em interfaces digitais de alto desempenho e soluções tecnológicas estratégicas.
             </p>
           </div>
           <div className="md:col-span-3">
