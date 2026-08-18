@@ -75,7 +75,7 @@ function CursorGlow() {
 /* ---------------- Navbar ---------------- */
 type NavLink =
   | { label: string; kind: "hash"; hash: string }
-  | { label: string; kind: "route"; to: "/audiovisual" | "/sites" };
+  | { label: string; kind: "route"; to: "/sites" };
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -97,7 +97,6 @@ export function Navbar() {
 
   const links: NavLink[] = [
     { label: "Início", kind: "hash", hash: "inicio" },
-    { label: "Produção Audiovisual", kind: "route", to: "/audiovisual" },
     { label: "Sites", kind: "route", to: "/sites" },
     // { label: "Clientes", kind: "hash", hash: "clientes" },
     { label: "Sobre", kind: "hash", hash: "sobre" },
@@ -332,18 +331,6 @@ function Hero() {
                   <ArrowUpRight className="absolute top-4 right-4 h-4 w-4 text-white/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Link>
 
-                <Link
-                  to="/audiovisual"
-                  onClick={() => setProjectsOpen(false)}
-                  className="group relative flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.07] transition-colors"
-                >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue">
-                    <Video className="h-5 w-5 text-white" />
-                  </span>
-                  <span className="text-base font-semibold text-white">Produção Audiovisual</span>
-                  <span className="text-xs text-white/60">Vídeos e campanhas</span>
-                  <ArrowUpRight className="absolute top-4 right-4 h-4 w-4 text-white/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </Link>
               </div>
             </motion.div>
           </motion.div>
@@ -363,14 +350,6 @@ function Services() {
   const services = [
     { 
       num: "01", 
-      icon: Video, 
-      title: "Produção Audiovisual", 
-      desc: "Vídeos institucionais e comerciais com edição cinematográfica.",
-      to: "/audiovisual",
-      rotation: -2
-    },
-    { 
-      num: "02", 
       icon: Globe, 
       title: "Sites Profissionais", 
       desc: "Plataformas modernas desenvolvidas para alta performance e conversão.",
@@ -378,18 +357,11 @@ function Services() {
       rotation: 1
     },
     { 
-      num: "03", 
+      num: "02", 
       icon: Cpu, 
       title: "Sistemas Personalizados", 
       desc: "Soluções robustas sob medida para automatizar e escalar operações.",
       rotation: -1
-    },
-    { 
-      num: "04", 
-      icon: Megaphone, 
-      title: "Criativos para Campanhas", 
-      desc: "Conteúdo focado em tráfego pago que gera resultados mensuráveis.",
-      rotation: 2
     },
   ];
 
@@ -415,7 +387,7 @@ function Services() {
           </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-2 items-stretch max-w-[1250px] mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-2 items-stretch max-w-[800px] mx-auto">
           {services.map((s, i) => {
             const Content = (
               <motion.div
@@ -525,51 +497,6 @@ function ServiceCard({ icon: Icon, title, desc }: { icon: typeof Video; title: s
 }
 
 /* ---------------- Audiovisual grid ---------------- */
-type ShortItem = { id: string; title: string; category: string };
-const shorts: ShortItem[] = [
-  { id: "0c42C7rYKoY", title: "Short 01", category: "YouTube Shorts" },
-  { id: "YFRgK7pabS4", title: "Short 02", category: "YouTube Shorts" },
-  { id: "TWkDV1Oeos4", title: "Short 03", category: "YouTube Shorts" },
-  { id: "kqanqFyoBeI", title: "Short 04", category: "YouTube Shorts" },
-  { id: "6JbGj6CleGk", title: "Short 05", category: "YouTube Shorts" },
-  { id: "JOD-D7bYBW4", title: "Short 06", category: "YouTube Shorts" },
-  { id: "k1oztLse6Dc", title: "Short 07", category: "YouTube Shorts" },
-  { id: "OQTEr7nsqbw", title: "Short 08", category: "YouTube Shorts" },
-];
-
-export function Audiovisual() {
-  return (
-    <section id="audiovisual" className="relative py-20 bg-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <Reveal>
-          <div className="text-center max-w-2xl mx-auto mb-20">
-            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Audiovisual</div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight">
-              Projetos que transformaram marcas.
-            </h2>
-          </div>
-        </Reveal>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {shorts.map((v, i) => (
-            <Reveal key={v.id} delay={i * 0.08}>
-              <div className="group relative w-full aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl bg-slate-100 ring-1 ring-slate-200 transition-transform duration-500 hover:scale-[1.02]">
-                <iframe
-                  src={`https://www.youtube.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1`}
-                  title={v.title}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  className="absolute inset-0 h-full w-full"
-                />
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 
 /* ---------------- Website Showcase Component ---------------- */
@@ -1051,7 +978,6 @@ export function Footer() {
             <div className="text-xs uppercase tracking-widest text-white font-bold mb-8">Navegação</div>
             <ul className="space-y-4 text-sm font-semibold text-white/50">
               <li><Link to="/" hash="inicio" className="hover:text-brand-light transition-colors">Início</Link></li>
-              <li><Link to="/audiovisual" className="hover:text-brand-light transition-colors">Audiovisual</Link></li>
               <li><Link to="/sites" className="hover:text-brand-light transition-colors">Sites</Link></li>
               <li><Link to="/" hash="sobre" className="hover:text-brand-light transition-colors">Sobre</Link></li>
             </ul>
