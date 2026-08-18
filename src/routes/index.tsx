@@ -778,6 +778,13 @@ const websiteProjects = [
     category: "SaaS / Tecnologia",
     description: "Interface moderna para sistema de gestão inteligente, priorizando clareza e funcionalidade.",
     isEmbeddable: true
+  },
+  {
+    name: "Caliber Gestão",
+    url: "https://calibergestao.com.br/",
+    category: "Gestão / Negócios",
+    description: "Solução completa para gestão empresarial, focada em organização e escala de processos.",
+    isEmbeddable: true
   }
 ];
 
