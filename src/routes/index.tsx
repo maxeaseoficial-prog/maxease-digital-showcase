@@ -752,10 +752,24 @@ function WebsiteShowcase({
 
 const websiteProjects = [
   {
+    name: "Caliber Gestão",
+    url: "https://calibergestao.com.br/",
+    category: "Gestão / Negócios",
+    description: "Solução completa para gestão empresarial, focada em organização e escala de processos.",
+    isEmbeddable: true
+  },
+  {
     name: "Jonathan Veículos",
     url: "https://jonathanveiculos.lovable.app/",
     category: "Marketplace Automotivo",
     description: "Plataforma otimizada para venda de veículos com interface intuitiva e alta conversão.",
+    isEmbeddable: true
+  },
+  {
+    name: "Kora Gestão Inteligente",
+    url: "https://www.koragestaointeligente.com.br/",
+    category: "SaaS / Tecnologia",
+    description: "Interface moderna para sistema de gestão inteligente, priorizando clareza e funcionalidade.",
     isEmbeddable: true
   },
   {
@@ -770,20 +784,6 @@ const websiteProjects = [
     url: "https://estofadosdoporto.com.br/",
     category: "E-commerce / Estofados",
     description: "Experiência de compra premium para móveis de alto padrão, focada em visual e conversão.",
-    isEmbeddable: true
-  },
-  {
-    name: "Kora Gestão Inteligente",
-    url: "https://www.koragestaointeligente.com.br/",
-    category: "SaaS / Tecnologia",
-    description: "Interface moderna para sistema de gestão inteligente, priorizando clareza e funcionalidade.",
-    isEmbeddable: true
-  },
-  {
-    name: "Caliber Gestão",
-    url: "https://calibergestao.com.br/",
-    category: "Gestão / Negócios",
-    description: "Solução completa para gestão empresarial, focada em organização e escala de processos.",
     isEmbeddable: true
   }
 ];
