@@ -100,6 +100,7 @@ export function Navbar() {
     { label: "Sites", kind: "route", to: "/sites" },
     // { label: "Clientes", kind: "hash", hash: "clientes" },
     { label: "Sobre", kind: "hash", hash: "sobre" },
+    { label: "Contato", kind: "hash", hash: "contato" },
   ];
 
   const linkClass =
