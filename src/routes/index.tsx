@@ -30,6 +30,14 @@ import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "MAXEASE Digital — Criamos experiências digitais que fazem sua empresa crescer" },
+      { name: "description", content: "Sites profissionais e sistemas sob medida desenvolvidos para posicionar marcas e gerar resultados reais." },
+      { property: "og:title", content: "MAXEASE Digital — Criamos experiências digitais que fazem sua empresa crescer" },
+      { property: "og:description", content: "Sites profissionais e sistemas personalizados desenvolvidos para posicionar marcas e gerar resultados reais." },
+    ],
+  }),
   component: Index,
 });
 
