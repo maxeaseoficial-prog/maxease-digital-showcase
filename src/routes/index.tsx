@@ -36,6 +36,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Sites profissionais e sistemas sob medida desenvolvidos para posicionar marcas e gerar resultados reais." },
       { property: "og:title", content: "MAXEASE Digital — Criamos experiências digitais que fazem sua empresa crescer" },
       { property: "og:description", content: "Sites profissionais e sistemas personalizados desenvolvidos para posicionar marcas e gerar resultados reais." },
+      { property: "og:image", content: "https://maxease-digital-showcase.lovable.app/__l5e/assets-v1/5220276f-90b0-4378-a098-210956a1590f/share-preview.png" },
+      { name: "twitter:image", content: "https://maxease-digital-showcase.lovable.app/__l5e/assets-v1/5220276f-90b0-4378-a098-210956a1590f/share-preview.png" },
     ],
   }),
   component: Index,
