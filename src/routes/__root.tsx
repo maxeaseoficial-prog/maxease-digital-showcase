@@ -88,8 +88,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MAXEASE Digital — Sites e Sistemas Profissionais" },
       { name: "twitter:description", content: "Sites profissionais e sistemas personalizados desenvolvidos para posicionar marcas e gerar resultados reais." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1e2bbfb9-e386-438b-b4f1-3c5ec0e36fd2/id-preview-74863895--5d4649ca-bb18-496d-8883-ef6310c6624e.lovable.app-1784060827423.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1e2bbfb9-e386-438b-b4f1-3c5ec0e36fd2/id-preview-74863895--5d4649ca-bb18-496d-8883-ef6310c6624e.lovable.app-1784060827423.png" },
+      { property: "og:image", content: "https://maxease-digital-showcase.lovable.app/__l5e/assets-v1/f3f18994-33d7-471e-885a-eddf76ac4549/share-preview.png" },
+      { name: "twitter:image", content: "https://maxease-digital-showcase.lovable.app/__l5e/assets-v1/f3f18994-33d7-471e-885a-eddf76ac4549/share-preview.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
