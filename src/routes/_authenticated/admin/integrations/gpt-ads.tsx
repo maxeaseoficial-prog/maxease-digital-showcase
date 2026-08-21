@@ -100,7 +100,7 @@ function GPTAdsAdminPage() {
             <input
               type="text"
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5 outline-none transition-all placeholder:text-slate-300"
-              placeholder="Insira o ID fornecido pelo GPT Ads"
+              placeholder="abra um campo aqui para eu colocar o ID do Pixel e o Código de configuração"
               value={formData.pixel_id || ''}
               onChange={(e) => setFormData({ ...formData, pixel_id: e.target.value })}
             />
