@@ -33,9 +33,11 @@ function GPTAdsAdminPage() {
     }
   });
 
+  const [activeTab, setActiveTab] = useState<'pixel' | 'chat'>('pixel');
   const [formData, setFormData] = useState<any>({
     pixel_id: '',
     config_code: '',
+    whatsapp_number: '',
     status: 'inactive',
     whatsapp_contact_enabled: true,
     lead_form_submitted_enabled: true,
