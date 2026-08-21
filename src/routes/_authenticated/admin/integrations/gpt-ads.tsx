@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getGPTAdsConfig, updateGPTAdsConfig } from '@/lib/gpt-ads.functions';
 import { useState, useEffect } from 'react';
-import { Save, CheckCircle2, XCircle, AlertTriangle, Loader2, ShieldCheck, Settings, Puzzle, Bell } from 'lucide-react';
+import { Save, CheckCircle2, XCircle, AlertTriangle, Loader2, ShieldCheck, Settings, Puzzle, Bell, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/_authenticated/admin/integrations/gpt-ads')({
