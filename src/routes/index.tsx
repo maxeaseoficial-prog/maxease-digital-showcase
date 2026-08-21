@@ -109,12 +109,40 @@ export function Navbar() {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = prev; };
   }, [mobileOpen]);
+  const { data: gptConfig } = useSuspenseQuery({
+    queryKey: ['gpt-ads-config'],
+    queryFn: () => getGPTAdsConfig(),
+  });
+  useGPTAds(gptConfig);
+
+  useEffect(() => {
+    const handleLinkClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('a');
+      if (!target) return;
+
+      const href = target.getAttribute('href') || '';
+      if (href.includes('wa.me') || href.includes('api.whatsapp.com')) {
+        const section = target.closest('section, header, footer');
+        const source = section?.id || section?.tagName.toLowerCase() || 'unknown';
+        
+        trackGPTAdsEvent('whatsapp_contact', {
+          source: source,
+          href: href
+        });
+      }
+    };
+
+    document.addEventListener('click', handleLinkClick);
+    return () => document.removeEventListener('click', handleLinkClick);
+  }, []);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
 
 
   const links: NavLink[] = [
