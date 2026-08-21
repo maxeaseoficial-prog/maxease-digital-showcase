@@ -2,7 +2,7 @@ import { useEffect, useCallback } from 'react';
 
 declare global {
   interface Window {
-    gpt_ads_pixel?: (event: string, name: string, params?: Record<string, any>) => void;
+    gpt_ads_pixel?: (...args: any[]) => void;
   }
 }
 
@@ -17,7 +17,6 @@ export const useGPTAds = (config: any) => {
 
     try {
       // Execute the provided configuration code
-      // We use a safe-ish evaluation context or just append the script
       const script = document.createElement('script');
       script.innerHTML = config.config_code;
       document.head.appendChild(script);
@@ -29,18 +28,22 @@ export const useGPTAds = (config: any) => {
   }, [config]);
 
   const trackEvent = useCallback((eventName: string, params?: Record<string, any>) => {
+    if (!config || config.status !== 'active') return;
+
+    // Check if the specific event is enabled in admin
+    const enabledKey = `${eventName}_enabled`;
+    if (config[enabledKey] === false) return;
+
     if (typeof window.gpt_ads_pixel === 'function') {
       window.gpt_ads_pixel('track', eventName, params);
     } else {
-      // Fallback if not initialized but requested
       console.warn(`GPT Ads: Event "${eventName}" triggered but pixel not initialized.`, params);
     }
-  }, []);
+  }, [config]);
 
   return { trackEvent };
 };
 
-// Global tracker function for non-hook usage if needed
 export const trackGPTAdsEvent = (eventName: string, params?: Record<string, any>) => {
   if (typeof window.gpt_ads_pixel === 'function') {
     window.gpt_ads_pixel('track', eventName, params);

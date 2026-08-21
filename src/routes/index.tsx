@@ -7,6 +7,10 @@ import {
 } from "lucide-react";
 import { useQuoteModal } from "@/components/QuoteModal";
 import { Monitor, Smartphone, ExternalLink } from "lucide-react";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { getGPTAdsConfig } from "@/lib/gpt-ads.functions";
+import { useGPTAds, trackGPTAdsEvent } from "@/lib/gpt-ads-tracking";
+
 
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
@@ -30,6 +34,13 @@ import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ['gpt-ads-config'],
+      queryFn: () => getGPTAdsConfig(),
+    });
+    return {};
+  },
   head: () => ({
     meta: [
       { title: "MAXEASE Digital — Criamos experiências digitais que fazem sua empresa crescer" },
@@ -42,6 +53,7 @@ export const Route = createFileRoute("/")({
   }),
   component: Index,
 });
+
 
 /* ---------------- Building blocks ---------------- */
 
@@ -97,12 +109,40 @@ export function Navbar() {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = prev; };
   }, [mobileOpen]);
+  const { data: gptConfig } = useSuspenseQuery({
+    queryKey: ['gpt-ads-config'],
+    queryFn: () => getGPTAdsConfig(),
+  });
+  useGPTAds(gptConfig);
+
+  useEffect(() => {
+    const handleLinkClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('a');
+      if (!target) return;
+
+      const href = target.getAttribute('href') || '';
+      if (href.includes('wa.me') || href.includes('api.whatsapp.com')) {
+        const section = target.closest('section, header, footer');
+        const source = section?.id || section?.tagName.toLowerCase() || 'unknown';
+        
+        trackGPTAdsEvent('whatsapp_contact', {
+          source: source,
+          href: href
+        });
+      }
+    };
+
+    document.addEventListener('click', handleLinkClick);
+    return () => document.removeEventListener('click', handleLinkClick);
+  }, []);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
 
 
   const links: NavLink[] = [

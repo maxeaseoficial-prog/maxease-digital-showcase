@@ -10,11 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitesRouteImport } from './routes/sites'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminIntegrationsGptAdsRouteImport } from './routes/_authenticated/admin/integrations/gpt-ads'
 
 const SitesRoute = SitesRouteImport.update({
   id: '/sites',
   path: '/sites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,30 +29,55 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminIntegrationsGptAdsRoute =
+  AuthenticatedAdminIntegrationsGptAdsRouteImport.update({
+    id: '/integrations/gpt-ads',
+    path: '/integrations/gpt-ads',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sites': typeof SitesRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/admin/integrations/gpt-ads': typeof AuthenticatedAdminIntegrationsGptAdsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sites': typeof SitesRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/admin/integrations/gpt-ads': typeof AuthenticatedAdminIntegrationsGptAdsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/sites': typeof SitesRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/admin/integrations/gpt-ads': typeof AuthenticatedAdminIntegrationsGptAdsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sites'
+  fullPaths: '/' | '/sites' | '/admin' | '/admin/integrations/gpt-ads'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sites'
-  id: '__root__' | '/' | '/sites'
+  to: '/' | '/sites' | '/admin' | '/admin/integrations/gpt-ads'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/sites'
+    | '/_authenticated/admin'
+    | '/_authenticated/admin/integrations/gpt-ads'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   SitesRoute: typeof SitesRoute
 }
 
@@ -58,6 +90,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -65,11 +104,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/integrations/gpt-ads': {
+      id: '/_authenticated/admin/integrations/gpt-ads'
+      path: '/integrations/gpt-ads'
+      fullPath: '/admin/integrations/gpt-ads'
+      preLoaderRoute: typeof AuthenticatedAdminIntegrationsGptAdsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminIntegrationsGptAdsRoute: typeof AuthenticatedAdminIntegrationsGptAdsRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminIntegrationsGptAdsRoute:
+    AuthenticatedAdminIntegrationsGptAdsRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   SitesRoute: SitesRoute,
 }
 export const routeTree = rootRouteImport

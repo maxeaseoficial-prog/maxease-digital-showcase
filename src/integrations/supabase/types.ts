@@ -150,6 +150,42 @@ export type Database = {
           },
         ]
       }
+      gpt_ads_config: {
+        Row: {
+          budget_requested_enabled: boolean
+          config_code: string | null
+          id: string
+          lead_form_submitted_enabled: boolean
+          pixel_id: string | null
+          status: Database["public"]["Enums"]["gpt_ads_status"]
+          updated_at: string | null
+          updated_by: string | null
+          whatsapp_contact_enabled: boolean
+        }
+        Insert: {
+          budget_requested_enabled?: boolean
+          config_code?: string | null
+          id?: string
+          lead_form_submitted_enabled?: boolean
+          pixel_id?: string | null
+          status?: Database["public"]["Enums"]["gpt_ads_status"]
+          updated_at?: string | null
+          updated_by?: string | null
+          whatsapp_contact_enabled?: boolean
+        }
+        Update: {
+          budget_requested_enabled?: boolean
+          config_code?: string | null
+          id?: string
+          lead_form_submitted_enabled?: boolean
+          pixel_id?: string | null
+          status?: Database["public"]["Enums"]["gpt_ads_status"]
+          updated_at?: string | null
+          updated_by?: string | null
+          whatsapp_contact_enabled?: boolean
+        }
+        Relationships: []
+      }
       notices: {
         Row: {
           client_id: string
@@ -337,6 +373,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "client" | "operator"
+      gpt_ads_status: "active" | "inactive"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -465,6 +502,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "client", "operator"],
+      gpt_ads_status: ["active", "inactive"],
     },
   },
 } as const

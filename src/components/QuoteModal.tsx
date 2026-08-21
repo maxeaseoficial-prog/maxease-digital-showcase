@@ -8,6 +8,8 @@ import {
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, ArrowRight, ArrowLeft, Video, Globe, Cpu, Megaphone, Check, Send } from "lucide-react";
+import { trackGPTAdsEvent } from "@/lib/gpt-ads-tracking";
+
 
 /* ---------------- Types ---------------- */
 type ServiceKey = "audiovisual" | "sites" | "sistemas" | "criativos";
@@ -277,7 +279,15 @@ function QuoteModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
     const msg = buildMessage(service, data);
     const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`;
     window.open(url, "_blank", "noopener,noreferrer");
+    
+    // Track lead form submission event
+    trackGPTAdsEvent('lead_form_submitted', {
+      service: service,
+      source: 'budget_modal'
+    });
+
     handleClose();
+
   };
 
   return (
