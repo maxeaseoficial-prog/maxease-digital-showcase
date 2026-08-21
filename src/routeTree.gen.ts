@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitesRouteImport } from './routes/sites'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedAdminIntegrationsGptAdsRouteImport } from './routes/_authenticated/admin/integrations/gpt-ads'
 
 const SitesRoute = SitesRouteImport.update({
   id: '/sites',
@@ -22,31 +23,41 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminIntegrationsGptAdsRoute =
+  AuthenticatedAdminIntegrationsGptAdsRouteImport.update({
+    id: '/_authenticated/admin/integrations/gpt-ads',
+    path: '/admin/integrations/gpt-ads',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sites': typeof SitesRoute
+  '/admin/integrations/gpt-ads': typeof AuthenticatedAdminIntegrationsGptAdsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sites': typeof SitesRoute
+  '/admin/integrations/gpt-ads': typeof AuthenticatedAdminIntegrationsGptAdsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/sites': typeof SitesRoute
+  '/_authenticated/admin/integrations/gpt-ads': typeof AuthenticatedAdminIntegrationsGptAdsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sites'
+  fullPaths: '/' | '/sites' | '/admin/integrations/gpt-ads'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sites'
-  id: '__root__' | '/' | '/sites'
+  to: '/' | '/sites' | '/admin/integrations/gpt-ads'
+  id: '__root__' | '/' | '/sites' | '/_authenticated/admin/integrations/gpt-ads'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SitesRoute: typeof SitesRoute
+  AuthenticatedAdminIntegrationsGptAdsRoute: typeof AuthenticatedAdminIntegrationsGptAdsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +76,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/integrations/gpt-ads': {
+      id: '/_authenticated/admin/integrations/gpt-ads'
+      path: '/admin/integrations/gpt-ads'
+      fullPath: '/admin/integrations/gpt-ads'
+      preLoaderRoute: typeof AuthenticatedAdminIntegrationsGptAdsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SitesRoute: SitesRoute,
+  AuthenticatedAdminIntegrationsGptAdsRoute:
+    AuthenticatedAdminIntegrationsGptAdsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
