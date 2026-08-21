@@ -1,10 +1,21 @@
 import { supabase } from "@/integrations/supabase/client";
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+
+const gptAdsConfigSchema = z.object({
+  id: z.string().uuid().optional(),
+  pixel_id: z.string().nullable(),
+  config_code: z.string().nullable(),
+  status: z.enum(['active', 'inactive']),
+  whatsapp_contact_enabled: z.boolean(),
+  lead_form_submitted_enabled: z.boolean(),
+  budget_requested_enabled: z.boolean(),
+});
 
 export const getGPTAdsConfig = createServerFn({ method: "GET" })
   .handler(async () => {
     const { data, error } = await supabase
-      .from('gpt_ads_config')
+      .from('gpt_ads_config' as any)
       .select('*')
       .maybeSingle();
     
@@ -16,12 +27,10 @@ export const getGPTAdsConfig = createServerFn({ method: "GET" })
   });
 
 export const updateGPTAdsConfig = createServerFn({ method: "POST" })
-  .input((data: any) => data)
+  .validator((data: unknown) => gptAdsConfigSchema.parse(data))
   .handler(async ({ data }) => {
-    // Note: In a real app, we'd verify the admin role here using context.supabase
-    // For now, we assume RLS handles the permission check on the DB level.
     const { error } = await supabase
-      .from('gpt_ads_config')
+      .from('gpt_ads_config' as any)
       .upsert({
         id: data.id || undefined,
         pixel_id: data.pixel_id,
@@ -30,8 +39,8 @@ export const updateGPTAdsConfig = createServerFn({ method: "POST" })
         whatsapp_contact_enabled: data.whatsapp_contact_enabled,
         lead_form_submitted_enabled: data.lead_form_submitted_enabled,
         budget_requested_enabled: data.budget_requested_enabled,
-        updated_at: new Error().toISOString(), // Simple way to get current timestamp
-      });
+        updated_at: new Date().toISOString(),
+      } as any);
 
     if (error) throw new Error(error.message);
     return { success: true };
