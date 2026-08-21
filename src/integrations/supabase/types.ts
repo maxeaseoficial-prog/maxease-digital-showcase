@@ -161,6 +161,7 @@ export type Database = {
           updated_at: string | null
           updated_by: string | null
           whatsapp_contact_enabled: boolean
+          whatsapp_number: string | null
         }
         Insert: {
           budget_requested_enabled?: boolean
@@ -172,6 +173,7 @@ export type Database = {
           updated_at?: string | null
           updated_by?: string | null
           whatsapp_contact_enabled?: boolean
+          whatsapp_number?: string | null
         }
         Update: {
           budget_requested_enabled?: boolean
@@ -183,6 +185,7 @@ export type Database = {
           updated_at?: string | null
           updated_by?: string | null
           whatsapp_contact_enabled?: boolean
+          whatsapp_number?: string | null
         }
         Relationships: []
       }

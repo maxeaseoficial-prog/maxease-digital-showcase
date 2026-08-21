@@ -1,0 +1,1 @@
+ALTER TABLE public.gpt_ads_config ADD COLUMN IF NOT EXISTS whatsapp_number text DEFAULT '5542988377640';

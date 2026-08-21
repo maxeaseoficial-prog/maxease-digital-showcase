@@ -6,6 +6,7 @@ const gptAdsConfigSchema = z.object({
   id: z.string().uuid().optional(),
   pixel_id: z.string().nullable(),
   config_code: z.string().nullable(),
+  whatsapp_number: z.string().nullable(),
   status: z.enum(['active', 'inactive']),
   whatsapp_contact_enabled: z.boolean(),
   lead_form_submitted_enabled: z.boolean(),
@@ -28,6 +29,7 @@ export const getGPTAdsConfig = createServerFn({ method: "GET" })
       return {
         pixel_id: '',
         config_code: '',
+        whatsapp_number: '5542988377640',
         status: 'inactive',
         whatsapp_contact_enabled: true,
         lead_form_submitted_enabled: true,
