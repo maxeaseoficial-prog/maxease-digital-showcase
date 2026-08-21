@@ -1,47 +1,36 @@
-# Plan: Redesign Portfolio/Projects Area for `/sites`
+# Plano de Implementação - GPT Ads Pixel
 
-The goal is to replace the current YouTube video-based showcase in the `/sites` route with a premium, interactive "WebsiteShowcase" component. This component will feature built-in (HTML/CSS) mockups for Desktop and Mobile, hosting interactive iframes of the real sites.
+Implementação de um sistema de rastreamento GPT Ads Pixel com gerenciamento via painel administrativo, garantindo segurança e evitando código hardcoded.
 
-## Proposed Changes
+## Etapas
 
-### 1. Identify Data and Remove Legacy Content
-- Identify the existing projects data in `src/routes/index.tsx`.
-- Remove the YouTube-based showcase logic from the `Sites` component in `src/routes/index.tsx`.
-- Clean up unused imports and arrays related to the old YouTube videos in `/sites`.
+### 1. Banco de Dados e Segurança
+- Criar a tabela `gpt_ads_config` no banco de dados via migração SQL.
+- Configurar Row Level Security (RLS) para proteger os dados.
+- Garantir que apenas administradores possam modificar as configurações.
 
-### 2. Create Reusable Showcase Component
-- Create a new component `WebsiteShowcase` (or similar) within `src/routes/index.tsx` (or a separate file if it grows too large, but keeping it in `index.tsx` for now to match current patterns).
-- **Mockup Construction:** Build minimalist, premium frames for Desktop (Monitor) and Mobile (Smartphone) using Tailwind CSS.
-- **Iframe Logic:**
-  - **Desktop:** Viewport scale strategy (e.g., simulate 1440px width scaled down to fit the mockup) to avoid mobile breakpoints.
-  - **Mobile:** Viewport simulation (e.g., 390px width).
-  - **Interactivity:** Ensure iframes are interactive (scroll, clicks) while providing a "Explore Project" hint.
-- **Performance:** Implement `loading="lazy"` and an `IntersectionObserver` (or `framer-motion` viewport detection) to only mount iframes when in view.
+### 2. Backend (Server Functions)
+- Desenvolver funções de servidor para ler e atualizar as configurações do Pixel de forma segura.
+- Implementar validação de dados no lado do servidor.
 
-### 3. Implement Fallback Strategy
-- Detect if a site allows embedding (or define a list of projects with fallback assets).
-- If blocked by CSP/X-Frame-Options, show a high-quality static preview (if available) or a styled placeholder with an "Open Project" link.
+### 3. Frontend - Rastreamento Centralizado
+- Criar o arquivo `src/lib/gpt-ads-tracking.ts` para centralizar toda a lógica do Pixel.
+- Desenvolver um hook `useGPTAds` para inicializar o Pixel (uma única vez).
+- Implementar a função `trackGPTAdsEvent` para disparo de eventos em todo o site.
 
-### 4. Layout & Motion
-- **Composition:** 70-75% Monitor, 25-30% Smartphone with slight overlap for depth.
-- **Motion:** Staggered entry animation using Framer Motion (opacity + translate).
-- **Responsive Design:** 
-  - Desktop: Side-by-side/Overlapping.
-  - Tablet/Mobile: Stacked vertically or toggle-able views to avoid horizontal overflow and "scroll traps".
+### 4. Painel Administrativo
+- Criar a nova rota e página `src/routes/_authenticated/admin/integrations/gpt-ads.tsx`.
+- Desenvolver o formulário de configuração com campos para Pixel ID, Código de Configuração e Status.
+- Adicionar controles para ativar/desativar eventos específicos (WhatsApp, Leads, Orçamentos).
+- Implementar funcionalidade de teste de configuração.
 
-### 5. Update `/sites` Route
-- Pass the actual project data (URLs, titles, descriptions) to the new `WebsiteShowcase` component.
+### 5. Integração com Eventos do Site
+- **WhatsApp**: Rastrear todos os cliques em links de WhatsApp (`wa.me`, `api.whatsapp.com`) enviando o evento `whatsapp_contact` com a origem (`source`).
+- **Formulários**: Rastrear envios bem-sucedidos de formulários (como o Modal de Orçamento) com o evento `lead_form_submitted`.
+- **Navegação**: Garantir que a inicialização e o rastreamento funcionem corretamente em uma Single Page Application (SPA).
 
-## Technical Details
-
-- **Visual Style:** Navy deep background, graphite/navy frames, subtle blue MaxEase accents.
-- **Interactivity:** `pointer-events-auto` on iframes with a clear "Visit Site" link.
-- **Accessibility:** Proper `title` tags for iframes and accessible links.
-
-## Success Criteria
-- [ ] No more YouTube videos on `/sites`.
-- [ ] Real, interactive sites visible inside custom mockups.
-- [ ] Desktop and Mobile versions of the same URL shown simultaneously.
-- [ ] Smooth entry animations and no performance lag.
-- [ ] Fallback working for restricted domains.
-- [ ] `/audiovisual` remains unchanged.
+## Detalhes Técnicos
+- **Tecnologia**: TanStack Start + Supabase.
+- **Segurança**: As configurações serão lidas do banco de dados e nunca expostas em variáveis de ambiente públicas ou código-fonte.
+- **Performance**: O script do Pixel será injetado dinamicamente apenas quando ativado, evitando carregamentos desnecessários.
+- **Manutenibilidade**: A troca de ID ou código do Pixel poderá ser feita inteiramente via interface administrativa.
