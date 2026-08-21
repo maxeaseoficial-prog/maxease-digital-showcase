@@ -112,7 +112,7 @@ function GPTAdsAdminPage() {
             <textarea
               rows={8}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/5 outline-none transition-all font-mono text-sm placeholder:text-slate-300 bg-slate-50"
-              placeholder="Cole aqui o código oficial de configuração fornecido pelo GPT Ads..."
+              placeholder="abra um campo aqui para eu colocar o ID do Pixel e o Código de configuração"
               value={formData.config_code || ''}
               onChange={(e) => setFormData({ ...formData, config_code: e.target.value })}
             />
