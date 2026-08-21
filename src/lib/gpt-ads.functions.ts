@@ -29,6 +29,7 @@ export const getGPTAdsConfig = createServerFn({ method: "GET" })
       return {
         pixel_id: '',
         config_code: '',
+        whatsapp_number: '5542988377640',
         status: 'inactive',
         whatsapp_contact_enabled: true,
         lead_form_submitted_enabled: true,
