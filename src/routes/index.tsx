@@ -7,6 +7,10 @@ import {
 } from "lucide-react";
 import { useQuoteModal } from "@/components/QuoteModal";
 import { Monitor, Smartphone, ExternalLink } from "lucide-react";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { getGPTAdsConfig } from "@/lib/gpt-ads.functions";
+import { useGPTAds, trackGPTAdsEvent } from "@/lib/gpt-ads-tracking";
+
 
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
@@ -30,6 +34,13 @@ import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData({
+      queryKey: ['gpt-ads-config'],
+      queryFn: () => getGPTAdsConfig(),
+    });
+    return {};
+  },
   head: () => ({
     meta: [
       { title: "MAXEASE Digital — Criamos experiências digitais que fazem sua empresa crescer" },
@@ -42,6 +53,7 @@ export const Route = createFileRoute("/")({
   }),
   component: Index,
 });
+
 
 /* ---------------- Building blocks ---------------- */
 
