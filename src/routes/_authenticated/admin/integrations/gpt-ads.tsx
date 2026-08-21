@@ -182,6 +182,47 @@ function GPTAdsAdminPage() {
         </div>
       </section>
 
+      <section className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl overflow-hidden text-white">
+        <div className="p-6 border-b border-white/5 flex items-center gap-3 bg-white/5">
+          <Globe className="h-5 w-5 text-brand-light" />
+          <h2 className="text-lg font-bold">API de Conversões (Server-side)</h2>
+        </div>
+        
+        <div className="p-6 space-y-4">
+          <p className="text-slate-400 text-sm leading-relaxed">
+            Envie este evento do lado do servidor a partir do seu backend quando a conversão ocorrer. 
+            Substitua os placeholders pela sua chave da Conversions API e pelos detalhes do evento.
+          </p>
+
+          <div className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-brand-blue to-brand-bright rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+            <div className="relative bg-black rounded-xl p-5 overflow-x-auto border border-white/10 font-mono text-[13px] leading-relaxed text-brand-light/90">
+              <div className="flex items-center gap-2 mb-4 text-xs text-white/40 uppercase tracking-widest border-b border-white/5 pb-2">
+                <span>Solicitação da API de Conversões</span>
+              </div>
+              <pre className="whitespace-pre">{`curl -X POST "https://bzr.openai.com/v1/events?pid=${formData.pixel_id || 'NbZkQktsnntyt6ke638rTA'}" \\
+  -H "Authorization: Bearer <API-KEY>" \\
+  -H "Content-Type: application/json" \\
+  --data '{
+    "validate_only": false,
+    "events": [
+      {
+        "id": "<EVENT-ID>",
+        "type": "page_viewed",
+        "timestamp_ms": <TIMESTAMP_MS>,
+        "source_url": "https://example.com/conversion",
+        "action_source": "web",
+        "data": {
+          "type": "contents"
+        }
+      }
+    ]
+  }'`}</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="flex flex-col sm:flex-row items-center gap-4">
         <button
           onClick={handleSave}
