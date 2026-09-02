@@ -887,7 +887,7 @@ function Clients() {
             <Counter to={1000} label="Conteúdos entregues" />
           </Reveal>
           <Reveal delay={0.3}>
-            <Counter to={10} label="Empresas atendidas" />
+            <Counter to={20} label="Empresas atendidas" />
           </Reveal>
         </div>
       </div>
