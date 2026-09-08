@@ -8,17 +8,24 @@ declare global {
 
 export const useGPTAds = (config: any) => {
   useEffect(() => {
-    if (!config || config.status !== 'active' || !config.pixel_id || !config.config_code) {
+    if (!config || config.status !== 'active' || !config.pixel_id) {
       return;
     }
 
     // Prevent duplicate initialization
     if (window.gpt_ads_pixel) return;
 
+    const configCode = typeof config.config_code === 'string' ? config.config_code.trim() : '';
+    if (!configCode || configCode.startsWith('<')) {
+      console.warn('GPT Ads: configuration code is empty or invalid; skipping script injection.', configCode);
+      return;
+    }
+
     try {
-      // Execute the provided configuration code
       const script = document.createElement('script');
-      script.innerHTML = config.config_code;
+      script.type = 'text/javascript';
+      script.async = false;
+      script.textContent = configCode;
       document.head.appendChild(script);
 
       console.log('GPT Ads Pixel initialized with ID:', config.pixel_id);

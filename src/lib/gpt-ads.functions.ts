@@ -41,7 +41,7 @@ export const getGPTAdsConfig = createServerFn({ method: "GET" })
   });
 
 export const updateGPTAdsConfig = createServerFn({ method: "POST" })
-  .inputValidator((data) => gptAdsConfigSchema.parse(data))
+  .validator((data) => gptAdsConfigSchema.parse(data))
   .handler(async ({ data }) => {
     // Basic server-side protection: in a real app, verify admin role here
     const { data: result, error } = await supabase
