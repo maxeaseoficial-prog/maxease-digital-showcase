@@ -16,100 +16,89 @@ import {
 import { useEffect, type CSSProperties, type ReactNode } from "react";
 
 const problems = [
-  "Cada vendedor trabalha de uma forma",
-  "Oportunidades se perdem por falta de acompanhamento",
-  "O gestor não consegue identificar onde a venda trava",
-  "Metas existem, mas o processo para alcançá-las não está claro",
-  "O resultado depende excessivamente de pessoas específicas",
-  "Falta previsibilidade comercial",
+  "Não sabe como abordar um cliente sem parecer insistente",
+  "Conversa com muitos clientes, mas fecha poucos",
+  "Perde vendas por não saber contornar objeções",
+  "Dá desconto antes mesmo de o cliente pedir",
+  "Tem dificuldade para conduzir o cliente até a decisão",
+  "Depende de indicação, movimento da loja ou sorte para vender",
 ];
 
 const pillars = [
   {
     number: "01",
     title: "Processo",
-    text: "Estrutura, etapas, responsabilidades e padrões claros para a operação comercial.",
+    text: "Saiba como conduzir uma conversa comercial desde a abordagem até o fechamento, sem depender de improviso.",
     icon: Workflow,
   },
   {
     number: "02",
     title: "Sistema",
-    text: "Organização, acompanhamento, indicadores e gestão da execução.",
+    text: "Desenvolva uma rotina comercial que aumente sua consistência e sua capacidade de gerar oportunidades.",
     icon: BarChart3,
   },
   {
     number: "03",
     title: "Vendas",
-    text: "Transformar processo e gestão em execução comercial orientada a resultado.",
+    text: "Aprenda a aplicar técnicas de comunicação, negociação, contorno de objeções e fechamento na vida real.",
     icon: Target,
   },
 ];
 
 const before = [
-  "Operação dependente de pessoas",
-  "Processos pouco claros",
-  "Gestão reativa",
-  "Baixa previsibilidade",
-  "Dificuldade para escalar",
+  "Improvisa na abordagem",
+  "Fica inseguro diante das objeções",
+  "Concede desconto com facilidade",
+  "Não sabe conduzir o fechamento",
+  "Depende do movimento para vender",
 ];
 
 const after = [
-  "Processo comercial definido",
-  "Papéis e responsabilidades claros",
-  "Gestão baseada em acompanhamento",
-  "Equipe orientada à execução",
-  "Maior previsibilidade operacional",
+  "Aborda com segurança",
+  "Conduz melhor a conversa",
+  "Defende valor antes de falar em preço",
+  "Sabe responder às principais objeções",
+  "Conduz o cliente até a decisão",
 ];
 
 const structure = [
-  { title: "Diagnóstico comercial", icon: Target },
-  { title: "Estruturação do processo", icon: Workflow },
-  { title: "Organização da operação", icon: Building2 },
-  { title: "Gestão da equipe", icon: Users },
-  { title: "Indicadores e acompanhamento", icon: BarChart3 },
-  { title: "Evolução da execução comercial", icon: TrendingUp },
+  { title: "Mentalidade de vendas", icon: Target },
+  { title: "Abordagem", icon: Workflow },
+  { title: "Investigação", icon: Building2 },
+  { title: "Apresentação", icon: Users },
+  { title: "Objeções", icon: BarChart3 },
+  { title: "Fechamento", icon: TrendingUp },
 ];
 
 const audiences = [
-  { icon: Building2, text: "Empresários" },
-  { icon: Target, text: "Gestores comerciais" },
-  { icon: Users, text: "Empresas formando uma equipe de vendas" },
-  { icon: Users, text: "Empresas reorganizando uma equipe existente" },
-  { icon: Building2, text: "Operações que cresceram sem estruturar o comercial" },
-  { icon: Target, text: "Negócios que querem reduzir improvisação na gestão de vendas" },
+  { icon: Building2, text: "Vendedores B2C" },
+  { icon: Target, text: "Empresários" },
+  { icon: Users, text: "Profissionais comerciais" },
+  { icon: Users, text: "Quem está começando em vendas" },
+  { icon: Building2, text: "Quem já vende, mas sente que poderia vender muito mais" },
 ];
 
 const objections = [
-  ["Processo", "Para deixar claro como a operação comercial deve funcionar."],
-  ["Sistema", "Para transformar acompanhamento e gestão em rotina."],
-  ["Vendas", "Para fazer a estrutura chegar até a execução comercial."],
+  ["Processo", "Para saber exatamente como conduzir uma venda."],
+  ["Sistema", "Para transformar boas técnicas em uma rotina comercial consistente."],
+  ["Vendas", "Para transformar conhecimento em conversão."],
 ];
 
 const faqs = [
   {
     question: "Para quem é o Método PSV?",
     answer:
-      "Para empresas, empresários e gestores que precisam organizar, formar ou reorganizar sua operação comercial.",
+      "Para vendedores, empresários e profissionais que trabalham com vendas B2C e querem desenvolver suas habilidades comerciais, aumentar sua conversão e vender com mais consistência.",
   },
   {
-    question: "Como funciona o processo?",
+    question: "O Método PSV serve para quem já trabalha com vendas?",
     answer:
-      "O formato detalhado será apresentado após a definição final da entrega. A estrutura parte de processo, sistema e execução em vendas.",
+      "Sim. O método foi desenvolvido tanto para quem está começando quanto para quem já vende e quer aprimorar sua abordagem, negociação, tratamento de objeções e fechamento.",
   },
   {
-    question: "O método serve para equipes comerciais já existentes?",
+    question: "Preciso ter experiência em vendas para fazer o Método PSV?",
     answer:
-      "Sim. A proposta contempla operações que precisam organizar processos, responsabilidades, acompanhamento e execução.",
-  },
-  {
-    question: "Também funciona para quem está montando uma nova equipe?",
-    answer:
-      "Sim. O método também foi pensado para empresas que precisam estruturar a operação desde a formação da equipe.",
-  },
-  {
-    question: "Como saber se minha operação comercial precisa ser estruturada?",
-    answer:
-      "Falta de clareza no processo, gestão reativa, dependência de pessoas específicas e pouca previsibilidade são sinais relevantes.",
+      "Não. O método apresenta os fundamentos e as técnicas necessárias para desenvolver uma venda mais segura, profissional e consistente.",
   },
 ];
 
@@ -604,13 +593,13 @@ function Hero() {
           Processo, Sistema e <strong>Vendas.</strong>
         </p>
         <p className="hero-description">
-          Estruture sua operação comercial com processos claros, gestão e um sistema de vendas preparado para gerar resultados previsíveis.
+          Um método prático para empresários e vendedores que querem dominar as principais habilidades das vendas B2C, aumentar sua conversão e transformar vendas em resultado.
         </p>
-        <CtaLink>Quero estruturar minha equipe de vendas</CtaLink>
-        <div className="hero-proofline" aria-label="Processo, Gestão, Execução e Vendas">
+        <CtaLink>Quero aprender a vender mais</CtaLink>
+        <div className="hero-proofline" aria-label="Mentalidade, Processo, Técnica e Vendas">
+          <span>Mentalidade</span>
           <span>Processo</span>
-          <span>Gestão</span>
-          <span>Execução</span>
+          <span>Técnica</span>
           <span>Vendas</span>
         </div>
       </div>
@@ -624,8 +613,8 @@ function ProblemSection() {
       <div className="page-shell">
         <SectionLabel number="01">O ponto de partida</SectionLabel>
         <div className="problem-heading" data-reveal>
-          <h2>Vender mais não começa cobrando mais do vendedor.</h2>
-          <p>Começa construindo uma operação comercial que sabe o que fazer, como fazer e como medir.</p>
+          <h2>Vender mais não depende de sorte. Depende de método.</h2>
+          <p>Vendedores que dominam o processo comercial conseguem abordar melhor, conduzir conversas com mais segurança, contornar objeções e fechar mais vendas.</p>
         </div>
         <div className="problem-list">
           {problems.map((problem, index) => (
@@ -650,12 +639,12 @@ function MethodSection() {
     <section id="metodo" className="section method-section">
       <div className="method-grid" aria-hidden="true" />
       <div className="page-shell">
-        <SectionLabel number="02">A estrutura</SectionLabel>
+        <SectionLabel number="02">O método PSV</SectionLabel>
         <div className="section-heading section-heading-wide" data-reveal>
           <h2>
             O Método <span>PSV</span>
           </h2>
-          <p>Uma estrutura comercial construída sobre três fundamentos.</p>
+          <p>Um método para transformar vendas em uma habilidade dominada.</p>
         </div>
         <div className="pillar-flow">
           {pillars.map((pillar, index) => {
@@ -678,7 +667,7 @@ function MethodSection() {
             );
           })}
         </div>
-        <div className="method-signature" aria-label="Processo leva ao sistema, que leva a vendas">
+        <div className="method-signature" aria-label="Processo, Sistema e Vendas">
           <span>Processo</span>
           <ArrowRight aria-hidden="true" />
           <span>Sistema</span>
@@ -697,10 +686,10 @@ function TransformationSection() {
         <SectionLabel number="03">A transformação</SectionLabel>
         <div className="transformation-head">
           <h2 className="transformation-title">
-            De uma equipe que apenas vende para uma operação <span>comercial estruturada.</span>
+            De vendedor que tenta vender para vendedor que <span>sabe vender.</span>
           </h2>
           <p className="transformation-intro">
-            O Método PSV organiza a operação comercial para que processo, gestão e execução trabalhem na mesma direção.
+            O Método PSV transforma conhecimento em habilidade prática para quem vive de vendas.
           </p>
         </div>
         <div className="comparison" data-reveal>
@@ -752,8 +741,8 @@ function StructureSection() {
   return (
     <section className="section section-light">
       <div className="page-shell">
-        <SectionLabel number="04">Dentro da operação</SectionLabel>
-        <h2 className="structure-title">O que estruturamos dentro da sua operação comercial</h2>
+        <SectionLabel number="04">O que você vai aprender</SectionLabel>
+        <h2 className="structure-title">O que você vai aprender no Método PSV</h2>
         <ol className="timeline">
           {structure.map(({ title, icon: Icon }, index) => (
             <li key={title} data-reveal style={{ "--reveal-delay": `${index * 65}ms` } as CSSProperties}>
@@ -786,7 +775,10 @@ function AuthoritySection() {
           <h2>Quem está por trás do Método PSV</h2>
           <p className="authority-name">Silvio Luiz Eidt Junior</p>
           <p className="authority-bio">
-            Especialista em estruturação comercial e responsável pelo Método PSV. Esta área está preparada para receber a biografia oficial na próxima etapa do projeto.
+            Empresário, Mentor e Especialista em Vendas B2C. Silvio dedica sua experiência a ensinar pessoas a vender melhor, com método, técnica e aplicação prática.
+          </p>
+          <p className="authority-bio">
+            Criador do Método PSV, desenvolveu uma metodologia própria para quem quer transformar vendas em uma habilidade e aumentar seus resultados no mercado B2C.
           </p>
           <div className="authority-line">
             <span>Processo</span>
@@ -804,7 +796,10 @@ function AudienceSection() {
     <section className="section section-light audience-section">
       <div className="page-shell">
         <SectionLabel number="06">Para quem é</SectionLabel>
-        <h2>O Método PSV é para empresas que precisam transformar vendas em uma operação.</h2>
+        <h2>Para quem quer vender mais</h2>
+        <p className="authority-bio" style={{ maxWidth: "54rem", marginTop: "1rem" }}>
+          O Método PSV foi criado para quem entende que vender é uma habilidade que pode ser aprendida, praticada e aperfeiçoada.
+        </p>
         <div className="audience-list">
           {audiences.map(({ icon: Icon, text }, index) => (
             <div className="audience-item" key={text} data-reveal style={{ "--reveal-delay": `${index * 55}ms` } as CSSProperties}>
@@ -826,27 +821,27 @@ function OfferSection() {
       <div className="page-shell offer-layout">
         <div data-reveal>
           <SectionLabel number="07">Próximo passo</SectionLabel>
-          <h2>Estruture sua equipe de vendas com o Método PSV.</h2>
-          <p>Processo, Sistema e Vendas trabalhando juntos para transformar sua operação comercial.</p>
+          <h2>Aprenda a vender com método.</h2>
+          <p>Domine o processo, desenvolva sua técnica e aumente sua capacidade de transformar conversas em vendas.</p>
         </div>
         <div className="offer-panel" data-reveal>
-          <p className="offer-panel-title">Uma operação preparada para avançar</p>
+          <p className="offer-panel-title">Uma rotina para vender melhor</p>
           <div className="offer-principles" aria-label="Fundamentos do Método PSV">
             <span>
               <Workflow aria-hidden="true" />
-              Processo claro
+              Processo
             </span>
             <span>
               <BarChart3 aria-hidden="true" />
-              Gestão acompanhável
+              Técnica
             </span>
             <span>
               <Target aria-hidden="true" />
-              Execução orientada
+              Conversão
             </span>
           </div>
           <a href="#contato" className="cta-link">
-            <span>Quero conhecer o Método PSV</span>
+            <span>Quero aprender o Método PSV</span>
             <ArrowRight aria-hidden="true" className="size-5 shrink-0" />
           </a>
         </div>
@@ -861,7 +856,7 @@ function ObjectionsSection() {
       <div className="page-shell">
         <SectionLabel number="08">Clareza na operação</SectionLabel>
         <h2>
-          Estruturar vendas não é adicionar burocracia. <span>É eliminar improviso.</span>
+          Vender melhor não é falar mais. <span>É saber conduzir melhor.</span>
         </h2>
         <div className="objection-rows">
           {objections.map(([title, text], index) => (
@@ -873,9 +868,9 @@ function ObjectionsSection() {
           ))}
         </div>
         <div className="objection-close">
-          <p>Uma equipe comercial forte não depende apenas de bons vendedores.</p>
-          <p>Depende de uma estrutura que permita que boas pessoas executem um bom processo.</p>
-          <CtaLink secondary>Quero conhecer o Método PSV</CtaLink>
+          <p>O Método PSV ensina o que fazer antes, durante e depois de uma conversa de vendas.</p>
+          <p>Um bom vendedor não depende de improviso para fechar uma venda.</p>
+          <CtaLink secondary>Quero aprender o Método PSV</CtaLink>
         </div>
       </div>
     </section>
@@ -914,7 +909,7 @@ function FinalCta() {
       <div className="page-shell final-layout">
         <div data-reveal>
           <p className="eyebrow">Método PSV</p>
-          <h2>Sua equipe não precisa depender de improviso para vender.</h2>
+          <h2>Você não precisa nascer vendedor. Você precisa aprender a vender.</h2>
         </div>
         <div data-reveal>
           <div className="final-words">
@@ -922,8 +917,8 @@ function FinalCta() {
             <span>Sistema.</span>
             <span>Vendas.</span>
           </div>
-          <p>Construa uma operação comercial mais organizada, gerenciável e preparada para crescer.</p>
-          <CtaLink>Quero estruturar minha operação comercial</CtaLink>
+          <p>O Método PSV reúne os fundamentos, técnicas e estratégias práticas para quem quer vender melhor no mercado B2C.</p>
+          <CtaLink>Quero aprender a vender</CtaLink>
         </div>
         <div className="final-media" data-reveal aria-hidden="true">
           <img src="/silviometodopsv/silvio-speaker.jpg" alt="" width="972" height="1215" loading="lazy" decoding="async" />
@@ -993,13 +988,13 @@ export const Route = createFileRoute("/silviometodopsv")({
       {
         name: "description",
         content:
-          "Página do Método PSV, de Silvio Luiz Eidt Junior, para estruturação profissional de equipes e operações comerciais.",
+          "Método PSV de Silvio Luiz Eidt Junior: escola de vendas B2C para aprender abordagem, comunicação, objeções, negociação e fechamento.",
       },
-      { property: "og:title", content: "Método PSV | Processo, Sistema e Vendas" },
+      { property: "og:title", content: "Método PSV | Escola de Vendas B2C" },
       {
         property: "og:description",
         content:
-          "Processo, Sistema e Vendas para estruturar uma operação comercial com gestão, execução e previsibilidade.",
+          "Aprenda a vender mais, melhor e com mais consistência com o Método PSV, de Silvio Luiz Eidt Junior.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
