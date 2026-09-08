@@ -583,14 +583,6 @@ function WebsiteShowcase({
   const isEmbeddable = project.isEmbeddable ?? true;
   const [frameError, setFrameError] = useState(false);
 
-  useEffect(() => {
-    // Check if the URL might be blocked by X-Frame-Options: DENY
-    // Since we can't read headers from client-side JS for other origins easily,
-    // we use a heuristic or the isEmbeddable flag.
-    if (project.url.includes('leonardofroese')) {
-      setFrameError(true);
-    }
-  }, [project.url]);
 
   return (
     <div 
