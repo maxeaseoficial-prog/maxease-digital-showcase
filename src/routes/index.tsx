@@ -730,6 +730,13 @@ function WebsiteShowcase({
 
 const websiteProjects = [
   {
+    name: "Leonardo Froese",
+    url: "https://www.leonardofroese.com.br/",
+    category: "Presença Digital",
+    description: "Presença digital sofisticada para profissional liberal, destacando expertise e projetos.",
+    isEmbeddable: true
+  },
+  {
     name: "Caliber Gestão",
     url: "https://calibergestao.com.br/",
     category: "Gestão / Negócios",
@@ -762,13 +769,6 @@ const websiteProjects = [
     url: "https://estofadosdoporto.com.br/",
     category: "E-commerce / Estofados",
     description: "Experiência de compra premium para móveis de alto padrão, focada em visual e conversão.",
-    isEmbeddable: true
-  },
-  {
-    name: "Leonardo Froese",
-    url: "https://www.leonardofroese.com.br/",
-    category: "Presença Digital",
-    description: "Presença digital sofisticada para profissional liberal, destacando expertise e projetos.",
     isEmbeddable: true
   }
 ];
