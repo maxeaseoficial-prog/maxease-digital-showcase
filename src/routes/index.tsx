@@ -763,6 +763,13 @@ const websiteProjects = [
     category: "E-commerce / Estofados",
     description: "Experiência de compra premium para móveis de alto padrão, focada em visual e conversão.",
     isEmbeddable: true
+  },
+  {
+    name: "Leonardo Froese",
+    url: "https://www.leonardofroese.com.br/",
+    category: "Presença Digital",
+    description: "Presença digital sofisticada para profissional liberal, destacando expertise e projetos.",
+    isEmbeddable: true
   }
 ];
 
