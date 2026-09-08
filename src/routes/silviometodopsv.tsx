@@ -496,7 +496,12 @@ const css = `
 
 function CtaLink({ children, secondary = false }: { children: ReactNode; secondary?: boolean }) {
   return (
-    <a href="#contato" className={secondary ? "cta-link cta-link-secondary" : "cta-link"}>
+    <a
+      href="https://wa.me/5566999681305"
+      target="_blank"
+      rel="noopener noreferrer"
+      className={secondary ? "cta-link cta-link-secondary" : "cta-link"}
+    >
       <span>{children}</span>
       <ArrowRight aria-hidden="true" className="size-5 shrink-0" />
     </a>
@@ -839,7 +844,7 @@ function OfferSection() {
               Conversão
             </span>
           </div>
-          <a href="#contato" className="cta-link">
+          <a href="https://wa.me/5566999681305" target="_blank" rel="noopener noreferrer" className="cta-link">
             <span>Quero aprender o Método PSV</span>
             <ArrowRight aria-hidden="true" className="size-5 shrink-0" />
           </a>
