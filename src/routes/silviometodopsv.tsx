@@ -596,10 +596,9 @@ function Hero() {
           Um método prático para empresários e vendedores que querem dominar as principais habilidades das vendas B2C, aumentar sua conversão e transformar vendas em resultado.
         </p>
         <CtaLink>Quero aprender a vender mais</CtaLink>
-        <div className="hero-proofline" aria-label="Mentalidade, Processo, Técnica e Vendas">
-          <span>Mentalidade</span>
+        <div className="hero-proofline" aria-label="Processo, Sistema e Vendas">
           <span>Processo</span>
-          <span>Técnica</span>
+          <span>Sistema</span>
           <span>Vendas</span>
         </div>
       </div>
