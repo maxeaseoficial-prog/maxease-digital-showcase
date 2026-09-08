@@ -9,24 +9,30 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitesRouteImport } from './routes/sites'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as SilviometodopsvRouteImport } from './routes/silviometodopsv'
+import { Route as SitesRouteImport } from './routes/sites'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIntegrationsGptAdsRouteImport } from './routes/_authenticated/admin/integrations/gpt-ads'
 
-const SitesRoute = SitesRouteImport.update({
-  id: '/sites',
-  path: '/sites',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const SilviometodopsvRoute = SilviometodopsvRouteImport.update({
+  id: '/silviometodopsv',
+  path: '/silviometodopsv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitesRoute = SitesRouteImport.update({
+  id: '/sites',
+  path: '/sites',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -43,12 +49,14 @@ const AuthenticatedAdminIntegrationsGptAdsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/silviometodopsv': typeof SilviometodopsvRoute
   '/sites': typeof SitesRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/integrations/gpt-ads': typeof AuthenticatedAdminIntegrationsGptAdsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/silviometodopsv': typeof SilviometodopsvRoute
   '/sites': typeof SitesRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/integrations/gpt-ads': typeof AuthenticatedAdminIntegrationsGptAdsRoute
@@ -57,19 +65,31 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/silviometodopsv': typeof SilviometodopsvRoute
   '/sites': typeof SitesRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/admin/integrations/gpt-ads': typeof AuthenticatedAdminIntegrationsGptAdsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sites' | '/admin' | '/admin/integrations/gpt-ads'
+  fullPaths:
+    | '/'
+    | '/silviometodopsv'
+    | '/sites'
+    | '/admin'
+    | '/admin/integrations/gpt-ads'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sites' | '/admin' | '/admin/integrations/gpt-ads'
+  to:
+    | '/'
+    | '/silviometodopsv'
+    | '/sites'
+    | '/admin'
+    | '/admin/integrations/gpt-ads'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/silviometodopsv'
     | '/sites'
     | '/_authenticated/admin'
     | '/_authenticated/admin/integrations/gpt-ads'
@@ -78,16 +98,17 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  SilviometodopsvRoute: typeof SilviometodopsvRoute
   SitesRoute: typeof SitesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sites': {
-      id: '/sites'
-      path: '/sites'
-      fullPath: '/sites'
-      preLoaderRoute: typeof SitesRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -97,11 +118,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/silviometodopsv': {
+      id: '/silviometodopsv'
+      path: '/silviometodopsv'
+      fullPath: '/silviometodopsv'
+      preLoaderRoute: typeof SilviometodopsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sites': {
+      id: '/sites'
+      path: '/sites'
+      fullPath: '/sites'
+      preLoaderRoute: typeof SitesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -148,6 +176,7 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  SilviometodopsvRoute: SilviometodopsvRoute,
   SitesRoute: SitesRoute,
 }
 export const routeTree = rootRouteImport
