@@ -193,9 +193,9 @@ export const getAdminBootstrapStatus = createServerFn({ method: "GET" }).handler
     };
   }
 
-  const supabase = getSupabasePublicClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { count, error } = await (supabase as any)
+  // Must use the service-role client: anon cannot read other users' roles.
+  const adminClient = getSupabaseServerAdminClient();
+  const { count, error } = await (adminClient as any)
     .from("user_roles")
     .select("user_id", { count: "exact", head: true })
     .eq("role", ADMIN_ROLE);
@@ -220,6 +220,20 @@ export const bootstrapAdmin = createServerFn({ method: "POST" })
     }
 
     const adminClient = getSupabaseServerAdminClient();
+
+    const { count: adminCount, error: countError } = await (adminClient as any)
+      .from("user_roles")
+      .select("user_id", { count: "exact", head: true })
+      .eq("role", ADMIN_ROLE);
+
+    if (countError) {
+      throw new Error(countError.message);
+    }
+
+    if ((adminCount ?? 0) > 0) {
+      throw new Error("Já existe um administrador cadastrado. Faça login.");
+    }
+
     const { data: createdUser, error: createError } = await adminClient.auth.admin.createUser({
       email: data.email,
       password: data.password,
@@ -228,24 +242,20 @@ export const bootstrapAdmin = createServerFn({ method: "POST" })
     });
 
     if (createError || !createdUser.user) {
-      throw new Error("Não foi possível criar o administrador inicial.");
+      throw new Error(
+        createError?.message?.toLowerCase().includes("already")
+          ? "Este e-mail já está cadastrado."
+          : "Não foi possível criar o administrador inicial.",
+      );
     }
 
-    try {
-      const { error: roleError } = await (adminClient as any).rpc("ensure_first_admin_role", {
-        _user_id: createdUser.user.id,
-      });
+    const { error: roleError } = await (adminClient as any)
+      .from("user_roles")
+      .insert({ user_id: createdUser.user.id, role: ADMIN_ROLE });
 
-      if (roleError) {
-        throw new Error(roleError.message);
-      }
-    } catch (error) {
+    if (roleError) {
       await adminClient.auth.admin.deleteUser(createdUser.user.id);
-      throw new Error(
-        error instanceof Error && error.message.includes("already exists")
-          ? "Já existe um administrador cadastrado."
-          : "Não foi possível ativar o primeiro administrador.",
-      );
+      throw new Error("Não foi possível ativar o primeiro administrador.");
     }
 
     const loginClient = getSupabasePublicClient();
