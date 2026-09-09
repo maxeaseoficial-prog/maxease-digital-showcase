@@ -1,10 +1,22 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { getCurrentAdminUser } from "@/lib/admin-auth";
 
-export const Route = createFileRoute('/_authenticated')({
+export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ location }) => {
-    // This is a simple path-based gate.
-    // In a real app with Supabase, this would check the session.
-    // For this project, it allows access to the admin routes.
-    return {};
-  }
+    if (location.pathname === "/admin") {
+      return {};
+    }
+
+    const user = await getCurrentAdminUser();
+    if (!user) {
+      throw redirect({
+        to: "/admin",
+        search: {
+          redirect: location.pathname,
+        },
+      });
+    }
+
+    return { adminUser: user };
+  },
 });
