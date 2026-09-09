@@ -98,6 +98,17 @@ export function getSupabasePublicClient() {
   });
 }
 
+export async function adminExists() {
+  const supabase = getSupabasePublicClient();
+  const { data, error } = await (supabase as any).rpc("admin_exists");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return Boolean(data);
+}
+
 export function getSupabaseClientWithToken(accessToken: string) {
   const { url, publishableKey } = getSupabaseEnv();
   return createClient(url, publishableKey, {
@@ -193,19 +204,10 @@ export const getAdminBootstrapStatus = createServerFn({ method: "GET" }).handler
     };
   }
 
-  // Must use the service-role client: anon cannot read other users' roles.
-  const adminClient = getSupabaseServerAdminClient();
-  const { count, error } = await (adminClient as any)
-    .from("user_roles")
-    .select("user_id", { count: "exact", head: true })
-    .eq("role", ADMIN_ROLE);
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  const isBootstrapped = await adminExists();
 
   return {
-    isBootstrapped: (count ?? 0) > 0,
+    isBootstrapped,
     isAuthenticated: false,
     email: null,
   };
@@ -217,6 +219,11 @@ export const bootstrapAdmin = createServerFn({ method: "POST" })
     const currentUser = await getCurrentAdminUser();
     if (currentUser) {
       return { ok: true, isBootstrapped: true, email: currentUser.email ?? null };
+    }
+
+    const isBootstrapped = await adminExists();
+    if (isBootstrapped) {
+      return { ok: true, isBootstrapped: true, email: null };
     }
 
     const adminClient = getSupabaseServerAdminClient();
