@@ -313,7 +313,7 @@ export const loginAdmin = createServerFn({ method: "POST" })
 
     if (roleError || !roleData) {
       await client.auth.signOut();
-      throw new Error("Usuário ou senha inválidos.");
+      throw new Error("Acesso administrativo indisponível.");
     }
 
     await writeAdminSessionCookie({

@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { type FormEvent, useMemo, useState } from "react";
 import { Copy, FileText, Loader2, LogOut, Pencil, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -47,6 +47,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 function AdminPage() {
   const navigate = useNavigate();
+  const router = useRouter();
   const loaderData = Route.useLoaderData() as AdminLoaderData;
   const [pages, setPages] = useState<AdminPageItem[]>(loaderData.pages ?? []);
   const [bootstrapForm, setBootstrapForm] = useState({
@@ -103,9 +104,12 @@ function AdminPage() {
     try {
       await loginAdmin({ data: { email: loginForm.email, password: loginForm.password } });
       toast.success("Login realizado.");
-      navigate({ to: "/admin", replace: true });
+      await router.invalidate();
+      await navigate({ to: "/admin", replace: true });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Usuário ou senha inválidos.");
+      toast.error(
+        error instanceof Error ? error.message : "Usuário ou senha inválidos.",
+      );
     } finally {
       setSubmitting(false);
     }
