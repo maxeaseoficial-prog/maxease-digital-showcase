@@ -65,6 +65,8 @@ function AdminPage() {
     desktopHtml: "",
     mobileHtml: "",
   });
+  const [desktopFileName, setDesktopFileName] = useState("");
+  const [mobileFileName, setMobileFileName] = useState("");
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -75,6 +77,58 @@ function AdminPage() {
   }, [pageForm.slug]);
 
   const isAuthView = loaderData.isAuthenticated;
+
+  const readHtmlFile = async (file: File | null | undefined) => {
+    if (!file) return null;
+
+    const fileName = file.name.toLowerCase();
+    const isHtmlExtension = /\.html?$/i.test(fileName);
+    const contentType = file.type?.toLowerCase();
+    const isHtmlMime =
+      !contentType || contentType === "text/html" || contentType === "application/xhtml+xml";
+
+    if (!isHtmlExtension || !isHtmlMime || file.size === 0) {
+      throw new Error("Selecione um arquivo HTML válido.");
+    }
+
+    return await file.text();
+  };
+
+  const setHtmlFile = async (variant: "desktop" | "mobile", file: File | null | undefined) => {
+    if (!file) {
+      if (variant === "desktop") {
+        setDesktopFileName("");
+      } else {
+        setMobileFileName("");
+      }
+      return;
+    }
+
+    try {
+      const html = await readHtmlFile(file);
+      if (!html) {
+        throw new Error("Selecione um arquivo HTML válido.");
+      }
+
+      setPageForm((current) => ({
+        ...current,
+        ...(variant === "desktop" ? { desktopHtml: html } : { mobileHtml: html }),
+      }));
+
+      if (variant === "desktop") {
+        setDesktopFileName(file.name);
+      } else {
+        setMobileFileName(file.name);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Selecione um arquivo HTML válido.");
+      if (variant === "desktop") {
+        setPageForm((current) => ({ ...current, desktopHtml: current.desktopHtml }));
+      } else {
+        setPageForm((current) => ({ ...current, mobileHtml: current.mobileHtml }));
+      }
+    }
+  };
 
   const onBootstrapSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -127,6 +181,11 @@ function AdminPage() {
   const onSavePage = async () => {
     try {
       setSaving(true);
+
+      if (!pageForm.desktopHtml?.trim() && formMode === "create") {
+        throw new Error("Selecione um arquivo HTML Desktop.");
+      }
+
       const payload = {
         id: editingId ?? undefined,
         name: pageForm.name,
@@ -147,6 +206,8 @@ function AdminPage() {
       }
 
       setPageForm({ name: "", slug: "", active: true, desktopHtml: "", mobileHtml: "" });
+      setDesktopFileName("");
+      setMobileFileName("");
       setEditingId(null);
       setFormMode("create");
     } catch (error) {
@@ -439,27 +500,41 @@ function AdminPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="desktop-html">HTML Desktop</Label>
-                <textarea
+                {(formMode === "edit" && pageForm.desktopHtml) || desktopFileName ? (
+                  <div className="text-xs text-slate-500">
+                    {desktopFileName || "Arquivo atual disponível"}
+                  </div>
+                ) : null}
+                <Input
                   id="desktop-html"
-                  rows={6}
-                  value={pageForm.desktopHtml}
-                  onChange={(event) =>
-                    setPageForm({ ...pageForm, desktopHtml: event.target.value })
-                  }
-                  className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm"
-                  placeholder="<html>..."
+                  type="file"
+                  accept=".html,text/html"
+                  onChange={async (event) => {
+                    const file = event.target.files?.[0] ?? null;
+                    await setHtmlFile("desktop", file);
+                    event.target.value = "";
+                  }}
+                  className="block w-full max-w-full truncate rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm file:mr-3 file:rounded-md file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-slate-700"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="mobile-html">HTML Mobile</Label>
-                <textarea
+                {(formMode === "edit" && pageForm.mobileHtml) || mobileFileName ? (
+                  <div className="text-xs text-slate-500">
+                    {mobileFileName || "Arquivo atual disponível"}
+                  </div>
+                ) : null}
+                <Input
                   id="mobile-html"
-                  rows={6}
-                  value={pageForm.mobileHtml}
-                  onChange={(event) => setPageForm({ ...pageForm, mobileHtml: event.target.value })}
-                  className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm"
-                  placeholder="<html>..."
+                  type="file"
+                  accept=".html,text/html"
+                  onChange={async (event) => {
+                    const file = event.target.files?.[0] ?? null;
+                    await setHtmlFile("mobile", file);
+                    event.target.value = "";
+                  }}
+                  className="block w-full max-w-full truncate rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm file:mr-3 file:rounded-md file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-slate-700"
                 />
               </div>
 
