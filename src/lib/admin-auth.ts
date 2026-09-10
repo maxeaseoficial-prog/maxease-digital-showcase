@@ -58,12 +58,27 @@ const readAdminSessionCookie = createServerOnlyFn(async (): Promise<AdminSession
 });
 
 const writeAdminSessionCookie = createServerOnlyFn(async (session: AdminSessionCookie) => {
-  const { setCookie } = await getServerCookieApi();
+  const { setCookie, getRequestHeader, getRequestUrl } = await getServerCookieApi();
+
+  // Browsers drop a `Secure` cookie over http (local/dev) and drop a `Lax`
+  // cookie when the app is rendered inside the editor preview iframe.
+  let isHttps = true;
+  try {
+    const forwardedProto = getRequestHeader("x-forwarded-proto");
+    if (forwardedProto) {
+      isHttps = forwardedProto.split(",")[0].trim() === "https";
+    } else {
+      isHttps = getRequestUrl().protocol !== "http:";
+    }
+  } catch {
+    isHttps = true;
+  }
+
   setCookie(ADMIN_SESSION_COOKIE, JSON.stringify(session), {
     path: "/",
     httpOnly: true,
-    secure: true,
-    sameSite: "lax",
+    secure: isHttps,
+    sameSite: isHttps ? "none" : "lax",
     maxAge: 60 * 60 * 24 * 7,
   });
 });
