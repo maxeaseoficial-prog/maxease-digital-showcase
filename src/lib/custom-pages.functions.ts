@@ -53,26 +53,6 @@ export function assertValidPublicSlug(slug: string) {
   }
 }
 
-async function ensureCustomPageStorageBucket(client: any) {
-  const { data, error } = await client.storage.listBuckets();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!data?.some((bucket: { name: string }) => bucket.name === "custom-pages")) {
-    const { error: createError } = await client.storage.createBucket("custom-pages", {
-      public: false,
-      allowedMimeTypes: ["text/html", "application/xhtml+xml"],
-      fileSizeLimit: 2 * 1024 * 1024,
-    });
-
-    if (createError) {
-      throw new Error(createError.message);
-    }
-  }
-}
-
 async function uploadHtmlVariant(
   client: any,
   pageId: string,
@@ -158,7 +138,6 @@ export const createCustomPage = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { accessToken } = await requireAdminAccess();
     const client = getSupabaseClientWithToken(accessToken);
-    await ensureCustomPageStorageBucket(client);
 
     const slug = normalizeSlug(data.slug);
     if (!slug) {
@@ -216,7 +195,6 @@ export const updateCustomPage = createServerFn({ method: "POST" })
 
     const { accessToken } = await requireAdminAccess();
     const client = getSupabaseClientWithToken(accessToken);
-    await ensureCustomPageStorageBucket(client);
 
     const current = await (client as any)
       .from("custom_pages")
