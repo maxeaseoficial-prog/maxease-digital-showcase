@@ -694,7 +694,7 @@ function AdminPage() {
                   value={pageForm.name}
                   onChange={(event) => handleNameChange(event.target.value)}
                   placeholder="Apresentação Cliente ABC"
-                  className="h-10 border-slate-200 bg-white focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/15"
+                  className="h-10 border-slate-200 bg-white text-slate-950 placeholder:text-slate-400 focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/15"
                 />
               </div>
 
@@ -707,7 +707,7 @@ function AdminPage() {
                   value={pageForm.slug}
                   onChange={(event) => setPageForm({ ...pageForm, slug: event.target.value })}
                   placeholder="cliente-abc"
-                  className="h-10 border-slate-200 bg-white focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/15"
+                  className="h-10 border-slate-200 bg-white text-slate-950 placeholder:text-slate-400 focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/15"
                 />
                 <div className="min-w-0 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500">
                   <span className="font-medium text-slate-700">Preview:</span>{" "}
