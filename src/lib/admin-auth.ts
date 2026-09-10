@@ -58,16 +58,18 @@ const readAdminSessionCookie = createServerOnlyFn(async (): Promise<AdminSession
 });
 
 const writeAdminSessionCookie = createServerOnlyFn(async (session: AdminSessionCookie) => {
-  const { setCookie, getWebRequest } = await getServerCookieApi();
+  const { setCookie, getRequestHeader, getRequestUrl } = await getServerCookieApi();
 
   // Browsers drop a `Secure` cookie over http (local/dev) and drop a `Lax`
   // cookie when the app is rendered inside the editor preview iframe.
   let isHttps = true;
   try {
-    const request = getWebRequest?.();
-    const forwardedProto = request?.headers.get("x-forwarded-proto");
-    const origin = request?.url ? new URL(request.url).protocol : null;
-    isHttps = forwardedProto ? forwardedProto.split(",")[0].trim() === "https" : origin !== "http:";
+    const forwardedProto = getRequestHeader("x-forwarded-proto");
+    if (forwardedProto) {
+      isHttps = forwardedProto.split(",")[0].trim() === "https";
+    } else {
+      isHttps = getRequestUrl().protocol !== "http:";
+    }
   } catch {
     isHttps = true;
   }
