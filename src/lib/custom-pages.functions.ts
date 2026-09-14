@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import {
-  requireAdminAccess,
-  getSupabaseClientWithToken,
-  getSupabasePublicClient,
-  getSupabaseServerAdminClient,
-} from "@/lib/admin-auth";
+import { requireAdminAccess, getSupabaseServerAdminClient } from "@/lib/admin-auth";
 
 export const RESERVED_CUSTOM_PAGE_SLUGS = new Set([
   "admin",
@@ -53,6 +48,14 @@ export function assertValidPublicSlug(slug: string) {
   }
 }
 
+async function getAdminCustomPagesClient() {
+  // Authorization is still enforced through the authenticated admin session.
+  // Persistence itself uses the server service-role client so listing/uploading
+  // does not depend on a short-lived user access token or Storage RLS state.
+  await requireAdminAccess();
+  return getSupabaseServerAdminClient();
+}
+
 async function uploadHtmlVariant(
   client: any,
   pageId: string,
@@ -71,7 +74,7 @@ async function uploadHtmlVariant(
   });
 
   if (error) {
-    throw new Error(`Falha ao enviar o HTML ${variant}.`);
+    throw new Error(`Falha ao enviar o HTML ${variant}: ${error.message}`);
   }
 
   return filePath;
@@ -99,8 +102,7 @@ async function readHtmlVariant(client: any, path: string | null) {
 }
 
 export const listCustomPages = createServerFn({ method: "GET" }).handler(async () => {
-  const { accessToken } = await requireAdminAccess();
-  const client = getSupabaseClientWithToken(accessToken);
+  const client = await getAdminCustomPagesClient();
 
   const { data, error } = await (client as any)
     .from("custom_pages")
@@ -117,8 +119,7 @@ export const listCustomPages = createServerFn({ method: "GET" }).handler(async (
 export const getCustomPageById = createServerFn({ method: "GET" })
   .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data }) => {
-    const { accessToken } = await requireAdminAccess();
-    const client = getSupabaseClientWithToken(accessToken);
+    const client = await getAdminCustomPagesClient();
 
     const { data: page, error } = await (client as any)
       .from("custom_pages")
@@ -130,14 +131,24 @@ export const getCustomPageById = createServerFn({ method: "GET" })
       throw new Error(error.message);
     }
 
-    return page ?? null;
+    if (!page) {
+      return null;
+    }
+
+    const desktopHtml = await readHtmlVariant(client, page.desktop_file_path);
+    const mobileHtml = await readHtmlVariant(client, page.mobile_file_path);
+
+    return {
+      ...page,
+      desktopHtml,
+      mobileHtml,
+    };
   });
 
 export const createCustomPage = createServerFn({ method: "POST" })
   .validator((data) => pageSchema.parse(data))
   .handler(async ({ data }) => {
-    const { accessToken } = await requireAdminAccess();
-    const client = getSupabaseClientWithToken(accessToken);
+    const client = await getAdminCustomPagesClient();
 
     const slug = normalizeSlug(data.slug);
     if (!slug) {
@@ -193,14 +204,17 @@ export const updateCustomPage = createServerFn({ method: "POST" })
       throw new Error("Página inválida para edição.");
     }
 
-    const { accessToken } = await requireAdminAccess();
-    const client = getSupabaseClientWithToken(accessToken);
+    const client = await getAdminCustomPagesClient();
 
     const current = await (client as any)
       .from("custom_pages")
       .select("*")
       .eq("id", data.id)
       .maybeSingle();
+
+    if (current.error) {
+      throw new Error(current.error.message);
+    }
 
     if (!current.data) {
       throw new Error("Página não encontrada.");
@@ -261,8 +275,7 @@ export const updateCustomPage = createServerFn({ method: "POST" })
 export const deleteCustomPage = createServerFn({ method: "POST" })
   .validator((data) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data }) => {
-    const { accessToken } = await requireAdminAccess();
-    const client = getSupabaseClientWithToken(accessToken);
+    const client = await getAdminCustomPagesClient();
 
     const { data: page, error: pageError } = await (client as any)
       .from("custom_pages")
@@ -304,8 +317,7 @@ export const deleteCustomPage = createServerFn({ method: "POST" })
 export const toggleCustomPageStatus = createServerFn({ method: "POST" })
   .validator((data) => z.object({ id: z.string().uuid(), active: z.boolean() }).parse(data))
   .handler(async ({ data }) => {
-    const { accessToken } = await requireAdminAccess();
-    const client = getSupabaseClientWithToken(accessToken);
+    const client = await getAdminCustomPagesClient();
 
     const { data: page, error } = await (client as any)
       .from("custom_pages")
