@@ -586,7 +586,7 @@ function Hero() {
       <div className="hero-shade" aria-hidden="true" />
 
       <div className="hero-native page-shell" data-hero-sequence>
-        <p className="hero-presenter">Silvio Luiz Eidt Junior apresenta</p>
+        <p className="hero-presenter">Silvio Luis Eidt Junior apresenta</p>
         <h1>
           <span className="hero-method">Método</span>
           <span className="hero-psv">
@@ -598,7 +598,7 @@ function Hero() {
           Processo, Sistema e <strong>Vendas.</strong>
         </p>
         <p className="hero-description">
-          Um método prático para empresários e vendedores que querem dominar as principais habilidades das vendas B2C, aumentar sua conversão e transformar vendas em resultado.
+          Um método prático para empresários e vendedores que querem dominar as principais habilidades de vendas B2B e B2C, aumentar sua conversão e transformar vendas em resultado.
         </p>
         <CtaLink>Quero aprender a vender mais</CtaLink>
         <div className="hero-proofline" aria-label="Processo, Sistema e Vendas">
