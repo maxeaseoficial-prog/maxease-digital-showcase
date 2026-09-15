@@ -1,0 +1,44 @@
+name: Temporary Silvio footer correction
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix-footer:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Correct only the Silvio footer name
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("src/routes/silviometodopsv.tsx")
+          text = path.read_text()
+          start = text.index("function Footer() {")
+          end = text.index("function PsvLandingPage()", start)
+          footer = text[start:end]
+          old = '<p className="footer-name">Silvio Luiz Eidt Junior</p>'
+          new = '<p className="footer-name">Silvio Luis Eidt Junior</p>'
+          if old not in footer:
+              raise SystemExit("Expected footer text not found")
+          footer = footer.replace(old, new, 1)
+          path.write_text(text[:start] + footer + text[end:])
+          PY
+
+      - name: Remove temporary workflow
+        run: rm .github/workflows/fix-silvio-footer.yml
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/routes/silviometodopsv.tsx .github/workflows/fix-silvio-footer.yml
+          git commit -m "Corrige nome no rodapé do Método PSV"
+          git push
