@@ -937,7 +937,7 @@ function Footer() {
     <footer className="site-footer">
       <div className="page-shell footer-layout">
         <div>
-          <p className="footer-name">Silvio Luiz Eidt Junior</p>
+          <p className="footer-name">Silvio Luis Eidt Junior</p>
           <p>Método PSV</p>
           <p>Processo, Sistema e Vendas.</p>
         </div>
