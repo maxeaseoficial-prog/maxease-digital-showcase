@@ -42,7 +42,8 @@ function PublicCustomPageRoute() {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
-    const update = (event?: MediaQueryListEvent) => setIsMobile(event?.matches ?? mediaQuery.matches);
+    const update = (event?: MediaQueryListEvent) =>
+      setIsMobile(event?.matches ?? mediaQuery.matches);
 
     update();
     mediaQuery.addEventListener("change", update);
