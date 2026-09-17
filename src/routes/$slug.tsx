@@ -38,38 +38,44 @@ type PublicCustomPageRouteData = {
 
 function PublicCustomPageRoute() {
   const page = Route.useLoaderData() as PublicCustomPageRouteData;
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const update = () => setIsMobile(window.innerWidth < 768);
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const update = (event?: MediaQueryListEvent) => setIsMobile(event?.matches ?? mediaQuery.matches);
+
     update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
   }, []);
 
   const html = useMemo(() => {
+    if (isMobile === null) return "";
+
     const chosen = isMobile
       ? (page.mobileHtml ?? page.desktopHtml)
       : (page.desktopHtml ?? page.mobileHtml);
     return chosen ?? "";
   }, [isMobile, page]);
 
-  if (!html) {
+  if (isMobile !== null && !html) {
     throw notFound();
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      <div className="mx-auto flex min-h-screen max-w-full items-center justify-center bg-slate-950 p-0">
+    <div className="fixed inset-0 overflow-hidden bg-slate-950 text-white">
+      {html ? (
         <iframe
+          key={isMobile ? "mobile" : "desktop"}
           title={page.name}
-          sandbox="allow-scripts"
+          sandbox="allow-scripts allow-same-origin"
           srcDoc={html}
-          className="h-screen w-full border-0 bg-white"
+          className="block h-full w-full border-0 bg-white"
           referrerPolicy="no-referrer"
           loading="eager"
+          scrolling="yes"
         />
-      </div>
+      ) : null}
     </div>
   );
 }
