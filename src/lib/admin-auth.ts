@@ -157,25 +157,42 @@ export function getSupabaseServerAdminClient() {
   });
 }
 
-export const getCurrentAdminUser = createServerFn({ method: "GET" }).handler(async () => {
-  const session = await readAdminSessionCookie();
-  if (!session) {
-    return null;
+const getValidatedAdminSession = createServerOnlyFn(async () => {
+  const storedSession = await readAdminSessionCookie();
+  if (!storedSession) return null;
+
+  let session = storedSession;
+  let supabase = getSupabaseClientWithToken(session.access_token);
+  let { data: userData, error: userError } = await supabase.auth.getUser(session.access_token);
+
+  if (userError || !userData.user) {
+    const refreshClient = getSupabasePublicClient();
+    const { data: refreshedData, error: refreshError } = await refreshClient.auth.refreshSession({
+      refresh_token: storedSession.refresh_token,
+    });
+
+    if (refreshError || !refreshedData.session || !refreshedData.user) {
+      await clearAdminSessionCookie();
+      return null;
+    }
+
+    session = {
+      access_token: refreshedData.session.access_token,
+      refresh_token: refreshedData.session.refresh_token,
+      user_id: refreshedData.user.id,
+      email: refreshedData.user.email,
+      expires_at: refreshedData.session.expires_at,
+    };
+    await writeAdminSessionCookie(session);
+
+    supabase = getSupabaseClientWithToken(session.access_token);
+    userData = { user: refreshedData.user };
   }
 
-  const supabase = getSupabaseClientWithToken(session.access_token);
-  const { data, error } = await supabase.auth.getUser(session.access_token);
-
-  if (error || !data.user) {
-    await clearAdminSessionCookie();
-    return null;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: roleData, error: roleError } = await (supabase as any)
     .from("user_roles")
     .select("role")
-    .eq("user_id", data.user.id)
+    .eq("user_id", userData.user.id)
     .eq("role", ADMIN_ROLE)
     .maybeSingle();
 
@@ -184,28 +201,30 @@ export const getCurrentAdminUser = createServerFn({ method: "GET" }).handler(asy
     return null;
   }
 
+  return { session, user: userData.user };
+});
+
+export const getCurrentAdminUser = createServerFn({ method: "GET" }).handler(async () => {
+  const validated = await getValidatedAdminSession();
+  if (!validated) return null;
+
   return {
-    ...data.user,
-    accessToken: session.access_token,
-    refreshToken: session.refresh_token,
+    ...validated.user,
+    accessToken: validated.session.access_token,
+    refreshToken: validated.session.refresh_token,
   };
 });
 
 export const requireAdminAccess = createServerFn({ method: "GET" }).handler(async () => {
-  const session = await readAdminSessionCookie();
-  if (!session) {
-    throw new Error("Unauthorized");
-  }
-
-  const user = await getCurrentAdminUser();
-  if (!user) {
+  const validated = await getValidatedAdminSession();
+  if (!validated) {
     throw new Error("Unauthorized");
   }
 
   return {
-    user,
-    accessToken: session.access_token,
-    refreshToken: session.refresh_token,
+    user: validated.user,
+    accessToken: validated.session.access_token,
+    refreshToken: validated.session.refresh_token,
   };
 });
 
