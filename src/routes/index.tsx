@@ -1,17 +1,38 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useInView, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
-  Video, Globe, Cpu, Zap, Palette, ArrowRight, Megaphone,
-  Instagram, Mail, MessageCircle, Star, ArrowUpRight, Sparkles, Youtube, Menu, X,
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useInView,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
+import {
+  Video,
+  Globe,
+  Cpu,
+  Zap,
+  Palette,
+  ArrowRight,
+  Megaphone,
+  Instagram,
+  Mail,
+  MessageCircle,
+  Star,
+  ArrowUpRight,
+  Sparkles,
+  Youtube,
+  Menu,
+  X,
+  MapPin,
 } from "lucide-react";
 import { useQuoteModal } from "@/components/QuoteModal";
 import { Monitor, Smartphone, ExternalLink } from "lucide-react";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { getGPTAdsConfig } from "@/lib/gpt-ads.functions";
 import { useGPTAds, trackGPTAdsEvent } from "@/lib/gpt-ads-tracking";
-
-
 
 import logoAsset from "@/assets/maxease-logo.png.asset.json";
 import heroBgAsset from "@/assets/hero-bg.png.asset.json";
@@ -36,28 +57,43 @@ import project4 from "@/assets/project-4.jpg";
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData({
-      queryKey: ['gpt-ads-config'],
+      queryKey: ["gpt-ads-config"],
       queryFn: () => getGPTAdsConfig(),
     });
     return {};
   },
   head: () => ({
     meta: [
-      { title: "MAXEASE Digital — Criamos experiências digitais que fazem sua empresa crescer" },
-      { name: "description", content: "Sites profissionais e sistemas sob medida desenvolvidos para posicionar marcas e gerar resultados reais." },
-      { property: "og:title", content: "MAXEASE Digital — Criamos experiências digitais que fazem sua empresa crescer" },
-      { property: "og:description", content: "Sites profissionais e sistemas personalizados desenvolvidos para posicionar marcas e gerar resultados reais." },
-      { property: "og:image", content: "https://maxease-digital-showcase.lovable.app/__l5e/assets-v1/5220276f-90b0-4378-a098-210956a1590f/share-preview.png" },
-      { name: "twitter:image", content: "https://maxease-digital-showcase.lovable.app/__l5e/assets-v1/5220276f-90b0-4378-a098-210956a1590f/share-preview.png" },
+      { title: "Criação de sites e Google Meu Negócio | MAXEASE Digital" },
+      {
+        name: "description",
+        content:
+          "Sites profissionais e otimização do Perfil da Empresa no Google para negócios que querem atrair clientes e crescer.",
+      },
+      { property: "og:title", content: "Criação de sites e Google Meu Negócio | MAXEASE Digital" },
+      {
+        property: "og:description",
+        content:
+          "Presença digital completa para empresas: sites profissionais, sistemas e otimização no Google.",
+      },
+      { property: "og:url", content: "https://www.maxease.com.br/" },
     ],
+    links: [{ rel: "canonical", href: "https://www.maxease.com.br/" }],
   }),
   component: Index,
 });
 
-
 /* ---------------- Building blocks ---------------- */
 
-function Reveal({ children, delay = 0, y = 16 }: { children: ReactNode; delay?: number; y?: number }) {
+function Reveal({
+  children,
+  delay = 0,
+  y = 16,
+}: {
+  children: ReactNode;
+  delay?: number;
+  y?: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   return (
@@ -97,7 +133,7 @@ function CursorGlow() {
 /* ---------------- Navbar ---------------- */
 type NavLink =
   | { label: string; kind: "hash"; hash: string }
-  | { label: string; kind: "route"; to: "/sites" };
+  | { label: string; kind: "route"; to: "/sites" | "/google-meu-negocio" };
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -107,33 +143,35 @@ export function Navbar() {
     if (!mobileOpen) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    return () => {
+      document.body.style.overflow = prev;
+    };
   }, [mobileOpen]);
   const { data: gptConfig } = useSuspenseQuery({
-    queryKey: ['gpt-ads-config'],
+    queryKey: ["gpt-ads-config"],
     queryFn: () => getGPTAdsConfig(),
   });
   useGPTAds(gptConfig);
 
   useEffect(() => {
     const handleLinkClick = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement).closest('a');
+      const target = (e.target as HTMLElement).closest("a");
       if (!target) return;
 
-      const href = target.getAttribute('href') || '';
-      if (href.includes('wa.me') || href.includes('api.whatsapp.com')) {
-        const section = target.closest('section, header, footer');
-        const source = section?.id || section?.tagName.toLowerCase() || 'unknown';
-        
-        trackGPTAdsEvent('whatsapp_contact', {
+      const href = target.getAttribute("href") || "";
+      if (href.includes("wa.me") || href.includes("api.whatsapp.com")) {
+        const section = target.closest("section, header, footer");
+        const source = section?.id || section?.tagName.toLowerCase() || "unknown";
+
+        trackGPTAdsEvent("whatsapp_contact", {
           source: source,
-          href: href
+          href: href,
         });
       }
     };
 
-    document.addEventListener('click', handleLinkClick);
-    return () => document.removeEventListener('click', handleLinkClick);
+    document.addEventListener("click", handleLinkClick);
+    return () => document.removeEventListener("click", handleLinkClick);
   }, []);
 
   useEffect(() => {
@@ -143,18 +181,16 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-
-
   const links: NavLink[] = [
     { label: "Início", kind: "hash", hash: "inicio" },
     { label: "Sites", kind: "route", to: "/sites" },
+    { label: "Google", kind: "route", to: "/google-meu-negocio" },
     // { label: "Clientes", kind: "hash", hash: "clientes" },
     { label: "Sobre", kind: "hash", hash: "sobre" },
     { label: "Contato", kind: "hash", hash: "contato" },
   ];
 
-  const linkClass =
-    "text-sm text-white/75 hover:text-white transition-colors relative group";
+  const linkClass = "text-sm text-white/75 hover:text-white transition-colors relative group";
   const underline = (
     <span className="absolute -bottom-1 left-0 h-px w-0 bg-brand-gradient transition-all duration-300 group-hover:w-full" />
   );
@@ -162,7 +198,9 @@ export function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "py-4 bg-brand-deep/90 backdrop-blur-md border-b border-white/5" : "py-6 bg-brand-deep/20 backdrop-blur-sm"
+        scrolled
+          ? "py-4 bg-brand-deep/90 backdrop-blur-md border-b border-white/5"
+          : "py-6 bg-brand-deep/20 backdrop-blur-sm"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -182,7 +220,7 @@ export function Navbar() {
                   {l.label}
                   {underline}
                 </Link>
-              )
+              ),
             )}
           </nav>
           <div className="flex items-center gap-2 shrink-0">
@@ -205,27 +243,36 @@ export function Navbar() {
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
-
-
         </div>
 
         {/* Mobile menu panel */}
         <div className="lg:hidden overflow-hidden px-1">
           <motion.div
             initial={false}
-            animate={mobileOpen ? { height: "auto", opacity: 1, marginTop: 8 } : { height: 0, opacity: 0, marginTop: 0 }}
+            animate={
+              mobileOpen
+                ? { height: "auto", opacity: 1, marginTop: 8 }
+                : { height: 0, opacity: 0, marginTop: 0 }
+            }
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
             <nav className="glass-strong shadow-elegant rounded-2xl p-3 flex flex-col">
               {links.map((l) => {
-                const cls = "px-4 py-3 rounded-xl text-sm text-white/85 hover:text-white hover:bg-white/10 transition-colors";
+                const cls =
+                  "px-4 py-3 rounded-xl text-sm text-white/85 hover:text-white hover:bg-white/10 transition-colors";
                 return l.kind === "route" ? (
                   <Link key={l.to} to={l.to} className={cls} onClick={() => setMobileOpen(false)}>
                     {l.label}
                   </Link>
                 ) : (
-                  <Link key={l.hash} to="/" hash={l.hash} className={cls} onClick={() => setMobileOpen(false)}>
+                  <Link
+                    key={l.hash}
+                    to="/"
+                    hash={l.hash}
+                    className={cls}
+                    onClick={() => setMobileOpen(false)}
+                  >
                     {l.label}
                   </Link>
                 );
@@ -237,7 +284,6 @@ export function Navbar() {
     </header>
   );
 }
-
 
 /* ---------------- Hero ---------------- */
 function Hero() {
@@ -263,23 +309,22 @@ function Hero() {
     };
   }, [projectsOpen]);
 
-
   return (
-    <section id="inicio" ref={ref} className="relative min-h-screen w-full overflow-hidden bg-[#08111F] flex items-center">
+    <section
+      id="inicio"
+      ref={ref}
+      className="relative min-h-screen w-full overflow-hidden bg-[#08111F] flex items-center"
+    >
       <div className="absolute inset-0 z-0">
         <picture>
           <source media="(max-width: 640px)" srcSet={heroBgMobileAsset.url} />
-          <img 
-            src={heroBgAsset.url} 
-            alt="" 
-            className="w-full h-full object-cover opacity-60" 
-          />
+          <img src={heroBgAsset.url} alt="" className="w-full h-full object-cover opacity-60" />
         </picture>
         <div className="absolute inset-0 bg-gradient-to-b from-[#08111F]/20 via-[#08111F]/60 to-[#08111F]" />
       </div>
       <GradientOrb className="left-[-10%] top-[10%]" size={600} />
       <GradientOrb className="right-[-10%] bottom-[10%]" size={700} />
-      
+
       {/* connecting lines - removed as they look like "AI decor" */}
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-20 w-full">
@@ -288,12 +333,14 @@ function Hero() {
             <motion.div style={{ opacity }}>
               <Reveal delay={0.2}>
                 <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] text-white tracking-tight">
-                  Criamos experiências <span className="text-brand-blue">digitais</span> que fazem sua empresa crescer.
+                  Criamos experiências <span className="text-brand-blue">digitais</span> que fazem
+                  sua empresa crescer.
                 </h1>
               </Reveal>
               <Reveal delay={0.3}>
                 <p className="mt-8 text-lg sm:text-xl text-slate-400 leading-relaxed max-w-2xl">
-                  Sites profissionais e sistemas personalizados desenvolvidos para posicionar marcas e gerar resultados reais.
+                  Sites profissionais e sistemas personalizados desenvolvidos para posicionar marcas
+                  e gerar resultados reais.
                 </p>
               </Reveal>
               <Reveal delay={0.4}>
@@ -310,8 +357,8 @@ function Hero() {
                   <button
                     type="button"
                     onClick={() => {
-                      const el = document.getElementById('trabalhos-selecionados');
-                      el?.scrollIntoView({ behavior: 'smooth' });
+                      const el = document.getElementById("trabalhos-selecionados");
+                      el?.scrollIntoView({ behavior: "smooth" });
                     }}
                     className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-8 py-4 text-sm font-semibold text-white hover:bg-white/10 transition-all"
                   >
@@ -322,8 +369,7 @@ function Hero() {
             </motion.div>
           </div>
 
-          <div className="lg:col-span-5 relative hidden lg:block">
-          </div>
+          <div className="lg:col-span-5 relative hidden lg:block"></div>
         </div>
       </div>
 
@@ -361,7 +407,10 @@ function Hero() {
                 <X className="h-4 w-4" />
               </button>
 
-              <h3 id="projects-choice-title" className="text-xl sm:text-2xl font-semibold text-white">
+              <h3
+                id="projects-choice-title"
+                className="text-xl sm:text-2xl font-semibold text-white"
+              >
                 Qual portfólio você quer ver?
               </h3>
               <p className="mt-2 text-sm text-white/70">
@@ -381,7 +430,6 @@ function Hero() {
                   <span className="text-xs text-white/60">Projetos desenvolvidos</span>
                   <ArrowUpRight className="absolute top-4 right-4 h-4 w-4 text-white/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Link>
-
               </div>
             </motion.div>
           </motion.div>
@@ -398,21 +446,36 @@ function HeroComposition() {
 /* ---------------- Services ---------------- */
 function Services() {
   const { open: openQuote } = useQuoteModal();
-  const services = [
-    { 
-      num: "01", 
-      icon: Globe, 
-      title: "Sites Profissionais", 
+  const services: Array<{
+    num: string;
+    icon: typeof Globe;
+    title: string;
+    desc: string;
+    to?: "/sites" | "/google-meu-negocio";
+    rotation: number;
+  }> = [
+    {
+      num: "01",
+      icon: Globe,
+      title: "Sites Profissionais",
       desc: "Plataformas modernas desenvolvidas para alta performance e conversão.",
       to: "/sites",
-      rotation: 1
+      rotation: 1,
     },
-    { 
-      num: "02", 
-      icon: Cpu, 
-      title: "Sistemas Personalizados", 
+    {
+      num: "02",
+      icon: Cpu,
+      title: "Sistemas Personalizados",
       desc: "Soluções robustas sob medida para automatizar e escalar operações.",
-      rotation: -1
+      rotation: -1,
+    },
+    {
+      num: "03",
+      icon: MapPin,
+      title: "Google Meu Negócio",
+      desc: "Otimização do seu perfil no Google para aumentar a visibilidade local e gerar novos contatos.",
+      to: "/google-meu-negocio",
+      rotation: 1,
     },
   ];
 
@@ -428,43 +491,46 @@ function Services() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
         <div className="text-center mb-20">
           <Reveal>
-            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">Expertise</div>
+            <div className="text-xs uppercase tracking-[0.25em] text-brand-blue font-bold mb-6">
+              Expertise
+            </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-4xl mx-auto">
               Soluções digitais completas para marcas de alto padrão.
             </h2>
             <p className="mt-8 text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
-              Unimos engenharia, design e estratégia para construir produtos que impulsionam o valor do seu negócio.
+              Unimos engenharia, design e estratégia para construir produtos que impulsionam o valor
+              do seu negócio.
             </p>
           </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-2 items-stretch max-w-[800px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-2 items-stretch max-w-6xl mx-auto">
           {services.map((s, i) => {
             const Content = (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ 
-                  opacity: 1, 
+                whileInView={{
+                  opacity: 1,
                   y: 0,
-                  rotate: s.rotation
+                  rotate: s.rotation,
                 }}
-                whileHover={{ 
-                  rotate: 0, 
+                whileHover={{
+                  rotate: 0,
                   y: -6,
                   backgroundColor: "rgba(11, 29, 51, 0.95)",
-                  borderColor: "rgba(21, 94, 239, 0.4)"
+                  borderColor: "rgba(21, 94, 239, 0.4)",
                 }}
                 viewport={{ once: true }}
-                transition={{ 
-                  duration: 0.4, 
+                transition={{
+                  duration: 0.4,
                   delay: i * 0.1,
-                  ease: [0.21, 0.45, 0.32, 0.9]
+                  ease: [0.21, 0.45, 0.32, 0.9],
                 }}
                 className="group relative flex flex-col items-center text-center p-8 sm:p-10 h-full min-h-[320px] bg-[#0B1D33] border border-white/10 rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.15)] transition-all cursor-pointer overflow-hidden"
               >
                 {/* Detail Bar */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-[3px] bg-brand-blue" />
-                
+
                 <div className="w-full flex justify-between items-start mb-8">
                   <span className="text-xs font-bold text-white/20 tracking-widest">{s.num}</span>
                 </div>
@@ -474,14 +540,12 @@ function Services() {
                 </div>
 
                 <h3 className="text-xl font-bold text-white mb-4">{s.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed line-clamp-3">
-                  {s.desc}
-                </p>
+                <p className="text-sm text-slate-400 leading-relaxed line-clamp-3">{s.desc}</p>
               </motion.div>
             );
 
             return s.to ? (
-              <Link key={s.title} to={s.to as any} className="block h-full">
+              <Link key={s.title} to={s.to} className="block h-full">
                 {Content}
               </Link>
             ) : (
@@ -495,10 +559,12 @@ function Services() {
         <Reveal delay={0.6}>
           <div className="mt-20 text-center">
             <button
-              onClick={() => document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() =>
+                document.getElementById("contato")?.scrollIntoView({ behavior: "smooth" })
+              }
               className="inline-flex items-center gap-2 text-white/80 hover:text-brand-blue font-medium transition-all group"
             >
-              Falar com um especialista 
+              Falar com um especialista
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </button>
           </div>
@@ -508,8 +574,15 @@ function Services() {
   );
 }
 
-
-function ServiceCard({ icon: Icon, title, desc }: { icon: typeof Video; title: string; desc: string }) {
+function ServiceCard({
+  icon: Icon,
+  title,
+  desc,
+}: {
+  icon: typeof Video;
+  title: string;
+  desc: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const onMove = (e: React.MouseEvent) => {
@@ -530,8 +603,12 @@ function ServiceCard({ icon: Icon, title, desc }: { icon: typeof Video; title: s
         transition: "transform 0.2s ease-out",
       }}
     >
-      <div className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{ background: "radial-gradient(400px circle at var(--mx,50%) var(--my,50%), rgba(30,64,255,0.25), transparent 40%)" }}
+      <div
+        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background:
+            "radial-gradient(400px circle at var(--mx,50%) var(--my,50%), rgba(30,64,255,0.25), transparent 40%)",
+        }}
       />
       <div className="relative">
         <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient shadow-[0_10px_30px_-10px_rgba(30,64,255,0.8)] mb-6">
@@ -549,13 +626,19 @@ function ServiceCard({ icon: Icon, title, desc }: { icon: typeof Video; title: s
 
 /* ---------------- Audiovisual grid ---------------- */
 
-
 /* ---------------- Website Showcase Component ---------------- */
-function WebsiteShowcase({ 
+function WebsiteShowcase({
   project,
-  index
-}: { 
-  project: { name: string; url: string; category: string; description?: string; isEmbeddable?: boolean; fallbackImg?: string };
+  index,
+}: {
+  project: {
+    name: string;
+    url: string;
+    category: string;
+    description?: string;
+    isEmbeddable?: boolean;
+    fallbackImg?: string;
+  };
   index: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -564,38 +647,43 @@ function WebsiteShowcase({
 
   useEffect(() => {
     const updateScales = () => {
-      const desktopWrapper = containerRef.current?.querySelector('.lg\\:col-span-12 .aspect-\\[16\\/10\\]');
-      const mobileWrapper = containerRef.current?.querySelector('.lg\\:col-span-12 .aspect-\\[9\\/19\\.5\\]');
-      
+      const desktopWrapper = containerRef.current?.querySelector(
+        ".lg\\:col-span-12 .aspect-\\[16\\/10\\]",
+      );
+      const mobileWrapper = containerRef.current?.querySelector(
+        ".lg\\:col-span-12 .aspect-\\[9\\/19\\.5\\]",
+      );
+
       if (desktopWrapper && mobileWrapper) {
         setScales({
           desktop: desktopWrapper.clientWidth / 1440,
-          mobile: mobileWrapper.clientWidth / 390
+          mobile: mobileWrapper.clientWidth / 390,
         });
       }
     };
 
     updateScales();
-    window.addEventListener('resize', updateScales);
-    return () => window.removeEventListener('resize', updateScales);
+    window.addEventListener("resize", updateScales);
+    return () => window.removeEventListener("resize", updateScales);
   }, []);
 
   const isEmbeddable = project.isEmbeddable ?? true;
   const [frameError, setFrameError] = useState(false);
 
-
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className="py-24 first:pt-0"
-      style={{
-        '--scale-desktop': scales.desktop,
-        '--scale-mobile': scales.mobile
-      } as any}
+      style={
+        {
+          "--scale-desktop": scales.desktop,
+          "--scale-mobile": scales.mobile,
+        } as CSSProperties
+      }
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
         {/* Project Info */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.1 }}
@@ -606,7 +694,7 @@ function WebsiteShowcase({
               {project.name}
             </h3>
           </div>
-          
+
           {project.description && (
             <p className="text-lg sm:text-xl text-slate-600 leading-relaxed font-medium">
               {project.description}
@@ -617,9 +705,8 @@ function WebsiteShowcase({
         {/* Visual Showcase */}
         <div className="lg:col-span-12 relative">
           <div className="relative flex flex-col lg:flex-row items-end lg:items-center justify-between gap-12 lg:gap-8">
-            
             {/* Desktop Mockup */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -628,19 +715,19 @@ function WebsiteShowcase({
               <div className="absolute -top-8 left-6 hidden sm:flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">
                 <Monitor className="h-3 w-3" /> Desktop View
               </div>
-              
+
               <div className="relative rounded-[2rem] p-3 sm:p-4 bg-[#1A1F2C] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/5 ring-1 ring-white/10 group overflow-hidden">
                 <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#08111F]">
                   {!frameError ? (
-                    <iframe 
+                    <iframe
                       src={project.url}
                       title={`Visualização desktop do site ${project.name}`}
                       loading="lazy"
                       className="absolute border-0 top-0 left-0 w-[1440px] h-[900px]"
-                      style={{ 
-                        transform: 'scale(var(--scale-desktop, 0.29))',
-                        transformOrigin: 'top left',
-                        zIndex: 1
+                      style={{
+                        transform: "scale(var(--scale-desktop, 0.29))",
+                        transformOrigin: "top left",
+                        zIndex: 1,
                       }}
                       onError={() => setFrameError(true)}
                     />
@@ -648,11 +735,12 @@ function WebsiteShowcase({
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-deep/50 text-white p-8 text-center z-10">
                       <ExternalLink className="h-12 w-12 text-brand-blue mb-4 opacity-50" />
                       <p className="text-sm font-medium opacity-70">
-                        Este site possui restrições de segurança que impedem a visualização direta aqui.
+                        Este site possui restrições de segurança que impedem a visualização direta
+                        aqui.
                       </p>
-                      <a 
-                        href={project.url} 
-                        target="_blank" 
+                      <a
+                        href={project.url}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="mt-6 px-6 py-2 bg-brand-blue rounded-full text-xs font-bold hover:bg-brand-bright transition-colors"
                       >
@@ -669,7 +757,7 @@ function WebsiteShowcase({
             </motion.div>
 
             {/* Mobile Mockup */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 30, y: 30 }}
               animate={isInView ? { opacity: 1, x: 0, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.5 }}
@@ -681,19 +769,19 @@ function WebsiteShowcase({
               <div className="relative rounded-[2.5rem] p-2.5 sm:p-3 bg-[#1A1F2C] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] border border-white/5 ring-1 ring-white/10 group overflow-hidden">
                 {/* Speaker Notch */}
                 <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/10 rounded-full z-30" />
-                
+
                 <div className="relative aspect-[9/19.5] overflow-hidden rounded-[1.8rem] bg-[#08111F]">
                   <div className="absolute inset-0 right-[-20px] z-10">
                     {!frameError ? (
-                      <iframe 
+                      <iframe
                         src={project.url}
                         title={`Visualização mobile do site ${project.name}`}
                         loading="lazy"
                         className="absolute border-0 top-0 left-0 w-[410px] h-[844px]"
-                        style={{ 
-                          transform: 'scale(var(--scale-mobile, 0.65))',
-                          transformOrigin: 'top left',
-                          zIndex: 1
+                        style={{
+                          transform: "scale(var(--scale-mobile, 0.65))",
+                          transformOrigin: "top left",
+                          zIndex: 1,
                         }}
                         onError={() => setFrameError(true)}
                       />
@@ -712,7 +800,7 @@ function WebsiteShowcase({
               </div>
             </motion.div>
           </div>
-          
+
           {/* Status badge removed per request */}
         </div>
       </div>
@@ -725,44 +813,50 @@ const websiteProjects = [
     name: "Leonardo Froese",
     url: "https://www.leonardofroese.com.br/",
     category: "Presença Digital",
-    description: "Presença digital sofisticada para profissional liberal, destacando expertise e projetos.",
-    isEmbeddable: true
+    description:
+      "Presença digital sofisticada para profissional liberal, destacando expertise e projetos.",
+    isEmbeddable: true,
   },
   {
     name: "Caliber Gestão",
     url: "https://calibergestao.com.br/",
     category: "Gestão / Negócios",
-    description: "Solução completa para gestão empresarial, focada em organização e escala de processos.",
-    isEmbeddable: true
+    description:
+      "Solução completa para gestão empresarial, focada em organização e escala de processos.",
+    isEmbeddable: true,
   },
   {
     name: "Jonathan Veículos",
     url: "https://lojajonathanveiculos.com.br/",
     category: "Marketplace Automotivo",
-    description: "Plataforma otimizada para venda de veículos com interface intuitiva e alta conversão.",
-    isEmbeddable: true
+    description:
+      "Plataforma otimizada para venda de veículos com interface intuitiva e alta conversão.",
+    isEmbeddable: true,
   },
   {
     name: "Kora Gestão Inteligente",
     url: "https://www.koragestaointeligente.com.br/",
     category: "SaaS / Tecnologia",
-    description: "Interface moderna para sistema de gestão inteligente, priorizando clareza e funcionalidade.",
-    isEmbeddable: true
+    description:
+      "Interface moderna para sistema de gestão inteligente, priorizando clareza e funcionalidade.",
+    isEmbeddable: true,
   },
   {
     name: "Kaylane Sales Method",
     url: "https://kaylane-sales-method.lovable.app",
     category: "Infoproduto / Educação",
-    description: "Landing page estratégica para métodos de vendas, focada em autoridade e captura de leads.",
-    isEmbeddable: true
+    description:
+      "Landing page estratégica para métodos de vendas, focada em autoridade e captura de leads.",
+    isEmbeddable: true,
   },
   {
     name: "Estofados do Porto",
     url: "https://estofadosdoporto.com.br/",
     category: "E-commerce / Estofados",
-    description: "Experiência de compra premium para móveis de alto padrão, focada em visual e conversão.",
-    isEmbeddable: true
-  }
+    description:
+      "Experiência de compra premium para móveis de alto padrão, focada em visual e conversão.",
+    isEmbeddable: true,
+  },
 ];
 
 export function Sites() {
@@ -777,11 +871,11 @@ export function Sites() {
               transition={{ duration: 1, ease: "easeOut" }}
               aria-hidden="true"
               className="absolute -top-4 -left-6 sm:-top-8 sm:-left-12 text-[clamp(4.5rem,12vw,11rem)] font-bold text-brand-blue leading-none tracking-tighter whitespace-nowrap select-none pointer-events-none"
-              style={{ transform: 'translate(14px, 14px)' }}
+              style={{ transform: "translate(14px, 14px)" }}
             >
               Showcase
             </motion.span>
-            
+
             <motion.h2
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -848,12 +942,15 @@ function Counter({ to, label }: { to: number; label: string }) {
   }, [inView, to]);
 
   return (
-    <div ref={ref} className="relative group flex flex-col items-center justify-center p-8 overflow-hidden bg-white rounded-3xl transition-all duration-500">
+    <div
+      ref={ref}
+      className="relative group flex flex-col items-center justify-center p-8 overflow-hidden bg-white rounded-3xl transition-all duration-500"
+    >
       {/* Ghost Number Shadow */}
       <span className="absolute -bottom-8 -right-4 text-[12rem] font-bold text-brand-blue/5 leading-none select-none pointer-events-none transform translate-y-4 group-hover:translate-y-0 transition-transform duration-1000">
         +{to}
       </span>
-      
+
       <div className="relative z-10 text-center">
         <div className="text-6xl sm:text-7xl lg:text-8xl font-bold text-brand-blue tracking-tighter mb-4">
           +{count}
@@ -870,11 +967,16 @@ function Clients() {
   const marqueeRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section id="clientes" className="relative py-32 sm:py-48 bg-white overflow-hidden border-t border-slate-100">
+    <section
+      id="clientes"
+      className="relative py-32 sm:py-48 bg-white overflow-hidden border-t border-slate-100"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <div className="mb-24">
-            <div className="text-[10px] uppercase tracking-[0.4em] text-brand-blue font-bold mb-8">Confiança</div>
+            <div className="text-[10px] uppercase tracking-[0.4em] text-brand-blue font-bold mb-8">
+              Confiança
+            </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-[1.1] max-w-3xl">
               A confiança de marcas que buscam resultados reais.
             </h2>
@@ -894,14 +996,17 @@ function Clients() {
   );
 }
 
-
 /* ---------------- About ---------------- */
 function About() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
   return (
-    <section id="sobre" ref={containerRef} className="relative py-32 sm:py-48 bg-white overflow-hidden">
+    <section
+      id="sobre"
+      ref={containerRef}
+      className="relative py-32 sm:py-48 bg-white overflow-hidden"
+    >
       {/* Background Typographic Element */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
         <motion.span
@@ -923,11 +1028,14 @@ function About() {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="text-xs uppercase tracking-[0.3em] text-brand-blue font-bold">Nossa História</div>
+                <div className="text-xs uppercase tracking-[0.3em] text-brand-blue font-bold">
+                  Nossa História
+                </div>
               </div>
-              
+
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#071426] leading-[1.1] tracking-tight">
-                Unimos <span className="text-brand-blue">criatividade</span>, tecnologia e estratégia em cada entrega.
+                Unimos <span className="text-brand-blue">criatividade</span>, tecnologia e
+                estratégia em cada entrega.
               </h2>
             </motion.div>
 
@@ -938,7 +1046,8 @@ function About() {
                 transition={{ duration: 0.6, delay: 0.5 }}
                 className="text-xl sm:text-2xl text-slate-700 leading-relaxed font-medium"
               >
-                A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em soluções digitais que geram resultados.
+                A MAXEASE Digital nasceu com um propósito simples: transformar boas ideias em
+                soluções digitais que geram resultados.
               </motion.p>
 
               <motion.p
@@ -947,7 +1056,8 @@ function About() {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="text-lg text-slate-600 leading-relaxed"
               >
-                Fundada por Henrique Castro, a empresa une estratégia e design para desenvolver sites de alto padrão que fortalecem marcas.
+                Fundada por Henrique Castro, a empresa une estratégia e design para desenvolver
+                sites de alto padrão e fortalecer a presença de empresas no Google.
               </motion.p>
 
               <motion.div
@@ -958,7 +1068,8 @@ function About() {
               >
                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-blue" />
                 <p className="text-lg text-slate-800 font-semibold italic leading-relaxed">
-                  Acreditamos que cada detalhe deve ter um objetivo claro: transmitir credibilidade e contribuir para o crescimento das empresas que confiam no nosso trabalho.
+                  Acreditamos que cada detalhe deve ter um objetivo claro: transmitir credibilidade
+                  e contribuir para o crescimento das empresas que confiam no nosso trabalho.
                 </p>
               </motion.div>
             </div>
@@ -976,14 +1087,19 @@ function CTA() {
     <section id="contato" className="relative py-24 sm:py-32 overflow-hidden">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
-          <div className="relative overflow-hidden rounded-3xl p-10 sm:p-16 text-center ring-1 ring-white/10"
-            style={{ background: "radial-gradient(ellipse at top, rgba(79,124,255,0.4), transparent 60%), linear-gradient(135deg, #1428FF, #0A0F2D)" }}
+          <div
+            className="relative overflow-hidden rounded-3xl p-10 sm:p-16 text-center ring-1 ring-white/10"
+            style={{
+              background:
+                "radial-gradient(ellipse at top, rgba(79,124,255,0.4), transparent 60%), linear-gradient(135deg, #1428FF, #0A0F2D)",
+            }}
           >
             <div className="absolute inset-0 bg-grid opacity-30" />
             <Particles />
             <div className="relative">
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
-                Vamos criar algo <span className="italic font-light">incrível</span> para sua empresa?
+                Vamos criar algo <span className="italic font-light">incrível</span> para sua
+                empresa?
               </h2>
               <p className="mt-5 text-white/75 max-w-xl mx-auto">
                 Conte seu projeto. Retornamos com uma proposta sob medida em até 48 horas.
@@ -1001,7 +1117,6 @@ function CTA() {
             </div>
           </div>
         </Reveal>
-
       </div>
     </section>
   );
@@ -1019,28 +1134,84 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
           <div className="md:col-span-5">
-            <img src={logoAsset.url} alt="MAXEASE Digital" className="h-10 w-auto brightness-0 invert" />
+            <img
+              src={logoAsset.url}
+              alt="MAXEASE Digital"
+              className="h-10 w-auto brightness-0 invert"
+            />
             <p className="mt-8 text-base text-white/60 max-w-sm leading-relaxed">
-              Estúdio criativo e tecnológico especializado em interfaces digitais de alto desempenho e soluções tecnológicas estratégicas.
+              Estúdio criativo e tecnológico especializado em interfaces digitais de alto desempenho
+              e soluções tecnológicas estratégicas.
             </p>
           </div>
           <div className="md:col-span-3">
-            <div className="text-xs uppercase tracking-widest text-white font-bold mb-8">Navegação</div>
+            <div className="text-xs uppercase tracking-widest text-white font-bold mb-8">
+              Navegação
+            </div>
             <ul className="space-y-4 text-sm font-semibold text-white/50">
-              <li><Link to="/" hash="inicio" className="hover:text-brand-light transition-colors">Início</Link></li>
-              <li><Link to="/sites" className="hover:text-brand-light transition-colors">Sites</Link></li>
-              <li><Link to="/" hash="sobre" className="hover:text-brand-light transition-colors">Sobre</Link></li>
+              <li>
+                <Link to="/" hash="inicio" className="hover:text-brand-light transition-colors">
+                  Início
+                </Link>
+              </li>
+              <li>
+                <Link to="/sites" className="hover:text-brand-light transition-colors">
+                  Sites
+                </Link>
+              </li>
+              <li>
+                <Link to="/google-meu-negocio" className="hover:text-brand-light transition-colors">
+                  Google Meu Negócio
+                </Link>
+              </li>
+              <li>
+                <Link to="/" hash="sobre" className="hover:text-brand-light transition-colors">
+                  Sobre
+                </Link>
+              </li>
             </ul>
           </div>
           <div className="md:col-span-4">
-            <div className="text-xs uppercase tracking-widest text-white font-bold mb-8">Redes Sociais</div>
+            <div className="text-xs uppercase tracking-widest text-white font-bold mb-8">
+              Redes Sociais
+            </div>
             <div className="flex items-center gap-6">
-              <a href="https://www.instagram.com/max.ease/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/40 hover:text-brand-light transition-colors"><Instagram className="h-6 w-6" /></a>
-              <a href="https://wa.me/5542988377640" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white/40 hover:text-brand-light transition-colors">
-                <svg role="img" viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.15-.174.2-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              <a
+                href="https://www.instagram.com/max.ease/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="text-white/40 hover:text-brand-light transition-colors"
+              >
+                <Instagram className="h-6 w-6" />
               </a>
-              <a href="https://www.youtube.com/@MaxEase" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-white/40 hover:text-brand-light transition-colors"><Youtube className="h-6 w-6" /></a>
-              <a href="mailto:maxeaseoficial@gmail.com" aria-label="Email" className="text-white/40 hover:text-brand-light transition-colors"><Mail className="h-6 w-6" /></a>
+              <a
+                href="https://wa.me/5542988377640"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="text-white/40 hover:text-brand-light transition-colors"
+              >
+                <svg role="img" viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.15-.174.2-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                </svg>
+              </a>
+              <a
+                href="https://www.youtube.com/@MaxEase"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="text-white/40 hover:text-brand-light transition-colors"
+              >
+                <Youtube className="h-6 w-6" />
+              </a>
+              <a
+                href="mailto:maxeaseoficial@gmail.com"
+                aria-label="Email"
+                className="text-white/40 hover:text-brand-light transition-colors"
+              >
+                <Mail className="h-6 w-6" />
+              </a>
             </div>
           </div>
         </div>

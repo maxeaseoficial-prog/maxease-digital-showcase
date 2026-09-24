@@ -50,6 +50,12 @@ type AdminLoaderData = {
 };
 
 export const Route = createFileRoute("/_authenticated/admin")({
+  head: () => ({
+    meta: [
+      { title: "Administração — MAXEASE" },
+      { name: "robots", content: "noindex, nofollow, noarchive" },
+    ],
+  }),
   loader: async () => {
     const bootState = await getAdminBootstrapStatus();
     const pages = bootState.isAuthenticated ? await listCustomPages() : [];
@@ -333,7 +339,10 @@ function AdminPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="bootstrap-password" className="text-sm font-medium text-slate-200">
+                  <Label
+                    htmlFor="bootstrap-password"
+                    className="text-sm font-medium text-slate-200"
+                  >
                     Senha
                   </Label>
                   <div className="relative">
@@ -380,7 +389,11 @@ function AdminPage() {
                       type="button"
                       onClick={() => setShowConfirmPassword((current) => !current)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-                      aria-label={showConfirmPassword ? "Ocultar confirmação de senha" : "Mostrar confirmação de senha"}
+                      aria-label={
+                        showConfirmPassword
+                          ? "Ocultar confirmação de senha"
+                          : "Mostrar confirmação de senha"
+                      }
                       aria-pressed={showConfirmPassword}
                     >
                       {showConfirmPassword ? (
@@ -481,7 +494,9 @@ function AdminPage() {
         <header className="flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm sm:px-5 md:flex-row md:items-center md:justify-between">
           <div className="min-w-0">
             <div className="mb-1 flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">MAXEASE</span>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
+                MAXEASE
+              </span>
               <span className="h-1 w-1 rounded-full bg-slate-300" aria-hidden="true" />
               <span className="text-xs font-medium text-slate-500">Administração</span>
             </div>
@@ -489,7 +504,9 @@ function AdminPage() {
               Painel Administrativo
             </h1>
             {loaderData.email ? (
-              <p className="mt-1 truncate text-sm text-slate-500">Conectado como {loaderData.email}</p>
+              <p className="mt-1 truncate text-sm text-slate-500">
+                Conectado como {loaderData.email}
+              </p>
             ) : null}
           </div>
           <Button
@@ -511,7 +528,9 @@ function AdminPage() {
                     <FileText className="h-4 w-4 text-blue-600" />
                     Páginas
                   </CardTitle>
-                  <p className="mt-1 text-sm text-slate-500">Gerencie os links exclusivos publicados.</p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Gerencie os links exclusivos publicados.
+                  </p>
                 </div>
                 <Button
                   size="sm"
@@ -580,11 +599,15 @@ function AdminPage() {
                       >
                         <div className="min-w-0">
                           <div className="truncate font-semibold text-slate-950">{page.name}</div>
-                          <div className="mt-1 truncate text-xs text-slate-400 lg:hidden">/{page.slug}</div>
+                          <div className="mt-1 truncate text-xs text-slate-400 lg:hidden">
+                            /{page.slug}
+                          </div>
                         </div>
 
                         <div className="mt-3 hidden min-w-0 lg:block">
-                          <span className="block truncate text-sm text-slate-500">/{page.slug}</span>
+                          <span className="block truncate text-sm text-slate-500">
+                            /{page.slug}
+                          </span>
                         </div>
 
                         <div className="mt-3 lg:mt-0">
@@ -618,7 +641,9 @@ function AdminPage() {
                             onClick={() => {
                               setFormMode("edit");
                               setEditingId(page.id);
-                              setDesktopFileName(page.desktop_file_path ? "Arquivo HTML atual" : "");
+                              setDesktopFileName(
+                                page.desktop_file_path ? "Arquivo HTML atual" : "",
+                              );
                               setMobileFileName(page.mobile_file_path ? "Arquivo HTML atual" : "");
                               void (async () => {
                                 const fullPage = await getCustomPageById({ data: { id: page.id } });
@@ -731,7 +756,10 @@ function AdminPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-slate-800">Selecionar arquivo</p>
-                      <p className="truncate text-xs text-slate-500" title={desktopFileName || undefined}>
+                      <p
+                        className="truncate text-xs text-slate-500"
+                        title={desktopFileName || undefined}
+                      >
                         {desktopFileName ||
                           (formMode === "edit"
                             ? "Mantenha o arquivo atual ou selecione outro .html"
@@ -773,7 +801,10 @@ function AdminPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-slate-800">Selecionar arquivo</p>
-                      <p className="truncate text-xs text-slate-500" title={mobileFileName || undefined}>
+                      <p
+                        className="truncate text-xs text-slate-500"
+                        title={mobileFileName || undefined}
+                      >
                         {mobileFileName ||
                           (formMode === "edit"
                             ? "Mantenha o arquivo atual ou selecione outro .html"
@@ -794,7 +825,8 @@ function AdminPage() {
                     aria-describedby="mobile-html-help"
                   />
                   <p id="mobile-html-help" className="mt-2 text-xs leading-5 text-slate-500">
-                    Opcional. Se não houver versão mobile, a página Desktop continua sendo utilizada.
+                    Opcional. Se não houver versão mobile, a página Desktop continua sendo
+                    utilizada.
                   </p>
                 </div>
               </div>

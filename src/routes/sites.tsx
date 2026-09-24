@@ -5,10 +5,15 @@ export const Route = createFileRoute("/sites")({
   head: () => ({
     meta: [
       { title: "Sites Desenvolvidos — MAXEASE Digital" },
-      { name: "description", content: "Sites modernos, rápidos e desenvolvidos para converter visitantes em clientes." },
+      {
+        name: "description",
+        content: "Sites modernos, rápidos e desenvolvidos para converter visitantes em clientes.",
+      },
       { property: "og:title", content: "Sites Desenvolvidos — MAXEASE Digital" },
       { property: "og:description", content: "Projetos que performam tão bem quanto parecem." },
+      { property: "og:url", content: "https://www.maxease.com.br/sites" },
     ],
+    links: [{ rel: "canonical", href: "https://www.maxease.com.br/sites" }],
   }),
   component: SitesPage,
 });

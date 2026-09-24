@@ -9,26 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitesRouteImport } from './routes/sites'
-import { Route as SilviometodopsvRouteImport } from './routes/silviometodopsv'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SlugRouteImport } from './routes/$slug'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as GoogleMeuNegocioRouteImport } from './routes/google-meu-negocio'
+import { Route as SilviometodopsvRouteImport } from './routes/silviometodopsv'
+import { Route as SitesRouteImport } from './routes/sites'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIntegrationsGptAdsRouteImport } from './routes/_authenticated/admin/integrations/gpt-ads'
 
-const SitesRoute = SitesRouteImport.update({
-  id: '/sites',
-  path: '/sites',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SilviometodopsvRoute = SilviometodopsvRouteImport.update({
-  id: '/silviometodopsv',
-  path: '/silviometodopsv',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SlugRoute = SlugRouteImport.update({
@@ -36,9 +28,23 @@ const SlugRoute = SlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GoogleMeuNegocioRoute = GoogleMeuNegocioRouteImport.update({
+  id: '/google-meu-negocio',
+  path: '/google-meu-negocio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SilviometodopsvRoute = SilviometodopsvRouteImport.update({
+  id: '/silviometodopsv',
+  path: '/silviometodopsv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitesRoute = SitesRouteImport.update({
+  id: '/sites',
+  path: '/sites',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -56,6 +62,7 @@ const AuthenticatedAdminIntegrationsGptAdsRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/silviometodopsv': typeof SilviometodopsvRoute
   '/sites': typeof SitesRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/silviometodopsv': typeof SilviometodopsvRoute
   '/sites': typeof SitesRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -74,6 +82,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/google-meu-negocio': typeof GoogleMeuNegocioRoute
   '/silviometodopsv': typeof SilviometodopsvRoute
   '/sites': typeof SitesRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
@@ -84,6 +93,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$slug'
+    | '/google-meu-negocio'
     | '/silviometodopsv'
     | '/sites'
     | '/admin'
@@ -92,6 +102,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$slug'
+    | '/google-meu-negocio'
     | '/silviometodopsv'
     | '/sites'
     | '/admin'
@@ -101,6 +112,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/_authenticated'
+    | '/google-meu-negocio'
     | '/silviometodopsv'
     | '/sites'
     | '/_authenticated/admin'
@@ -111,31 +123,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SlugRoute: typeof SlugRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  GoogleMeuNegocioRoute: typeof GoogleMeuNegocioRoute
   SilviometodopsvRoute: typeof SilviometodopsvRoute
   SitesRoute: typeof SitesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sites': {
-      id: '/sites'
-      path: '/sites'
-      fullPath: '/sites'
-      preLoaderRoute: typeof SitesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/silviometodopsv': {
-      id: '/silviometodopsv'
-      path: '/silviometodopsv'
-      fullPath: '/silviometodopsv'
-      preLoaderRoute: typeof SilviometodopsvRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
+    '/': {
+      id: '/'
+      path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteImport
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$slug': {
@@ -145,11 +144,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/google-meu-negocio': {
+      id: '/google-meu-negocio'
+      path: '/google-meu-negocio'
+      fullPath: '/google-meu-negocio'
+      preLoaderRoute: typeof GoogleMeuNegocioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/silviometodopsv': {
+      id: '/silviometodopsv'
+      path: '/silviometodopsv'
+      fullPath: '/silviometodopsv'
+      preLoaderRoute: typeof SilviometodopsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sites': {
+      id: '/sites'
+      path: '/sites'
+      fullPath: '/sites'
+      preLoaderRoute: typeof SitesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -197,19 +217,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  GoogleMeuNegocioRoute: GoogleMeuNegocioRoute,
   SilviometodopsvRoute: SilviometodopsvRoute,
   SitesRoute: SitesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
